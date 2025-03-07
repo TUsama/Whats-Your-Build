@@ -49,6 +49,9 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 dependencies {
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+
+    implementation("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+forge")
+    implementation("thedarkcolour:kotlinforforge:4.11.0")
 }
 
 jar {

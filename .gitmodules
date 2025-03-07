@@ -1,0 +1,3 @@
+[submodule "NirvanaLib"]
+	path = NirvanaLib
+	url = https://github.com/TUsama/NirvanaLib
