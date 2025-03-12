@@ -1,6 +1,7 @@
 package me.clefal.whats_your_build.modules.armor;
 
 import com.mojang.serialization.Codec;
+import me.clefal.whats_your_build.handler.ComponentType;
 import me.clefal.whats_your_build.handler.IComponentClientHandler;
 
 public class VanillaArmorComponentClientHandler implements IComponentClientHandler<VanillaArmorComponent> {
@@ -15,7 +16,7 @@ public class VanillaArmorComponentClientHandler implements IComponentClientHandl
 
     @Override
     public byte getIndex() {
-        return VanillaArmorComponent.TYPE;
+        return ComponentType.VANILLA_ARMOR;
     }
 
     @Override

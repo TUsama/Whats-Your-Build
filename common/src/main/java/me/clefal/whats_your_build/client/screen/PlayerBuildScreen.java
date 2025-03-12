@@ -1,35 +1,28 @@
 package me.clefal.whats_your_build.client.screen;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import org.joml.Vector2f;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
+public class PlayerBuildScreen extends WaitingPlayerBuildScreen {
 
-public class PlayerBuildScreen extends Screen {
+    private final List<BuildMenuTab<?>> tabs;
+    @Nullable
+    private BuildMenu currentMenu;
 
-    private Map<Vector2f, ItemStack> positionAndItem;
 
-    protected PlayerBuildScreen() {
-        super(Component.literal(""));
+    public PlayerBuildScreen(List<BuildMenuTab<?>> tabs) {
+        this.tabs = tabs;
+        this.currentMenu = tabs.lastOption().isEmpty() ? null : tabs.lastOption().get().menu.get();
     }
 
-    public static void refresh() {
-        if (Minecraft.getInstance().screen instanceof PlayerBuildScreen) {
-            Minecraft.getInstance().screen = new PlayerBuildScreen();
-        }
-    }
 
-    public void update(Map<Vector2f, ItemStack> positionAndItem) {
-        this.positionAndItem = positionAndItem;
-    }
 
     @Override
     protected void init() {
         super.init();
+
     }
 
     @Override
