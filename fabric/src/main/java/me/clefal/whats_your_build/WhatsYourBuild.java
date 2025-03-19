@@ -2,7 +2,7 @@ package me.clefal.whats_your_build;
 
 import net.fabricmc.api.ModInitializer;
 
-public class ExampleMod implements ModInitializer {
+public class WhatsYourBuild implements ModInitializer {
     
     @Override
     public void onInitialize() {

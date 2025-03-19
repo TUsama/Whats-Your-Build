@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-          "me.clefal.whats_your_build.ExampleMod"
+          "me.clefal.whats_your_build.WhatsYourBuild"
         ]
     },
     "mixins": [
