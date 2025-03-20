@@ -1,8 +1,13 @@
 package me.clefal.whats_your_build.modules.armor;
 
 import com.mojang.serialization.Codec;
+import me.clefal.whats_your_build.client.screen.BuildMenuTab;
+import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.vanilla.VanillaArmorMenuTab;
 import me.clefal.whats_your_build.handler.ComponentType;
 import me.clefal.whats_your_build.handler.IComponentClientHandler;
+
+import java.util.function.Function;
 
 public class VanillaArmorComponentClientHandler implements IComponentClientHandler<VanillaArmorComponent> {
     private static VanillaArmorComponentClientHandler INSTANCE;
@@ -18,6 +23,12 @@ public class VanillaArmorComponentClientHandler implements IComponentClientHandl
     public byte getIndex() {
         return ComponentType.VANILLA_ARMOR;
     }
+
+    @Override
+    public Function<PlayerBuildScreen, BuildMenuTab<?, ?>> getBuildMenuTab(VanillaArmorComponent component) {
+        return playerBuildScreen -> new VanillaArmorMenuTab(component, playerBuildScreen);
+    }
+
 
     @Override
     public Codec<VanillaArmorComponent> getCodeC() {

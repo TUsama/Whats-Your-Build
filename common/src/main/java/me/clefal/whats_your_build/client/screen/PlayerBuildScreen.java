@@ -9,6 +9,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 public class PlayerBuildScreen extends BasePlayerBuildScreen {
 
     private final List<BuildMenuTab<?, ?>> tabs;
@@ -18,9 +20,9 @@ public class PlayerBuildScreen extends BasePlayerBuildScreen {
     private final float tabOriginalY;
 
 
-    public PlayerBuildScreen(List<BuildMenuTab<?, ?>> tabs) {
-        this.tabs = tabs;
-        this.currentMenu = tabs.lastOption().isEmpty() ? null : tabs.lastOption().get().menu.get();
+    public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs) {
+        this.tabs = tabs.map(x -> x.apply(this));
+        this.currentMenu = this.tabs.lastOption().isEmpty() ? null : this.tabs.lastOption().get().getMenu().get();
         this.tabOriginalX = topLeftX + BasePlayerBuildScreen.WIDTH / 4.0f;
         this.tabOriginalY = topLeftY + BasePlayerBuildScreen.HEIGHT / 6.0f;
     }

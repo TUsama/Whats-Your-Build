@@ -10,6 +10,10 @@ import me.fzzyhmstrs.fzzy_config.config.Config;
 @WithPerms(opLevel = 2)
 public class WYBServerConfig extends Config {
     public static WYBServerConfig config = ConfigApiJava.registerAndLoadConfig(WYBServerConfig::new, RegisterType.BOTH);
+
+    public static void init(){
+
+    }
     public WYBServerConfig() {
         super(CommonClass.id("wyb_server_config"));
     }

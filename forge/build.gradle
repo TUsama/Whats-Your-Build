@@ -50,8 +50,11 @@ dependencies {
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    implementation("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+forge")
-    implementation("thedarkcolour:kotlinforforge:4.11.0")
+    modImplementation ("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+forge")
+    modImplementation("thedarkcolour:kotlinforforge:4.11.0")
+
+    compileOnly(group: 'com.clefal.nirvana_lib', name: 'common', version: '1.1.0')
+    modImplementation "curse.maven:nirvana-library-1164411:" + lib_version_forge
 }
 
 jar {
