@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class S2CReturnBuildPacket implements S2CModPacket {
     private final List<IBuildComponent<?>> components;
     private final List<Byte> index;
-    private com.clefal.nirvana_lib.relocated.io.vavr.collection.List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> list;
+    private com.clefal.nirvana_lib.relocated.io.vavr.collection.List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> list = com.clefal.nirvana_lib.relocated.io.vavr.collection.List.empty();
 
     public S2CReturnBuildPacket(List<IBuildComponent<?>> components, List<Byte> index) {
         this.components = components;
@@ -27,7 +27,7 @@ public class S2CReturnBuildPacket implements S2CModPacket {
 
     public S2CReturnBuildPacket(FriendlyByteBuf buf) {
         this.index = buf.readList(FriendlyByteBuf::readByte);
-        Map<IBuildComponent<?>, Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> iBuildComponentFunctionMap = HandlerManager.INSTANCE.readBuf(index, buf);
+        Map<IBuildComponent<?>, Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> iBuildComponentFunctionMap = HandlerManager.getInstance().readBuf(index, buf);
         this.components = ImmutableList.copyOf(iBuildComponentFunctionMap.keySet());
         this.list = com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(iBuildComponentFunctionMap.values());
     }

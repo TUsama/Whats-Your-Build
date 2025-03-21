@@ -6,17 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModulesManager {
-    public static final ModulesManager INSTANCE = new ModulesManager();
+    private static ModulesManager INSTANCE;
     public List<IModule> modules = new ArrayList<>();
+
+    public static ModulesManager getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ModulesManager();
+        }
+        return INSTANCE;
+    }
 
     public static void init(){
 
     }
 
     static {
-        INSTANCE.modules.add(VanillaArmorComponentModule.INSTANCE);
+        getInstance().modules.add(VanillaArmorComponentModule.getInstance());
 
 
-        INSTANCE.modules.forEach(IModule::tryEnable);
+        getInstance().modules.forEach(IModule::tryEnable);
     }
 }

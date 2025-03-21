@@ -15,10 +15,16 @@ import java.util.*;
 import java.util.function.Function;
 
 public class HandlerManager {
-    public static final HandlerManager INSTANCE = new HandlerManager();
+    private static HandlerManager INSTANCE;
     public List<IComponentServerHandler> serverHandlers = new ArrayList<>();
     public List<IComponentClientHandler<?>> clientHandlers = new ArrayList<>();
 
+    public static HandlerManager getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new HandlerManager();
+        }
+        return INSTANCE;
+    }
     static {
         ModulesManager.init();
     }

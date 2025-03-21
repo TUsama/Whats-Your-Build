@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CommonClass {
 
-    public static void init() {
+    public static void packetInit() {
         Packets.registerAllC2SPackets();
         Packets.registerAllS2CPackets();
     }
@@ -25,7 +25,7 @@ public class CommonClass {
 
     public static void serverInit() {
         WYBServerConfig.init();
-        for (var serverHandler : HandlerManager.INSTANCE.serverHandlers) {
+        for (var serverHandler : HandlerManager.getInstance().serverHandlers) {
             Constants.serverBus.register(serverHandler);
         }
     }

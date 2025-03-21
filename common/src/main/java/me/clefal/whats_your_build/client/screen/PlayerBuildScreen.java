@@ -6,18 +6,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.renderer.MultiBufferSource;
-import org.jetbrains.annotations.Nullable;
 
+
+import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public class PlayerBuildScreen extends BasePlayerBuildScreen {
 
     private final List<BuildMenuTab<?, ?>> tabs;
-    @Nullable
-    private BuildMenu<?> currentMenu;
     private final float tabOriginalX;
     private final float tabOriginalY;
+    @Nullable
+    private BuildMenu<?> currentMenu;
 
 
     public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs) {
@@ -27,10 +27,9 @@ public class PlayerBuildScreen extends BasePlayerBuildScreen {
         this.tabOriginalY = topLeftY + BasePlayerBuildScreen.HEIGHT / 6.0f;
     }
 
-    public void setNewMenu(BuildMenu<?> menu){
+    public void setNewMenu(BuildMenu<?> menu) {
         this.currentMenu = menu;
     }
-
 
 
     @Override
@@ -42,7 +41,7 @@ public class PlayerBuildScreen extends BasePlayerBuildScreen {
             addRenderableOnly(tab);
             i += tab.getWidth();
         }
-        if (!tabs.isEmpty()){
+        if (!tabs.isEmpty()) {
             setInitialFocus(tabs.get(0));
         }
 
@@ -63,7 +62,7 @@ public class PlayerBuildScreen extends BasePlayerBuildScreen {
         pose.translate(tabOriginalX, tabOriginalY, 0);
         BasePlayerBuildScreen.container.putBliz(BasePlayerBuildScreen.COMPONENT, new TextureBufferInfo(0, width, Minecraft.getInstance().font.lineHeight, Minecraft.getInstance().font.lineHeight + 1, 0, 128, 256, 0, 1, pose.last().pose(), TextureBufferInfo.RenderInfo.ofOpacity(1.0f)));
 
-        if (currentMenu != null){
+        if (currentMenu != null) {
 
             pose.pushPose();
             //for the Minecraft.getInstance().font.lineHeight + 1 above

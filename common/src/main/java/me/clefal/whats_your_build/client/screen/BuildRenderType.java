@@ -16,7 +16,7 @@ import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
 
 public class BuildRenderType extends RenderTypeCreator {
 
-    public static final Function<ResourceLocation, RenderType> gui = Util.memoize(resourceLocation -> create("nl_normal_gui", POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 1024, false, false,
+    public static final Function<ResourceLocation, RenderType> gui = Util.memoize(resourceLocation -> RenderTypeCreator.createRenderType("nl_normal_gui", POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 1024, false, false,
             CompositeState.builder()
                     .setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
                     .setTextureState(new TextureStateShard(resourceLocation, false, false))

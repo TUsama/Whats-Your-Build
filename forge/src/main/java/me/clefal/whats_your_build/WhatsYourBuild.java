@@ -16,23 +16,22 @@ import java.util.Arrays;
 public class WhatsYourBuild {
     
     public WhatsYourBuild() {
+        /*
         CommonClass.init();
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> (new DistExecutor.SafeRunnable() {
+
+
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new DistExecutor.SafeRunnable() {
             @Override
             public void run() {
                 CommonClass.clientInit();
+                IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+                IEventBus eventBus = MinecraftForge.EVENT_BUS;
+                WhatsYourBuildForgeClient.eventInit(modEventBus, eventBus);
             }
-        }));
-        CommonClass.serverInit();
-
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        modEventBus.<RegisterKeyMappingsEvent>addListener(registerKeyMappingsEvent -> WYBKeys.registerAllKey(keyMappings -> Arrays.stream(keyMappings).forEach(registerKeyMappingsEvent::register)));
-
-        IEventBus eventBus = MinecraftForge.EVENT_BUS;
-        eventBus.<TickEvent.ClientTickEvent>addListener(event -> {
-            WYBKeys.consumerKeys();
         });
+        CommonClass.serverInit();*/
+
+
 
     }
 }
