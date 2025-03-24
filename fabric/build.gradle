@@ -1,12 +1,11 @@
 plugins {
-    id 'multiloader-loader'
     id 'fabric-loom'
 }
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parch_mapping}@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
@@ -35,4 +34,22 @@ loom {
             runDir("run")
         }
     }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("net.fabricmc:fabric-loader:$fabric_loader_version")
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+tasks.named("sourcesJar", Jar) {
+    from(project(":common").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
 }

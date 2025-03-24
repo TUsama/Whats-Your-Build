@@ -25,8 +25,8 @@ public class VanillaArmorComponentClientHandler implements IComponentClientHandl
     }
 
     @Override
-    public Function<PlayerBuildScreen, BuildMenuTab<?, ?>> getBuildMenuTab(VanillaArmorComponent component) {
-        return playerBuildScreen -> new VanillaArmorMenuTab(component, playerBuildScreen);
+    public Function<PlayerBuildScreen, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
+        return playerBuildScreen -> new VanillaArmorMenuTab(((VanillaArmorComponent) component), playerBuildScreen);
     }
 
 

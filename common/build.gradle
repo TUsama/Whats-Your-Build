@@ -1,8 +1,13 @@
 plugins {
-    id 'multiloader-common'
-    id 'net.neoforged.moddev.legacyforge'
+    id 'idea'
+    id 'java'
+    id 'fabric-loom'
 }
 
+base {
+    archivesName = "${mod_name}-common-${minecraft_version}"
+}
+/*
 legacyForge {
     mcpVersion = minecraft_version
     if (file("src/main/resources/META-INF/accesstransformer.cfg").exists()) {
@@ -12,21 +17,53 @@ legacyForge {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version
     }
-}
-def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
+}*/
+
+//def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
 
 dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parch_mapping}@zip")
+    }
 /*
     compileOnly(group: 'com.clefal.nirvana_lib', name: 'common', version: '1.1.1')
     compileOnly "curse.maven:nirvana-library-1164411:" + lib_version_forge*/
-    implementation(files)
+    compileOnly ("blank:Nirvana-Lib-forge-1.20.1:${lib_version}")
 
 
     compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+forge"
 }
 
+loom {
+    mods {
+        "${mod_id}" {
+            // Tell Loom about each source set used by your mod here. This ensures that your mod's classes are properly transformed by Loader.
+            sourceSet sourceSets.main
+        }
+    }
+
+    def awFile = project.file("src/main/resources/${mod_id}.accesswidener")
+    if (awFile.exists()) {
+        accessWidenerPath.set(awFile)
+    }
+
+    mixin {
+        useLegacyMixinAp = false
+    }
+
+    runs {
+        configureEach {
+            ideConfigGenerated(false)
+        }
+    }
+}
+/*
 configurations {
     commonJava {
         canBeResolved = false
@@ -42,3 +79,4 @@ artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
+*/

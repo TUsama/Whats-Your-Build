@@ -23,6 +23,10 @@ public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildCom
         return CODEC;
     }
 
+    @Override
+    public VanillaArmorComponent self() {
+        return this;
+    }
 
 
 }
