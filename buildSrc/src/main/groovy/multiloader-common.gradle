@@ -60,6 +60,9 @@ repositories {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+    flatDir {
+        dirs "${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs"
+    }
 }
 
 // Declare capabilities on the outgoing configurations.
@@ -106,6 +109,7 @@ processResources {
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
             'minecraft_version_range'      : minecraft_version_range,
+            "lib_version"                  : lib_version,
             'fabric_version'               : fabric_version,
             'fabric_loader_version'        : fabric_loader_version,
             'mod_name'                     : mod_name,

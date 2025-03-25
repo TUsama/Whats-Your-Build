@@ -26,14 +26,14 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
         int j = 0;
         InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i + 51, j + 75, 30, (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, super.minecraft.player);
         pose.translate(0, 100, 0);
-        VertexContainer container = BasePlayerBuildScreen.container;
+        //VertexContainer container = BasePlayerBuildScreen.container;
         int startY = 0;
         int time = 0;
         int radius = 20;
         for (ItemStack armor : component.armors()) {
             pose.pushPose();
             pose.translate((radius + 8) * time, startY, 0);
-            container.putBliz(BasePlayerBuildScreen.COMPONENT, new TextureBufferInfo(0, radius, 0, radius, 0, 128, 128 + 17, 40, 40 + 17, pose.last().pose(), TextureBufferInfo.RenderInfo.ofOpacity(0.2f)));
+            //container.putBliz(BasePlayerBuildScreen.COMPONENT, new TextureBufferInfo(0, radius, 0, radius, 0, 128, 128 + 17, 40, 40 + 17, pose.last().pose(), TextureBufferInfo.RenderInfo.ofOpacity(0.2f)));
             guiGraphics.renderItem(armor, 0, 0);
             time++;
             if (time == 4) {

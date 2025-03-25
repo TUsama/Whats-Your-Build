@@ -1,14 +1,10 @@
 package me.clefal.whats_your_build.handler;
 
-import com.clefal.nirvana_lib.relocated.io.vavr.Tuple2;
-import com.google.common.collect.Comparators;
+import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
 import me.clefal.whats_your_build.client.screen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
 import me.clefal.whats_your_build.modules.ModulesManager;
-import me.clefal.whats_your_build.modules.armor.VanillaArmorComponentClientHandler;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.*;
@@ -29,14 +25,16 @@ public class HandlerManager {
         ModulesManager.init();
     }
 
-    public Map<IBuildComponent<?>, Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> readBuf(List<Byte> index, FriendlyByteBuf buf){
-        Map<IBuildComponent<?>, Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> map = new LinkedHashMap<>();
+    public List<IBuildComponent<?>> readBuf(List<Byte> index, FriendlyByteBuf buf){
+        return API.For(index)
+                .yield(x -> clientHandlers.get(x).readBuf(buf))
+                .collect(ImmutableList.toImmutableList());
+    }
 
-        for (Byte b : index) {
-            var iBuildComponentFunctionTuple2 = clientHandlers.get(b).readBuf(buf);
-            map.put(iBuildComponentFunctionTuple2._1(), iBuildComponentFunctionTuple2._2());
-        }
-        return map;
+    public List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(List<Byte> index, List<IBuildComponent<?>> components){
+        return API.For(index, components)
+                .yield((x, y) -> clientHandlers.get(x).getBuildMenuTabFunction(y.self()))
+                .collect(ImmutableList.toImmutableList());
     }
 
 

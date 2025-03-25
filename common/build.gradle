@@ -13,7 +13,7 @@ legacyForge {
         mappingsVersion = parchment_version
     }
 }
-def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
+def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana-Lib-forge-${minecraft_version}-${lib_version}.jar")
 
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
@@ -21,10 +21,11 @@ dependencies {
 /*
     compileOnly(group: 'com.clefal.nirvana_lib', name: 'common', version: '1.1.1')
     compileOnly "curse.maven:nirvana-library-1164411:" + lib_version_forge*/
-    implementation(files)
+
+    modImplementation("blank:Nirvana-Lib-forge-${minecraft_version}:${lib_version}")
 
 
-    compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+forge"
+    modCompileOnly("me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+forge")
 }
 
 configurations {

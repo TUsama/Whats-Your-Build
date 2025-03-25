@@ -12,16 +12,17 @@ public class WhatsYourBuild {
 
     public WhatsYourBuild() {
 
+        CommonClass.serverInit();
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new DistExecutor.SafeRunnable() {
             @Override
             public void run() {
                 CommonClass.clientInit();
                 IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
                 IEventBus eventBus = MinecraftForge.EVENT_BUS;
-                WhatsYourBuildForgeClient.eventInit(modEventBus, eventBus);
+                WhatsYourBuildForgeClient.clientEventInit(modEventBus, eventBus);
             }
         });
-        CommonClass.serverInit();
+
         CommonClass.packetInit();
 
 

@@ -27,6 +27,7 @@ legacyForge {
     runs {
         client {
             client()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
         }
         data {
             data()
@@ -34,6 +35,7 @@ legacyForge {
         }
         server {
             server()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
         }
     }
 
@@ -45,7 +47,7 @@ legacyForge {
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
-def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
+//def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
 
 dependencies {
     compileOnly project(":common")
@@ -54,9 +56,7 @@ dependencies {
     modImplementation ("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+forge")
     modImplementation("thedarkcolour:kotlinforforge:4.11.0")
 
-    //implementation(group: 'com.clefal.nirvana_lib', name: 'forge', version: '1.1.1')
-    //modImplementation "curse.maven:nirvana-library-1164411:" + lib_version_forge
-    implementation(files)
+    modImplementation("blank:Nirvana-Lib-forge-${minecraft_version}:${lib_version}")
 }
 
 jar {

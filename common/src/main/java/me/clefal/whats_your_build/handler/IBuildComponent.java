@@ -6,5 +6,6 @@ import net.minecraft.network.chat.Component;
 public interface IBuildComponent<SELF> {
     byte getHandlerType();
     Codec<SELF> getCodeC();
+    SELF self();
 
 }
