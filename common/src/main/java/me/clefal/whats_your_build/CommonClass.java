@@ -1,6 +1,7 @@
 package me.clefal.whats_your_build;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
+import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.config.WYBServerConfig;
 import me.clefal.whats_your_build.event.client.ClientEvent;
 import me.clefal.whats_your_build.event.server.ServerEvent;
@@ -18,6 +19,7 @@ public class CommonClass {
 
     public static void clientInit() {
         WYBServerConfig.init();
+        WYBClientConfig.init();
         /*for (IComponentClientHandler<?> clientHandler : HandlerManager.INSTANCE.clientHandlers) {
             Constants.clientBus.register(clientHandler);
         }*/

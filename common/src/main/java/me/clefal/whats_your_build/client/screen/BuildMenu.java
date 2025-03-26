@@ -13,9 +13,11 @@ public abstract class BuildMenu<T extends IBuildComponent<?>> extends AbstractCo
     protected final List<? extends GuiEventListener> children = new ArrayList<>();
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final T component;
+    protected final PlayerBuildScreen screen;
 
-    public BuildMenu(T component) {
+    public BuildMenu(T component, PlayerBuildScreen screen) {
         this.component = component;
+        this.screen = screen;
     }
 
     @Override

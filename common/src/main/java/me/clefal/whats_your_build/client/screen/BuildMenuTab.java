@@ -2,70 +2,55 @@ package me.clefal.whats_your_build.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.handler.IBuildComponent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.PlainTextButton;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends BuildMenu<E>> extends PlainTextButton {
+public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends BuildMenu<E>> extends ImageButton {
+    public static int TAB_WIDTH = 14;
+    public static int TAB_HEIGHT = 8;
     protected E component;
     protected PlayerBuildScreen screen;
-    public final static ResourceLocation TAB = CommonClass.id("textures/gui/menu-tab.png");
 
 
     public BuildMenuTab(Component message, E component, PlayerBuildScreen screen) {
-        super(0, 0, 0, 0, message, button -> {
-        }, Minecraft.getInstance().font);
+        super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {
+        }, message);
         this.component = component;
+        this.setTooltip(Tooltip.create(message));
         this.screen = screen;
-        this.height = 8;
-        this.width = 16;
     }
 
-    public abstract Supplier<T> getMenu();
+
+    @Override
+    public void renderTexture(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int uOffset, int vOffset, int textureDifference, int width, int height, int textureWidth, int textureHeight) {
+        RenderSystem.enableBlend();
+        RenderSystem.enableDepthTest();
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 10);
+        if (!this.isHoveredOrFocused()) {
+            guiGraphics.setColor(1, 1, 1, 0.7f);
+            guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64);
+            guiGraphics.setColor(1, 1, 1, 1);
+        } else {
+            guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 64);
+        }
+        pose.popPose();
+    }
+
+    public abstract Function<PlayerBuildScreen, T> getMenu();
 
     @Override
     public final void onPress() {
-        screen.setNewMenu(getMenu().get());
+        screen.setNewMenu(getMenu().apply(screen));
     }
 
-    @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        var scale = 0.7f;
-        var i = 1.0f / scale;
-        pose.scale(scale, scale, 1);
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-        pose.popPose();
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-
-        //pose.translate(0, 0, 10);
-        if (this.isHoveredOrFocused()) {
-            guiGraphics.blit(TAB, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0, 32, 16, 32, 32);
-        } else {
-            guiGraphics.blit(TAB, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 16, 32, 16, 32, 32);
-            //pose.translate(0, 0, 1);
-            //guiGraphics.fillGradient(RenderType.guiOverlay(), this.getX(), this.getY() + this.getHeight() / 2, this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0, -16777216, 0);
-
-        }
-        pose.popPose();
-
-    }
-
-    @Override
-    public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-
-    }
 
 }

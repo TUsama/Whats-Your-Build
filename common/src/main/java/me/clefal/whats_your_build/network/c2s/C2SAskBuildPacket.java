@@ -1,7 +1,7 @@
 package me.clefal.whats_your_build.network.c2s;
 
 import com.clefal.nirvana_lib.network.C2SModPacket;
-import com.clefal.nirvana_lib.utils.NetworkUtil;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
@@ -30,11 +30,11 @@ public class C2SAskBuildPacket implements C2SModPacket {
             ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
             S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), post.getIndex());
             player.sendSystemMessage(Component.literal(s2CReturnBuildPacket.toString()));
-            NetworkUtil.sendToClient(s2CReturnBuildPacket, player);
+            NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
         } else {
             
             S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(List.of(), List.of());
-            NetworkUtil.sendToClient(s2CReturnBuildPacket, player);
+            NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
         }
     }
 

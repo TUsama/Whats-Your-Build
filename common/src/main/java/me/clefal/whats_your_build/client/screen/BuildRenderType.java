@@ -24,6 +24,8 @@ public class BuildRenderType extends RenderTypeCreator {
                     .setDepthTestState(new DepthTestStateShard("nl_normal_gui_depth", GL11.GL_LEQUAL))
                     .createCompositeState(false)));
 
+    public static final RenderType guiOverlay = RenderTypeCreator.createRenderType("gui_overlay", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_GUI_OVERLAY_SHADER).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setDepthTestState(LEQUAL_DEPTH_TEST).setWriteMaskState(COLOR_WRITE).createCompositeState(false));
+
 
     public BuildRenderType(String $$0, VertexFormat $$1, VertexFormat.Mode $$2, int $$3, boolean $$4, boolean $$5, Runnable $$6, Runnable $$7) {
         super($$0, $$1, $$2, $$3, $$4, $$5, $$6, $$7);
