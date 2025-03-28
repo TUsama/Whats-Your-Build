@@ -28,12 +28,7 @@ public class C2SAskBuildPacket implements C2SModPacket {
         ServerPlayer targetPlayer = player.getServer().getPlayerList().getPlayer(target);
         if (targetPlayer != null) {
             ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
-            S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), post.getIndex());
-            player.sendSystemMessage(Component.literal(s2CReturnBuildPacket.toString()));
-            NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
-        } else {
-            
-            S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(List.of(), List.of());
+            S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), target, post.getIndex());
             NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
         }
     }

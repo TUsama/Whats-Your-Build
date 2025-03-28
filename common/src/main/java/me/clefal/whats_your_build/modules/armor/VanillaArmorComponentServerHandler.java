@@ -25,8 +25,8 @@ public class VanillaArmorComponentServerHandler implements IComponentServerHandl
     public void onGather(ServerGatherBuildComponentEvent event) {
         ServerPlayer player = event.target;
         event.addComponent(ComponentType.VANILLA_ARMOR, new VanillaArmorComponent(List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
+                .filter(x -> player.inventoryMenu.slots.get(8 - x.getIndex()).hasItem())
                 .map(x -> player.inventoryMenu.slots.get(8 - x.getIndex()).getItem())
-                .map(x -> x == null ? ItemStack.EMPTY : x)
                 .asJava()));
 
     }

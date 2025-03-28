@@ -36,8 +36,11 @@ public class ArmorHolder extends AbstractWidget {
 
         if (itemStack != null) {
             pose.pushPose();
-
-            guiGraphics.renderItem(itemStack, getX(), getY());
+            //original radius 16
+            float scale = getWidth() / 16.0f;
+            pose.translate(getX(), getY(), 0);
+            pose.scale(scale, scale, 1);
+            guiGraphics.renderItem(itemStack, 0, 0);
             pose.popPose();
             if (isHovered) {
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, itemStack, mouseX, mouseY);
@@ -45,11 +48,10 @@ public class ArmorHolder extends AbstractWidget {
         } else {
             DevUtils.runWhenOnDev(() -> {
                 pose.pushPose();
-                float scale = 1 + ((getWidth() / 15.0f) - 1) / 1.8f;
+                float scale = getWidth() / 16.0f;
                 pose.translate(getX(), getY(), 0);
                 pose.scale(scale, scale, 1);
                 ItemStack defaultInstance = BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:stick")).getDefaultInstance();
-                //pose.translate(-getX(), -getY(), 0);
                 guiGraphics.renderItem(defaultInstance, 0, 0);
                 pose.popPose();
                 if (isHovered) {

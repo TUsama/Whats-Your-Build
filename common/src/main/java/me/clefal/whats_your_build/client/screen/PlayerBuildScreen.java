@@ -17,9 +17,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class PlayerBuildScreen extends Screen {
@@ -29,7 +31,7 @@ public class PlayerBuildScreen extends Screen {
     protected static int BACKGROUND_HEIGHT = 128;
     private float topLeftX;
     private float topLeftY;
-
+    public final Player targetPlayer;
     private final List<BuildMenuTab<?, ?>> tabs;
     private float tabOriginalX;
     private float tabOriginalY;
@@ -38,10 +40,19 @@ public class PlayerBuildScreen extends Screen {
     public float scale;
 
 
-    public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs) {
+    public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs, UUID target) {
         super(Component.literal(""));
+        this.targetPlayer = Minecraft.getInstance().player.level().getPlayerByUUID(target);
         this.tabs = tabs.map(x -> x.apply(this));
 
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!Minecraft.getInstance().player.level().players().contains(targetPlayer)) {
+            Minecraft.getInstance().setScreen(null);
+        }
     }
 
     public float getTopLeftX() {
@@ -88,7 +99,8 @@ public class PlayerBuildScreen extends Screen {
         this.tabOriginalX = topLeftX + BACKGROUND_WIDTH / 5.0f;
         this.tabOriginalY = topLeftY + BACKGROUND_HEIGHT / 5.0f;
         int i = (int) tabOriginalX;
-        for (BuildMenuTab<?, ?> tab : List.of(new VanillaArmorMenuTab(new VanillaArmorComponent(java.util.List.of()), this))) {
+
+        for (BuildMenuTab<?, ?> tab : tabs) {
             tab.setPosition(i, (int) tabOriginalY);
             addRenderableWidget(tab);
             i += tab.getWidth();

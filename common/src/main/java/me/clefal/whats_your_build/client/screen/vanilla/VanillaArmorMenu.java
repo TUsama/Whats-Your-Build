@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.client.screen.BuildMenu;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
 import me.clefal.whats_your_build.modules.armor.VanillaArmorComponent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
     private final List<ArmorHolder> holders;
-    private int holderRadius = 15;
+    private int holderRadius = 16;
 
     public VanillaArmorMenu(VanillaArmorComponent component, PlayerBuildScreen screen) {
         super(0, 0, 0, 0, Component.literal(""), component, screen);
@@ -38,7 +39,10 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
         pose.pushPose();
         // x and y, two magic numbers
         //4, 1.5 and (32 * (1 + screen.scale / 4.0f)) are all magic numbers
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (getX() + getWidth() / 4f), (int) (getY() + getHeight() / 1.3f), (int) (32 + (35f * Math.pow(screen.scale - 1, 1.0d))), (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, super.minecraft.player);
+        if (screen.targetPlayer != null){
+            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (getX() + getWidth() / 4f), (int) (getY() + getHeight() / 1.3f), (int) (32 + (35f * Math.pow(screen.scale - 1, 1.0d))), (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, screen.targetPlayer);
+        }
+
         pose.popPose();
 
         pose.pushPose();
