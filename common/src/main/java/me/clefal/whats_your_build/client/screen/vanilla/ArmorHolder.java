@@ -1,14 +1,16 @@
 package me.clefal.whats_your_build.client.screen.vanilla;
 
+import com.clefal.nirvana_lib.utils.DevUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -27,19 +29,33 @@ public class ArmorHolder extends AbstractWidget {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
-        guiGraphics.setColor(1.0f,1.0f,1.0f,0.5f);
         RenderSystem.enableBlend();
-        guiGraphics.blit(PlayerBuildScreen.COMPONENT, 0, 0, width, height, 128, 41, 17, 17, 256, 256);
-        guiGraphics.setColor(1.0f,1.0f,1.0f,1.0f);
+        guiGraphics.setColor(1.0f, 1.0f, 1.0f, 0.5f);
+        guiGraphics.blit(PlayerBuildScreen.COMPONENT, getX(), getY(), width, height, 128, 41, 17, 17, 256, 256);
+        guiGraphics.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         if (itemStack != null) {
             pose.pushPose();
 
-            guiGraphics.renderItem(itemStack, 0, 0);
+            guiGraphics.renderItem(itemStack, getX(), getY());
             pose.popPose();
-            if (isHovered){
+            if (isHovered) {
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, itemStack, mouseX, mouseY);
             }
+        } else {
+            DevUtils.runWhenOnDev(() -> {
+                pose.pushPose();
+                float scale = 1 + ((getWidth() / 15.0f) - 1) / 1.8f;
+                pose.translate(getX(), getY(), 0);
+                pose.scale(scale, scale, 1);
+                ItemStack defaultInstance = BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:stick")).getDefaultInstance();
+                //pose.translate(-getX(), -getY(), 0);
+                guiGraphics.renderItem(defaultInstance, 0, 0);
+                pose.popPose();
+                if (isHovered) {
+                    guiGraphics.renderTooltip(Minecraft.getInstance().font, defaultInstance, mouseX, mouseY);
+                }
+            });
         }
         pose.popPose();
     }

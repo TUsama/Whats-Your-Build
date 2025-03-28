@@ -102,7 +102,6 @@ public class PlayerBuildScreen extends Screen {
             }
         }
 
-
     }
 
 
@@ -123,11 +122,14 @@ public class PlayerBuildScreen extends Screen {
         //otherwise it will become BACKGROUND_WIDTH * 1.3 * 1.3
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        float portion = 8.0f;
+        float interval = BACKGROUND_WIDTH * (1 / portion);
+        float lineStartX = topLeftX + interval;
+        float lineStartY = tabOriginalY + BuildMenuTab.TAB_HEIGHT;
         {
+            //tab line
             pose.pushPose();
-            float portion = 8.0f;
-            float interval = BACKGROUND_WIDTH * (1 / portion);
-            pose.translate(topLeftX + interval, tabOriginalY + BuildMenuTab.TAB_HEIGHT, 0);
+            pose.translate(lineStartX, lineStartY, 0);
             guiGraphics.blit(COMPONENT ,0, 0, (int)(BACKGROUND_WIDTH * ((portion - 2) / portion)), 1, 128, 0, 128, 1, 256, 256);
             pose.popPose();
         }
@@ -135,7 +137,7 @@ public class PlayerBuildScreen extends Screen {
             pose.pushPose();
 
             {
-
+                //background
                 pose.translate(0, 0, -10);
                 renderBackground(guiGraphics);
                 pose.translate(topLeftX, topLeftY, 1);
@@ -144,6 +146,7 @@ public class PlayerBuildScreen extends Screen {
             }
 
             {
+                //title
                 pose.pushPose();
                 float scale = 0.8f * this.scale;
                 float scaleReciprocal = 1.0f / scale;
@@ -162,14 +165,15 @@ public class PlayerBuildScreen extends Screen {
 
 
         {
+            //menu
             pose.pushPose();
-            pose.translate(tabOriginalX, tabOriginalY, 0);
 
             if (currentMenu != null) {
 
                 pose.pushPose();
-                //for the Minecraft.getInstance().font.lineHeight + 1 above
-                pose.translate(0, 1, 0);
+                float menuOffsetY = 5 * scale;
+                currentMenu.setSize((int) (BACKGROUND_WIDTH - 2 * interval), (int) (topLeftY + BACKGROUND_HEIGHT - lineStartY));
+                currentMenu.setPosition((int) lineStartX, (int) (lineStartY + menuOffsetY));
                 currentMenu.render(guiGraphics, mouseX, mouseY, partialTick);
                 pose.popPose();
             }
