@@ -20,8 +20,8 @@ public abstract class BuildMenu<T extends IBuildComponent<?>> extends AbstractWi
     protected final T component;
     protected final PlayerBuildScreen screen;
 
-    public BuildMenu(int x, int y, int width, int height, Component message, T component, PlayerBuildScreen screen) {
-        super(x, y, width, height, message);
+    public BuildMenu(T component, PlayerBuildScreen screen) {
+        super(0, 0, 0, 0, Component.literal(""));
         this.component = component;
         this.screen = screen;
     }

@@ -24,7 +24,6 @@ dependencies {
 
     modImplementation("blank:Nirvana-Lib-forge-${minecraft_version}:${lib_version}")
 
-
     modCompileOnly("me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+forge")
 }
 

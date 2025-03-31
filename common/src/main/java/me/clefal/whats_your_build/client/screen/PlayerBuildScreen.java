@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import top.theillusivec4.curios.api.CuriosApi;
 
 
 import javax.annotation.Nullable;
@@ -82,6 +83,7 @@ public class PlayerBuildScreen extends Screen {
     protected void init() {
         super.init();
 
+
         scale = WYBClientConfig.config.global_scale;
 
         BACKGROUND_WIDTH = (int) (128 * scale);
@@ -129,9 +131,6 @@ public class PlayerBuildScreen extends Screen {
         RenderSystem.enableDepthTest();
 
         pose.pushPose();
-        //pose.scale(scale, scale, 1.0f);
-        //already multiply the scale in init(), but here we use the scale again. so we need to multiply it with (1 / scale)
-        //otherwise it will become BACKGROUND_WIDTH * 1.3 * 1.3
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         float portion = 8.0f;

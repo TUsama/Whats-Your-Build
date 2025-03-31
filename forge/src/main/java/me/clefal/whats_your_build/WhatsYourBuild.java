@@ -1,5 +1,7 @@
 package me.clefal.whats_your_build;
 
+import me.clefal.whats_your_build.compat.curios.CuriosCompatModule;
+import me.clefal.whats_your_build.modules.ModulesManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -12,6 +14,8 @@ public class WhatsYourBuild {
 
     public WhatsYourBuild() {
 
+        ModulesManager.getInstance().modules.add(CuriosCompatModule.getInstance());
+        
         CommonClass.serverInit();
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new DistExecutor.SafeRunnable() {
             @Override

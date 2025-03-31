@@ -17,7 +17,7 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
     private int holderRadius = 16;
 
     public VanillaArmorMenu(VanillaArmorComponent component, PlayerBuildScreen screen) {
-        super(0, 0, 0, 0, Component.literal(""), component, screen);
+        super(component, screen);
         holderRadius *= screen.scale;
         holders = Stream.of(0, 1, 2, 3)
                 .map(integer -> {
