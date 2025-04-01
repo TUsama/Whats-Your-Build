@@ -13,10 +13,10 @@ public class NetworkHelper {
     public static void startPlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> list, UUID target){
         Screen screen = Minecraft.getInstance().screen;
         if (screen == null){
-            System.out.println("start screen");
-            System.out.println(list.size());
+            
+            
             for (Function<PlayerBuildScreen, BuildMenuTab<?, ?>> playerBuildScreenBuildMenuTabFunction : list) {
-                System.out.println(playerBuildScreenBuildMenuTabFunction);
+                
             }
             Minecraft.getInstance().setScreen(new PlayerBuildScreen(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(list), target));
         }

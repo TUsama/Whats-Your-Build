@@ -36,7 +36,7 @@ public class CuriosServerHandler implements IComponentServerHandler {
                     empty.add(stackInSlot);
                 }
             }
-            System.out.println(empty.size());
+            
             CuriosComponent curiosComponent = new CuriosComponent(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(empty));
             event.addComponent(curiosComponent);
         });

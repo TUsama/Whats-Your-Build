@@ -32,7 +32,7 @@ public class S2CReturnBuildPacket implements S2CModPacket {
 
     @Override
     public void handleClient() {
-        System.out.println("handle S2C client");
+        
         if (Services.PLATFORM.isDevelopmentEnvironment()) {
             NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(index, components), targetPlayer);
         } else {
