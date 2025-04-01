@@ -13,9 +13,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class WhatsYourBuild {
 
     public WhatsYourBuild() {
+        WhatsYourBuildForgeModules.registerModules();
 
-        ModulesManager.getInstance().modules.add(CuriosCompatModule.getInstance());
-        
         CommonClass.serverInit();
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new DistExecutor.SafeRunnable() {
             @Override

@@ -12,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nullable;
 
@@ -37,12 +38,13 @@ public class ArmorHolder extends AbstractWidget {
         if (itemStack != null) {
             pose.pushPose();
             //original radius 16
+            //lossy
             float scale = getWidth() / 16.0f;
             pose.translate(getX(), getY(), 0);
             pose.scale(scale, scale, 1);
             guiGraphics.renderItem(itemStack, 0, 0);
             pose.popPose();
-            if (isHovered) {
+            if (isHovered && !itemStack.getItem().equals(Items.AIR)) {
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, itemStack, mouseX, mouseY);
             }
         } else {

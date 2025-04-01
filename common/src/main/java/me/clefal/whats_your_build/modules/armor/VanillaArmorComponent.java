@@ -16,7 +16,7 @@ public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildCom
     public static final Codec<VanillaArmorComponent> CODEC = RecordCodecBuilder.create(i -> i.group(ItemStack.CODEC.listOf().fieldOf("armors").forGetter(VanillaArmorComponent::armors)).apply(i, VanillaArmorComponent::new));
 
     @Override
-    public byte getHandlerType() {
+    public byte getHandlerIndex() {
         return ComponentType.VANILLA_ARMOR;
     }
 

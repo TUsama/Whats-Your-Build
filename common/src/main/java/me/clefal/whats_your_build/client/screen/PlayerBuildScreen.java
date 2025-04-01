@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.client.screen.vanilla.VanillaArmorMenuTab;
 import me.clefal.whats_your_build.config.WYBClientConfig;
+import me.clefal.whats_your_build.handler.HandlerManager;
 import me.clefal.whats_your_build.modules.armor.VanillaArmorComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -18,7 +19,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import top.theillusivec4.curios.api.CuriosApi;
 
 
 import javax.annotation.Nullable;
@@ -83,7 +83,6 @@ public class PlayerBuildScreen extends Screen {
     protected void init() {
         super.init();
 
-
         scale = WYBClientConfig.config.global_scale;
 
         BACKGROUND_WIDTH = (int) (128 * scale);
@@ -110,9 +109,9 @@ public class PlayerBuildScreen extends Screen {
 
         this.currentMenu = null;
         if (!tabs.isEmpty()) {
-            if (!this.tabs.lastOption().isEmpty()) {
-                this.currentMenu = this.tabs.lastOption().get().getMenu().apply(this);
-                setInitialFocus(this.tabs.lastOption().get());
+            if (!this.tabs.headOption().isEmpty()) {
+                this.currentMenu = this.tabs.headOption().get().getMenu().apply(this);
+                setInitialFocus(this.tabs.headOption().get());
             }
         }
 

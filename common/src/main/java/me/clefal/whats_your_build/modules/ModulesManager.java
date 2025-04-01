@@ -1,5 +1,7 @@
 package me.clefal.whats_your_build.modules;
 
+import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.event.server.ServerGatherHandlerEvent;
 import me.clefal.whats_your_build.modules.armor.VanillaArmorComponentModule;
 
 import java.util.ArrayList;
@@ -22,7 +24,8 @@ public class ModulesManager {
 
     static {
         getInstance().modules.add(VanillaArmorComponentModule.getInstance());
-
+        ServerGatherHandlerEvent serverGatherHandlerEvent = CommonClass.post(new ServerGatherHandlerEvent());
+        getInstance().modules.addAll(serverGatherHandlerEvent.modules);
 
         getInstance().modules.forEach(IModule::tryEnable);
     }

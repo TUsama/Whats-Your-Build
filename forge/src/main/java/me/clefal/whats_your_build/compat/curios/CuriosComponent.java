@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.handler.ComponentType;
 import me.clefal.whats_your_build.handler.IBuildComponent;
-import me.clefal.whats_your_build.modules.armor.VanillaArmorComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -15,7 +14,7 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
     public static final Codec<CuriosComponent> CODEC = RecordCodecBuilder.create(i -> i.group(ItemStack.CODEC.listOf().fieldOf("armors").forGetter(x -> x.curios().asJava())).apply(i, x -> new CuriosComponent(List.ofAll(x))));
 
     @Override
-    public byte getHandlerType() {
+    public byte getHandlerIndex() {
         return ComponentType.CURIOS;
     }
 

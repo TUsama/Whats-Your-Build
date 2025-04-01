@@ -8,6 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class CuriosServerHandler implements IComponentServerHandler {
@@ -24,18 +26,19 @@ public class CuriosServerHandler implements IComponentServerHandler {
     @Override
     @SubscribeEvent
     public void onGather(ServerGatherBuildComponentEvent event) {
-        System.out.println("111");
         CuriosApi.getCuriosInventory(event.target).ifPresent(x -> {
-            System.out.println("present!");
             Map<String, ICurioStacksHandler> curios = x.getCurios();
-            System.out.println(curios);
+            List<ItemStack> empty = new ArrayList<>();
             for (ICurioStacksHandler value : curios.values()) {
                 int slots = value.getStacks().getSlots();
                 for (int i = 0; i < slots; i++) {
                     ItemStack stackInSlot = value.getStacks().getStackInSlot(i);
-                    System.out.println(stackInSlot.getHoverName());
+                    empty.add(stackInSlot);
                 }
             }
+            System.out.println(empty.size());
+            CuriosComponent curiosComponent = new CuriosComponent(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(empty));
+            event.addComponent(curiosComponent);
         });
     }
 

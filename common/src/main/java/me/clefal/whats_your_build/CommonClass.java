@@ -27,9 +27,8 @@ public class CommonClass {
 
     public static void serverInit() {
         WYBServerConfig.init();
-        for (var serverHandler : HandlerManager.getInstance().serverHandlers) {
-            Constants.serverBus.register(serverHandler);
-        }
+        HandlerManager.getInstance().forServerHandlers().forEachRemaining(Constants.serverBus::register);
+
     }
 
     public static <T extends Event> T post(T t) {
