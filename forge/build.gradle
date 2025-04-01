@@ -1,12 +1,7 @@
 plugins {
-    id 'idea'
-    id 'net.minecraftforge.gradle'
-    id 'org.spongepowered.mixin'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev.legacyforge'
     id "me.modmuss50.mod-publish-plugin"
-}
-base {
-    archivesName = "${mod_name}-forge-${minecraft_version}"
 }
 
 mixin {
@@ -15,7 +10,7 @@ mixin {
     config("${mod_id}.mixins.json")
     config("${mod_id}.forge.mixins.json")
 }
-/*
+
 legacyForge {
     version = "${minecraft_version}-${forge_version}"
 
@@ -39,10 +34,6 @@ legacyForge {
             jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
             programArguments.addAll('--username', 'Dev2')
         }
-        client2{
-            client()
-            programArguments.addAll('--username', 'Dev2')
-        }
         data {
             data()
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
@@ -58,87 +49,17 @@ legacyForge {
             sourceSet sourceSets.main
         }
     }
-}*/
-
-
-
-minecraft {
-    mappings channel: 'parchment', version: parch_mapping+"-"+minecraft_version
-
-    copyIdeResources = true //Calls processResources when in dev
-
-    // Automatically enable forge AccessTransformers if the file exists
-    // This location is hardcoded in Forge and can not be changed.
-    // https://github.com/MinecraftForge/MinecraftForge/blob/be1698bb1554f9c8fa2f58e32b9ab70bc4385e60/fmlloader/src/main/java/net/minecraftforge/fml/loading/moddiscovery/ModFile.java#L123
-    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    }
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Client'
-            property 'at.dev.tool', 'true'
-            //property 'mixin.env.remapRefMap', 'true'
-            //property 'mixin.debug.verbose', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            jvmArgs '-XX:+AllowEnhancedClassRedefinition'
-            mods {
-                modClientRun {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
-        }
-
-        client2 {
-            parent runs.client
-            args '--username', 'Dev1'
-        }
-
-        server {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Server'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            mods {
-                modServerRun {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            taskName 'Data'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            mods {
-                modDataRun {
-                    source sourceSets.main
-                    source project(":common").sourceSets.main
-                }
-            }
-        }
-    }
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 //def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    implementation fg.deobf("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+forge")
-    implementation fg.deobf("thedarkcolour:kotlinforforge:4.11.0")
+    modImplementation ("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+forge")
+    modImplementation("thedarkcolour:kotlinforforge:4.11.0")
 
     modRuntimeOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
     modCompileOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
@@ -151,8 +72,11 @@ dependencies {
     modRuntimeOnly ("curse.maven:playeranimator-658587:4587214")
 }
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
+jar {
+    finalizedBy('reobfJar')
+    manifest.attributes([
+            "MixinConfigs": "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
+    ])
 }
 
 
