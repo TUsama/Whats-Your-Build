@@ -32,6 +32,12 @@ legacyForge {
     runs {
         client {
             client()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
+        }
+        client2 {
+            client()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
+            programArguments.addAll('--username', 'Dev2')
         }
         client2{
             client()
@@ -43,6 +49,7 @@ legacyForge {
         }
         server {
             server()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
         }
     }
 
@@ -122,7 +129,7 @@ minecraft {
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
-def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
+//def files = files("${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs/Nirvana Lib-forge-${minecraft_version}-${lib_version}.jar")
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -133,21 +140,41 @@ dependencies {
     implementation fg.deobf("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+forge")
     implementation fg.deobf("thedarkcolour:kotlinforforge:4.11.0")
 
-    //implementation(group: 'com.clefal.nirvana_lib', name: 'forge', version: '1.1.1')
-    //modImplementation "curse.maven:nirvana-library-1164411:" + lib_version_forge
-    implementation fg.deobf("blank:Nirvana-Lib-forge-1.20.1:${lib_version}")
+    modRuntimeOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
+    modCompileOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
+
+    modImplementation("blank:Nirvana-Lib-forge-${minecraft_version}:${lib_version}")
+
+    modImplementation ("curse.maven:library-of-exile-398780:6157677")
+    modImplementation ("curse.maven:mine-and-slash-reloaded-306575:6157680")
+    modImplementation ("curse.maven:orbs-of-crafting-1182250:6133170")
+    modRuntimeOnly ("curse.maven:playeranimator-658587:4587214")
 }
 
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
 
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
 
-processResources {
-    from project(":common").sourceSets.main.resources
+publishMods {
+    file = tasks.jar.archiveFile
+    displayName = file.map { it.asFile.name }
+    changelog = file("..\\changelog.md").text.split('\n').collect { string -> {
+        if (!string.isBlank()) {
+            string + "</br>"
+        } else {
+            string
+        }
+    }}.join('\n')
+    //dryRun = true
+    type = BETA
+    modLoaders.add("forge")
+    curseforge {
+        accessToken = file("D:\\curseforge-key.txt").text
+        projectId = "1233310"
+        clientRequired = true
+        serverRequired = true
+        minecraftVersions.add("1.20.1")
+        requires("nirvana-library")
+    }
 }
-
-jar.finalizedBy('reobfJar')

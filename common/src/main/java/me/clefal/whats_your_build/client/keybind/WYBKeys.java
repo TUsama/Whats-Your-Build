@@ -1,7 +1,8 @@
 package me.clefal.whats_your_build.client.keybind;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.Lazy;
-import com.clefal.nirvana_lib.utils.NetworkUtil;
+import com.clefal.nirvana_lib.utils.DevUtils;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.blaze3d.platform.InputConstants;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
 import net.minecraft.client.KeyMapping;
@@ -22,10 +23,16 @@ public class WYBKeys {
 
             Lazy.of(() -> new WYBKey("key.wyb.check", GLFW.GLFW_MOUSE_BUTTON_MIDDLE, client -> {
                 HitResult hitResult = client.hitResult;
+                DevUtils.runOnDifference(() -> {
+                    if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY && client.hitResult instanceof EntityHitResult entityHitResult) {
+                        NetworkUtils.sendToServer(new C2SAskBuildPacket(entityHitResult.getEntity().getUUID()));
+                    }
+                }, () -> {
+                    if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY && client.hitResult instanceof EntityHitResult entityHitResult && entityHitResult.getEntity() instanceof Player player) {
+                        NetworkUtils.sendToServer(new C2SAskBuildPacket(player.getUUID()));
+                    }
+                });
 
-                if (hitResult != null && hitResult.getType() == HitResult.Type.ENTITY && client.hitResult instanceof EntityHitResult entityHitResult /*&& entityHitResult.getEntity() instanceof Player player*/) {
-                    NetworkUtil.sendToServer(new C2SAskBuildPacket(entityHitResult.getEntity().getUUID()));
-                }
             }))
 
     );
@@ -51,7 +58,7 @@ public class WYBKeys {
         private WYBKey(String keyName, int keyBind, OnPress action) {
             keyBinding = new KeyMapping(
                     keyName,
-                    InputConstants.Type.KEYSYM,
+                    InputConstants.Type.MOUSE,
                     keyBind,
                     "key.category.wyb"
             );

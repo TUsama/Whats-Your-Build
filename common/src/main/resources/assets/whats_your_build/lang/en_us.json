@@ -1,5 +1,7 @@
 {
   "wyb.screen.tab.armor": "Armor",
+  "wyb.compat.screen.tab.curios": "Curios",
+  "wyb.screen.head.player_build": "Player Build",
   "key.category.wyb": "What's Your Build?",
   "key.wyb.check": "Check Build"
 }

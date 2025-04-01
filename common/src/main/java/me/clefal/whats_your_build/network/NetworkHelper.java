@@ -6,13 +6,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class NetworkHelper {
-    public static void startPlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> list){
+    public static void startPlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> list, UUID target){
         Screen screen = Minecraft.getInstance().screen;
         if (screen == null){
-            Minecraft.getInstance().screen = new PlayerBuildScreen(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(list));
+            System.out.println("start screen");
+            System.out.println(list.size());
+            for (Function<PlayerBuildScreen, BuildMenuTab<?, ?>> playerBuildScreenBuildMenuTabFunction : list) {
+                System.out.println(playerBuildScreenBuildMenuTabFunction);
+            }
+            Minecraft.getInstance().setScreen(new PlayerBuildScreen(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(list), target));
         }
     }
 }

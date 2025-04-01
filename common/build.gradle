@@ -36,8 +36,9 @@ dependencies {
     compileOnly "curse.maven:nirvana-library-1164411:" + lib_version_forge*/
     compileOnly ("blank:Nirvana-Lib-forge-1.20.1:${lib_version}")
 
+    modImplementation("blank:Nirvana-Lib-forge-${minecraft_version}:${lib_version}")
 
-    compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+forge"
+    modCompileOnly("me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+forge")
 }
 
 loom {

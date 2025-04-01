@@ -1,7 +1,8 @@
 package me.clefal.whats_your_build.network.c2s;
 
 import com.clefal.nirvana_lib.network.C2SModPacket;
-import com.clefal.nirvana_lib.utils.NetworkUtil;
+import com.clefal.nirvana_lib.utils.DevUtils;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
@@ -27,14 +28,16 @@ public class C2SAskBuildPacket implements C2SModPacket {
     public void handleServer(ServerPlayer player) {
         ServerPlayer targetPlayer = player.getServer().getPlayerList().getPlayer(target);
         if (targetPlayer != null) {
+            System.out.println("not null");
             ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
-            S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), post.getIndex());
-            player.sendSystemMessage(Component.literal(s2CReturnBuildPacket.toString()));
-            NetworkUtil.sendToClient(s2CReturnBuildPacket, player);
+            S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), target, post.getIndex());
+            NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
         } else {
-            System.out.println("here!");
-            S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(List.of(), List.of());
-            NetworkUtil.sendToClient(s2CReturnBuildPacket, player);
+            DevUtils.runWhenOnDev(() -> {
+                ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(player));
+                S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), player.getUUID(), post.getIndex());
+                NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
+            });
         }
     }
 

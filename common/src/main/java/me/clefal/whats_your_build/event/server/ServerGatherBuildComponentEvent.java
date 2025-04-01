@@ -17,9 +17,9 @@ public class ServerGatherBuildComponentEvent extends ServerEvent {
         this.target = target;
     }
 
-    public void addComponent(byte index, IBuildComponent<?> component){
+    public void addComponent(IBuildComponent<?> component){
         this.components.add(component);
-        this.index.add(index);
+        this.index.add(component.getHandlerIndex());
     }
 
     public List<IBuildComponent<?>> getComponents() {
