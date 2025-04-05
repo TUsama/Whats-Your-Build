@@ -4,6 +4,7 @@
   "wyb.screen.head.player_build": "Player Build",
   "whats_your_build.wyb_client_config.showYourBuildFor.all": "All",
   "whats_your_build.wyb_client_config.showYourBuildFor.no_one": "No one",
+  "whats_your_build.wyb_client_config.showYourBuildFor.teammates": "Teammates",
   "key.category.wyb": "What's Your Build?",
   "key.wyb.check": "Check Build",
   "wyb.ask.reject": "You aren't allowed to see this player's build."

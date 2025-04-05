@@ -21,7 +21,7 @@ public class PermissionChecker {
     @SubscribeEvent
     public void onCheck(ServerAskBuildPermissionCheckEvent event){
         ServerPlayer beAsked = event.beAsked;
-        PersonalConfigData data = SyncingPersonalConfig.INSTANCE.getData(beAsked.getUUID(), beAsked.getServer().overworld());
+        PersonalConfigData data = SyncingPersonalConfig.INSTANCE.getData(beAsked.getUUID());
         if (data != null){
             ConfigValue<List<String>> showYourBuildFor = ((StringListValue) data.configMap.get("showYourBuildFor"));
             if (showYourBuildFor != null){

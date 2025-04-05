@@ -12,6 +12,7 @@ import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedChoiceList;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -34,7 +35,7 @@ public class WYBClientConfig extends Config {
                 String[] noOnes = ArrayUtils.add(alls, "no_one");
                 return ValidatedList.ofString(noOnes);
             })
-    .toChoiceList(List.of("All"), ValidatedChoiceList.WidgetType.SCROLLABLE, (x, y) -> Component.translatable(y + "." + x.toLowerCase()));
+    .toChoiceList(List.of("all"), ValidatedChoiceList.WidgetType.SCROLLABLE, (x, y) -> Component.translatable(y + "." + x.toLowerCase()));
 
     @Override
     public void onUpdateClient() {
@@ -47,10 +48,11 @@ public class WYBClientConfig extends Config {
     }
 
     private void syncConfig() {
-        List<String> list = showYourBuildFor.get().stream().map(x -> ((String) x)).toList();
-        NetworkUtils.sendToServer(new C2SSendSyncingConfigPacket(Minecraft.getInstance().player.getUUID(), Map.of(
-                "showYourBuildFor", new StringListValue(list)
-        )));
+        if (Minecraft.getInstance().getConnection() != null) {
+            NetworkUtils.sendToServer(new C2SSendSyncingConfigPacket(UUIDUtil.getOrCreatePlayerUUID(Minecraft.getInstance().getUser().getGameProfile()), Map.of(
+                    "showYourBuildFor", new StringListValue(showYourBuildFor)
+            )));
+        }
     }
 
     public static void init() {

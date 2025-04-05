@@ -63,6 +63,9 @@ repositories {
     flatDir {
         dirs "${gradle.includedBuild('NirvanaLib').projectDir}/forge/build/libs"
     }
+    flatDir {
+        dirs "libs"
+    }
 }
 
 // Declare capabilities on the outgoing configurations.
