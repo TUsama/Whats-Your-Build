@@ -2,8 +2,8 @@ package me.clefal.whats_your_build.compat.curios;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
-import me.clefal.whats_your_build.handler.ComponentType;
-import me.clefal.whats_your_build.handler.IComponentServerHandler;
+import me.clefal.whats_your_build.data.handler.ComponentType;
+import me.clefal.whats_your_build.data.handler.IComponentServerHandler;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;

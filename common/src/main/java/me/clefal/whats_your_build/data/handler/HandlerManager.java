@@ -1,11 +1,11 @@
-package me.clefal.whats_your_build.handler;
+package me.clefal.whats_your_build.data.handler;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.clefal.nirvana_lib.utils.SideUtils;
 import com.google.common.collect.ImmutableList;
 import me.clefal.whats_your_build.client.screen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
-import me.clefal.whats_your_build.modules.ModulesManager;
+import me.clefal.whats_your_build.data.modules.ModulesManager;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.*;

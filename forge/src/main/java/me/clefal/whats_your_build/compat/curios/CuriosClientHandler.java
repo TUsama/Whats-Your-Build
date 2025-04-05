@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import me.clefal.whats_your_build.client.screen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
 import me.clefal.whats_your_build.compat.curios.menu.CuriosMenuTab;
-import me.clefal.whats_your_build.handler.ComponentType;
-import me.clefal.whats_your_build.handler.IComponentClientHandler;
+import me.clefal.whats_your_build.data.handler.ComponentType;
+import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
 
 import java.util.function.Function;
 

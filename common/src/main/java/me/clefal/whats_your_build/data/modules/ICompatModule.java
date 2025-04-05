@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.modules;
+package me.clefal.whats_your_build.data.modules;
 
 import com.clefal.nirvana_lib.platform.Services;
 import me.clefal.whats_your_build.event.server.ServerGatherHandlerEvent;

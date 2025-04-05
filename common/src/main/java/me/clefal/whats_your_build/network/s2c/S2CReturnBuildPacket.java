@@ -2,8 +2,8 @@ package me.clefal.whats_your_build.network.s2c;
 
 import com.clefal.nirvana_lib.network.S2CModPacket;
 import com.clefal.nirvana_lib.platform.Services;
-import me.clefal.whats_your_build.handler.HandlerManager;
-import me.clefal.whats_your_build.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.HandlerManager;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.network.NetworkHelper;
 import net.minecraft.network.FriendlyByteBuf;
 

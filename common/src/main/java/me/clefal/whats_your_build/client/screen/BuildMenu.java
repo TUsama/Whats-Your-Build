@@ -1,11 +1,9 @@
 package me.clefal.whats_your_build.client.screen;
 
-import me.clefal.whats_your_build.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;

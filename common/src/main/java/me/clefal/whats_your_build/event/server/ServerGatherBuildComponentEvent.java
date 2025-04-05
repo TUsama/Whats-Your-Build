@@ -1,10 +1,9 @@
 package me.clefal.whats_your_build.event.server;
 
 import com.google.common.collect.ImmutableList;
-import me.clefal.whats_your_build.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.swing.plaf.PanelUI;
 import java.util.ArrayList;
 import java.util.List;
 

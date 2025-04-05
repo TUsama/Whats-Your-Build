@@ -1,11 +1,10 @@
-package me.clefal.whats_your_build.modules.armor;
+package me.clefal.whats_your_build.data.modules.armor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.handler.ComponentType;
-import me.clefal.whats_your_build.handler.IBuildComponent;
-import net.minecraft.network.chat.Component;
+import me.clefal.whats_your_build.data.handler.ComponentType;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 

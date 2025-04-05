@@ -1,12 +1,11 @@
 package me.clefal.whats_your_build.compat.curios;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
-import com.clefal.nirvana_lib.utils.SideUtils;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.event.server.ServerGatherHandlerEvent;
-import me.clefal.whats_your_build.handler.HandlerManager;
-import me.clefal.whats_your_build.handler.IComponentClientHandler;
-import me.clefal.whats_your_build.modules.ICompatModule;
+import me.clefal.whats_your_build.data.handler.HandlerManager;
+import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
+import me.clefal.whats_your_build.data.modules.ICompatModule;
 
 import java.util.function.Supplier;
 

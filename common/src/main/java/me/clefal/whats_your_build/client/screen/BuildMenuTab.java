@@ -2,7 +2,7 @@ package me.clefal.whats_your_build.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.clefal.whats_your_build.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends BuildMenu<E>> extends ImageButton {
     public static int TAB_WIDTH = 14;

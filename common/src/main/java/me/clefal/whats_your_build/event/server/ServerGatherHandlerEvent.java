@@ -1,6 +1,6 @@
 package me.clefal.whats_your_build.event.server;
 
-import me.clefal.whats_your_build.modules.IModule;
+import me.clefal.whats_your_build.data.modules.IModule;
 
 import java.util.ArrayList;
 import java.util.List;

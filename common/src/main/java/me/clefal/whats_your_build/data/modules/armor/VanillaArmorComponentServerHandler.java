@@ -1,13 +1,12 @@
-package me.clefal.whats_your_build.modules.armor;
+package me.clefal.whats_your_build.data.modules.armor;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
-import me.clefal.whats_your_build.handler.ComponentType;
-import me.clefal.whats_your_build.handler.IComponentServerHandler;
+import me.clefal.whats_your_build.data.handler.ComponentType;
+import me.clefal.whats_your_build.data.handler.IComponentServerHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
 
 
 public class VanillaArmorComponentServerHandler implements IComponentServerHandler {
@@ -30,6 +29,8 @@ public class VanillaArmorComponentServerHandler implements IComponentServerHandl
                 .asJava()));
 
     }
+
+
 
     @Override
     public byte getIndex() {

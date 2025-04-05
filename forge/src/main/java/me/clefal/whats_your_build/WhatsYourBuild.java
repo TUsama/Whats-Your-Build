@@ -1,7 +1,5 @@
 package me.clefal.whats_your_build;
 
-import me.clefal.whats_your_build.compat.curios.CuriosCompatModule;
-import me.clefal.whats_your_build.modules.ModulesManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;

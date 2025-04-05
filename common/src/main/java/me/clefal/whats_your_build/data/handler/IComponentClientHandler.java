@@ -1,6 +1,5 @@
-package me.clefal.whats_your_build.handler;
+package me.clefal.whats_your_build.data.handler;
 
-import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.mojang.serialization.Codec;
 import me.clefal.whats_your_build.client.screen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;

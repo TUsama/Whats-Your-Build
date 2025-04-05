@@ -1,10 +1,9 @@
-package me.clefal.whats_your_build.modules.armor;
+package me.clefal.whats_your_build.data.modules.armor;
 
-import com.clefal.nirvana_lib.utils.SideUtils;
 import me.clefal.whats_your_build.config.WYBServerConfig;
-import me.clefal.whats_your_build.handler.HandlerManager;
-import me.clefal.whats_your_build.handler.IComponentClientHandler;
-import me.clefal.whats_your_build.modules.InternalModule;
+import me.clefal.whats_your_build.data.handler.HandlerManager;
+import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
+import me.clefal.whats_your_build.data.modules.InternalModule;
 
 import java.util.function.Supplier;
 

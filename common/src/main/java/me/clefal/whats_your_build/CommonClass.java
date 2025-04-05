@@ -3,9 +3,10 @@ package me.clefal.whats_your_build;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.config.WYBServerConfig;
+import me.clefal.whats_your_build.control.PermissionChecker;
 import me.clefal.whats_your_build.event.client.ClientEvent;
 import me.clefal.whats_your_build.event.server.ServerEvent;
-import me.clefal.whats_your_build.handler.HandlerManager;
+import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.network.Packets;
 import net.minecraft.resources.ResourceLocation;
 
@@ -28,7 +29,7 @@ public class CommonClass {
     public static void serverInit() {
         WYBServerConfig.init();
         HandlerManager.getInstance().forServerHandlers().forEachRemaining(Constants.serverBus::register);
-
+        PermissionChecker.registerPermissionChecker(Constants.serverBus);
     }
 
     public static <T extends Event> T post(T t) {
@@ -39,6 +40,7 @@ public class CommonClass {
         }
         return t;
     }
+
 
     public static void registerAtClient(Object o) {
         Constants.clientBus.register(o);

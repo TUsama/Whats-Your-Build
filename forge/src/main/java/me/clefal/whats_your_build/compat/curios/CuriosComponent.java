@@ -4,8 +4,8 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.handler.ComponentType;
-import me.clefal.whats_your_build.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.ComponentType;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 

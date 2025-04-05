@@ -1,8 +1,8 @@
-package me.clefal.whats_your_build.modules;
+package me.clefal.whats_your_build.data.modules;
 
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.event.server.ServerGatherHandlerEvent;
-import me.clefal.whats_your_build.modules.armor.VanillaArmorComponentModule;
+import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponentModule;
 
 import java.util.ArrayList;
 import java.util.List;

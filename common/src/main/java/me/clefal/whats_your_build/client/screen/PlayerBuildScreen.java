@@ -1,15 +1,10 @@
 package me.clefal.whats_your_build.client.screen;
 
-import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
-import com.google.common.escape.Escaper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.client.screen.vanilla.VanillaArmorMenuTab;
 import me.clefal.whats_your_build.config.WYBClientConfig;
-import me.clefal.whats_your_build.handler.HandlerManager;
-import me.clefal.whats_your_build.modules.armor.VanillaArmorComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -83,7 +78,7 @@ public class PlayerBuildScreen extends Screen {
     protected void init() {
         super.init();
 
-        scale = WYBClientConfig.config.global_scale;
+        scale = WYBClientConfig.config.globalScale;
 
         BACKGROUND_WIDTH = (int) (128 * scale);
         BACKGROUND_HEIGHT = (int) (128 * scale);

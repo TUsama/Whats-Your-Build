@@ -4,6 +4,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Lazy;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.blaze3d.platform.InputConstants;
+import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

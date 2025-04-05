@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.modules;
+package me.clefal.whats_your_build.data.modules;
 
 public interface IModule {
     boolean shouldEnable();

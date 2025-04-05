@@ -4,6 +4,7 @@ import com.clefal.nirvana_lib.network.C2SModPacket;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.event.server.ServerAskBuildPermissionCheckEvent;
 import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,11 +28,16 @@ public class C2SAskBuildPacket implements C2SModPacket {
     @Override
     public void handleServer(ServerPlayer player) {
         ServerPlayer targetPlayer = player.getServer().getPlayerList().getPlayer(target);
+
         if (targetPlayer != null) {
-            
-            ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
-            S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), target, post.getIndex());
-            NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
+            ServerAskBuildPermissionCheckEvent serverAskBuildPermissionCheckEvent = CommonClass.post(new ServerAskBuildPermissionCheckEvent(targetPlayer, player));
+            if (serverAskBuildPermissionCheckEvent.isAllowed){
+                ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
+                S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), target, post.getIndex());
+                NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
+            } else {
+                player.sendSystemMessage(Component.translatable("wyb.ask.reject"));
+            }
         } else {
             DevUtils.runWhenOnDev(() -> {
                 ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(player));

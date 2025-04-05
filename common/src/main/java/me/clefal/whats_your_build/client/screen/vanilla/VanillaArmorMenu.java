@@ -4,11 +4,9 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Stream;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.client.screen.BuildMenu;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
-import me.clefal.whats_your_build.modules.armor.VanillaArmorComponent;
-import net.minecraft.client.Minecraft;
+import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
