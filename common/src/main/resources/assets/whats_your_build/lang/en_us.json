@@ -7,5 +7,9 @@
   "whats_your_build.wyb_client_config.showYourBuildFor.teammates": "Teammates",
   "key.category.wyb": "What's Your Build?",
   "key.wyb.check": "Check Build",
-  "wyb.ask.reject": "You aren't allowed to see this player's build."
+  "key.wyb.modifier_key": "Modifier Key",
+  "key.wyb.send_build_to_chat": "Send build to chat",
+  "wyb.ask.reject": "You aren't allowed to see this player's build.",
+  "wyb.chat.receive_build": "%1$s shares their build to you: %2$s",
+  "wyb.chat.build": "%1$s's build"
 }

@@ -6,6 +6,8 @@ import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.blaze3d.platform.InputConstants;
 import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
+import me.clefal.whats_your_build.network.c2s.C2SSendGlobalBuildPacket;
+import me.clefal.whats_your_build.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -34,21 +36,31 @@ public class WYBKeys {
                     }
                 });
 
-            }))
+            })),
+            Lazy.of(() -> new WYBKey("key.wyb.modifier_key", GLFW.GLFW_KEY_LEFT_ALT, client -> {}, InputConstants.Type.KEYSYM)),
+            Lazy.of(() -> new WYBKey("key.wyb.send_build_to_chat", GLFW.GLFW_KEY_I, client -> {}, InputConstants.Type.KEYSYM))
+
 
     );
+
+
 
     public static void registerAllKey(Consumer<List<KeyMapping>> handle) {
         handle.accept(KEYS.stream().map(x -> x.get().keyBinding).toList());
     }
 
     public static void consumerKeys() {
-        for (var key : KEYS) {
-            if (key.get().keyBinding.consumeClick()) {
-                Minecraft client = Minecraft.getInstance();
-                key.get().onPress.execute(client);
+        Lazy<WYBKey> check = KEYS.get(0);
+        if (check.get().keyBinding.consumeClick()) {
+            Minecraft client = Minecraft.getInstance();
+            check.get().onPress.execute(client);
+        }
+        if (KEYS.get(1).get().keyBinding.consumeClick()){
+            if (KEYS.get(2).get().keyBinding.consumeClick()) {
+                NetworkUtils.sendToServer(new C2SSendGlobalBuildPacket());
             }
         }
+
     }
 
     public static class WYBKey {
@@ -60,6 +72,16 @@ public class WYBKeys {
             keyBinding = new KeyMapping(
                     keyName,
                     InputConstants.Type.MOUSE,
+                    keyBind,
+                    "key.category.wyb"
+            );
+            onPress = action;
+        }
+
+        private WYBKey(String keyName, int keyBind, OnPress action, InputConstants.Type type) {
+            keyBinding = new KeyMapping(
+                    keyName,
+                    type,
                     keyBind,
                     "key.category.wyb"
             );

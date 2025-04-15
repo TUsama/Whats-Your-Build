@@ -16,13 +16,20 @@ import java.util.UUID;
 
 public class C2SAskBuildPacket implements C2SModPacket {
     public UUID target;
+    public boolean forceAllow = false;
 
     public C2SAskBuildPacket(UUID target) {
         this.target = target;
     }
 
+    public C2SAskBuildPacket(UUID target, boolean forceAllow) {
+        this.target = target;
+        this.forceAllow = forceAllow;
+    }
+
     public C2SAskBuildPacket(FriendlyByteBuf buf) {
         this.target = buf.readUUID();
+        this.forceAllow = buf.readBoolean();
     }
 
     @Override
@@ -30,8 +37,13 @@ public class C2SAskBuildPacket implements C2SModPacket {
         ServerPlayer targetPlayer = player.getServer().getPlayerList().getPlayer(target);
 
         if (targetPlayer != null) {
-            ServerAskBuildPermissionCheckEvent serverAskBuildPermissionCheckEvent = CommonClass.post(new ServerAskBuildPermissionCheckEvent(targetPlayer, player));
-            if (serverAskBuildPermissionCheckEvent.isAllowed){
+            boolean allow = forceAllow;
+            if (!forceAllow){
+                ServerAskBuildPermissionCheckEvent serverAskBuildPermissionCheckEvent = CommonClass.post(new ServerAskBuildPermissionCheckEvent(targetPlayer, player));
+                allow = serverAskBuildPermissionCheckEvent.isAllowed;
+            }
+
+            if (allow){
                 ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
                 S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), target, post.getIndex());
                 NetworkUtils.sendToClient(s2CReturnBuildPacket, player);
@@ -49,7 +61,7 @@ public class C2SAskBuildPacket implements C2SModPacket {
 
     @Override
     public void write(FriendlyByteBuf buf) {
-
         buf.writeUUID(target);
+        buf.writeBoolean(forceAllow);
     }
 }
