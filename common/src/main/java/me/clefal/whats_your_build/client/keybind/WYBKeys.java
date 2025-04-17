@@ -4,16 +4,13 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Lazy;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.blaze3d.platform.InputConstants;
-import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
 import me.clefal.whats_your_build.network.c2s.C2SSendGlobalBuildPacket;
-import me.clefal.whats_your_build.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.apache.http.io.SessionOutputBuffer;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -37,7 +34,10 @@ public class WYBKeys {
                 });
 
             })),
-            Lazy.of(() -> new WYBKey("key.wyb.send_build_to_chat", GLFW.GLFW_KEY_I, client -> {NetworkUtils.sendToServer(new C2SSendGlobalBuildPacket());}, InputConstants.Type.KEYSYM))
+            Lazy.of(() -> new WYBKey("key.wyb.send_build_to_chat", GLFW.GLFW_KEY_I, client -> {
+                if (client.player != null) {
+                    NetworkUtils.sendToServer(new C2SSendGlobalBuildPacket());
+                }}, InputConstants.Type.KEYSYM))
 
 
     );
@@ -52,7 +52,6 @@ public class WYBKeys {
         for (var key : KEYS) {
             if (key.get().keyBinding.consumeClick()) {
                 Minecraft client = Minecraft.getInstance();
-                System.out.println(key.get().keyBinding.getTranslatedKeyMessage().getString());
                 key.get().onPress.execute(client);
             }
         }
