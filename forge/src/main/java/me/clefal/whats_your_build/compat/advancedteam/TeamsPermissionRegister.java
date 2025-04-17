@@ -8,7 +8,6 @@ public class TeamsPermissionRegister {
 
     @SubscribeEvent
     public void onRegister(ClientAddConfigChoiceEvent event){
-        System.out.println("register!");
         event.configs.add("teammates");
     }
 }

@@ -10,15 +10,8 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public class NetworkHelper {
-    public static void startPlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> list, UUID target){
-        Screen screen = Minecraft.getInstance().screen;
-        if (screen == null){
-            
-            
-            for (Function<PlayerBuildScreen, BuildMenuTab<?, ?>> playerBuildScreenBuildMenuTabFunction : list) {
-                
-            }
-            Minecraft.getInstance().setScreen(new PlayerBuildScreen(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(list), target));
-        }
+    public static void startPlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> list, UUID target) {
+        Minecraft.getInstance().setScreen(new PlayerBuildScreen(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(list), target));
+
     }
 }

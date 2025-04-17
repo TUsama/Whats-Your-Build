@@ -37,8 +37,7 @@ public class WYBKeys {
                 });
 
             })),
-            Lazy.of(() -> new WYBKey("key.wyb.modifier_key", GLFW.GLFW_KEY_LEFT_ALT, client -> {}, InputConstants.Type.KEYSYM)),
-            Lazy.of(() -> new WYBKey("key.wyb.send_build_to_chat", GLFW.GLFW_KEY_I, client -> {}, InputConstants.Type.KEYSYM))
+            Lazy.of(() -> new WYBKey("key.wyb.send_build_to_chat", GLFW.GLFW_KEY_I, client -> {NetworkUtils.sendToServer(new C2SSendGlobalBuildPacket());}, InputConstants.Type.KEYSYM))
 
 
     );
@@ -50,17 +49,13 @@ public class WYBKeys {
     }
 
     public static void consumerKeys() {
-        Lazy<WYBKey> check = KEYS.get(0);
-        if (check.get().keyBinding.consumeClick()) {
-            Minecraft client = Minecraft.getInstance();
-            check.get().onPress.execute(client);
-        }
-        if (KEYS.get(1).get().keyBinding.consumeClick()){
-            if (KEYS.get(2).get().keyBinding.consumeClick()) {
-                NetworkUtils.sendToServer(new C2SSendGlobalBuildPacket());
+        for (var key : KEYS) {
+            if (key.get().keyBinding.consumeClick()) {
+                Minecraft client = Minecraft.getInstance();
+                System.out.println(key.get().keyBinding.getTranslatedKeyMessage().getString());
+                key.get().onPress.execute(client);
             }
         }
-
     }
 
     public static class WYBKey {

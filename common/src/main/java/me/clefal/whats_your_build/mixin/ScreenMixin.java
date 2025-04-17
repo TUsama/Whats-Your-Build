@@ -3,6 +3,7 @@ package me.clefal.whats_your_build.mixin;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.chat.BuildClickEvent;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
+import me.clefal.whats_your_build.utils.MixinHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.ClickEvent;
@@ -24,15 +25,8 @@ public class ScreenMixin {
     ),
             cancellable = true)
     public void onClickBuildClickEvent(Style style, CallbackInfoReturnable<Boolean> cir) {
-        ClickEvent clickEvent = style.getClickEvent();
-        if (clickEvent instanceof BuildClickEvent buildClickEvent) {
-            UUID uuid = UUID.fromString(buildClickEvent.getValue());
-            Player playerByUUID = Minecraft.getInstance().level.getPlayerByUUID(uuid);
-            if (playerByUUID != null) {
-                NetworkUtils.sendToServer(new C2SAskBuildPacket(uuid, true));
-            }
-            cir.setReturnValue(false);
-        }
-
+        MixinHelper.screenMixin(style, cir);
     }
+
+
 }

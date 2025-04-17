@@ -11,5 +11,6 @@
   "key.wyb.send_build_to_chat": "Send build to chat",
   "wyb.ask.reject": "You aren't allowed to see this player's build.",
   "wyb.chat.receive_build": "%1$s shares their build to you: %2$s",
-  "wyb.chat.build": "%1$s's build"
+  "wyb.chat.build": "[%1$s's build]",
+  "wyb.chat.click_to_show_build": "Click here to show the build."
 }

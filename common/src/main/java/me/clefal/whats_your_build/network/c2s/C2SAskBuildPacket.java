@@ -1,6 +1,7 @@
 package me.clefal.whats_your_build.network.c2s;
 
 import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.platform.Services;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.CommonClass;
@@ -37,7 +38,7 @@ public class C2SAskBuildPacket implements C2SModPacket {
         ServerPlayer targetPlayer = player.getServer().getPlayerList().getPlayer(target);
 
         if (targetPlayer != null) {
-            boolean allow = forceAllow;
+            boolean allow = forceAllow || Services.PLATFORM.isDevelopmentEnvironment();
             if (!forceAllow){
                 ServerAskBuildPermissionCheckEvent serverAskBuildPermissionCheckEvent = CommonClass.post(new ServerAskBuildPermissionCheckEvent(targetPlayer, player));
                 allow = serverAskBuildPermissionCheckEvent.isAllowed;
