@@ -28,8 +28,6 @@ public class TeamsPermissionChecker {
                     var asker = event.asker;
                     if (((IHasTeam) beAsked).hasTeam() && ((IHasTeam) asker).hasTeam() && ((IHasTeam) beAsked).getTeam().equals(((IHasTeam) asker).getTeam())) {
                         event.isAllowed = true;
-                    } else {
-                        System.out.println("don't have");
                     }
                 }
             }
