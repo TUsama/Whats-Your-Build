@@ -1,3 +1,6 @@
+### 0.2.1
+delete debug text
+
 ### 0.2.0
 add whole build share function, player can use the hot key to send their build to chat/
 
