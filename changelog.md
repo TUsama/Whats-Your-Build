@@ -1,3 +1,6 @@
+### 0.2.2
+try to fix start up crash
+
 ### 0.2.1
 delete debug text
 

@@ -10,7 +10,6 @@ import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedChoiceList;
 import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
@@ -22,20 +21,26 @@ import java.util.function.Supplier;
 
 public class WYBClientConfig extends Config {
     public static WYBClientConfig config = ConfigApiJava.registerAndLoadConfig(WYBClientConfig::new, RegisterType.CLIENT);
+    public float globalScale = 1.3f;
+    public ValidatedChoiceList<String> showYourBuildFor = make(() -> {
+        ClientAddConfigChoiceEvent clientAddConfigChoiceEvent = CommonClass.post(new ClientAddConfigChoiceEvent());
+        String[] alls = ArrayUtils.addFirst(clientAddConfigChoiceEvent.configs.toArray(String[]::new), "all");
+        String[] noOnes = ArrayUtils.add(alls, "no_one");
+        return ValidatedList.ofString(noOnes);
+    })
+            .toChoiceList(List.of("all"), ValidatedChoiceList.WidgetType.SCROLLABLE, (x, y) -> Component.translatable(y + "." + x.toLowerCase()));
 
     public WYBClientConfig() {
         super(CommonClass.id("wyb_client_config"));
     }
 
-    public float globalScale = 1.3f;
+    public static <T> T make(Supplier<T> supplier) {
+        return supplier.get();
+    }
 
-    public ValidatedChoiceList<String> showYourBuildFor = Util.make(() -> {
-                ClientAddConfigChoiceEvent clientAddConfigChoiceEvent = CommonClass.post(new ClientAddConfigChoiceEvent());
-                String[] alls = ArrayUtils.addFirst(clientAddConfigChoiceEvent.configs.toArray(String[]::new), "all");
-                String[] noOnes = ArrayUtils.add(alls, "no_one");
-                return ValidatedList.ofString(noOnes);
-            })
-    .toChoiceList(List.of("all"), ValidatedChoiceList.WidgetType.SCROLLABLE, (x, y) -> Component.translatable(y + "." + x.toLowerCase()));
+    public static void init() {
+
+    }
 
     @Override
     public void onUpdateClient() {
@@ -53,9 +58,5 @@ public class WYBClientConfig extends Config {
                     "showYourBuildFor", new StringListValue(showYourBuildFor)
             )));
         }
-    }
-
-    public static void init() {
-
     }
 }
