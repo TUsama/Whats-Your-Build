@@ -85,7 +85,7 @@ jar {
 
 
 publishMods {
-    file = tasks.jar.archiveFile
+    file = tasks.reobfJar.archiveFile
     displayName = file.map { it.asFile.name }
     changelog = file("..\\changelog.md").text.split('\n').collect { string -> {
         if (!string.isBlank()) {
