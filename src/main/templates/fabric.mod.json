@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "name": "${mod_name}",
+  "version": "${mod_version}",
+  "description": "${mod_description}",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ],
+    "client": [
+      "me.clefal.whats_your_build.loaders.fabric.FabricEntryPoint"
+    ]
+  },
+  "custom": {
+    "fzzy_config": [
+      "${mod_id}"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${target_fabricloader}",
+    "fabric": "*",
+    "nirvana_lib": ">=${lib_version}",
+    "minecraft": "=${target_minecraft}"
+  }
+}

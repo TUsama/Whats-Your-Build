@@ -24,7 +24,7 @@ dependencies {
     compileOnly(group: 'com.clefal.nirvana_lib', name: 'common', version: '1.1.1')
     compileOnly "curse.maven:nirvana-library-1164411:" + lib_version_forge*/
 
-    modImplementation("blank:Nirvana-Lib-forge-${minecraft_version}:${lib_version}")
+    modImplementation("blank:Nirvana-Lib-forge:1.2.1")
 
     modCompileOnly("me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+forge")
 }

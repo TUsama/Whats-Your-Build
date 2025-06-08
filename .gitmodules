@@ -1,3 +1,6 @@
+[submodule "modstitch"]
+	path = modstitch
+	url = https://github.com/TUsama/modstitch
 [submodule "NirvanaLib"]
 	path = NirvanaLib
 	url = https://github.com/TUsama/NirvanaLib
