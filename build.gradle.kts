@@ -1,6 +1,5 @@
-import deps.DependencyConfig
 import deps.Loaders
-import kotlin.text.uppercaseChar
+import deps.DependencyConfig
 
 plugins {
     id("dev.isxander.modstitch.base") version "clefal-version"
@@ -14,7 +13,7 @@ fun prop(name: String, consumer: (prop: String) -> Unit) {
 }
 
 
-val modv = "0.2.2"
+val modv = property("mod_version") as String
 
 
 val loader = when {
@@ -231,15 +230,25 @@ dependencies {
         }
 
     }
+    /*val files = files("../../NirvanaLib/build/libs/$libVersion")
+    val target = files.asFileTree.files
+        .filter { it.name.contains(minecraft) && it.name.contains(loader) && it.name.contains(libVersion)}
+        .firstOrNull()
+    if (target == null) {
+        modstitchModImplementation(group = "com.clefal", name = "NirvanaLib", version = libVersion)
+    } else {
+        modstitchModImplementation(group = "blank", name = target.name.replace("-$libVersion.jar", ""), version = libVersion)
+    }*/
+
 
     modstitchModImplementation("maven.modrinth:nirvana-library:${loader}-${minecraft}-${libVersion}")
     modstitchModRuntimeOnly("maven.modrinth:common-network:${property("deps.common_network")}")
     //loader-specified deps
-    /*
+
     DependencyConfig.getDependencies(loaderEnum, minecraft).forEach { dep ->
 
         dependencies.add(dep.configuration, dep.notation, dep.options)
-    }*/
+    }
 
     //lombok
     modstitchCompileOnly("org.projectlombok:lombok:1.18.34")

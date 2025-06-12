@@ -52,5 +52,5 @@ stonecutter {
 
 rootProject.name = "Whats-Your-Build"
 includeBuild("modstitch")
-includeBuild("NirvanaLib")
+//includeBuild("NirvanaLib")
 

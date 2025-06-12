@@ -7,9 +7,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
+      "me.clefal.whats_your_build.loaders.fabric.FabricEntrypoint"
     ],
     "client": [
-      "me.clefal.whats_your_build.loaders.fabric.FabricEntryPoint"
+      "me.clefal.whats_your_build.loaders.fabric.FabricEntrypoint"
     ]
   },
   "custom": {

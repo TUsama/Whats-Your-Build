@@ -9,7 +9,8 @@ object LoomDeps {
             when (minecraft) {
                 ("1.20.1") -> {
                     modstitchModCompileOnly ("dev.emi:trinkets:3.7.2")
-
+                    modstitchModImplementation("blank:Advanced Team-fabric-1.20.1:1.6.2")
+                    /*
                     modstitchModCompileOnly ("curse.maven:zenith-620928:5904438")
                     modstitchModCompileOnly ("curse.maven:zenith-attributes-910078:5918684")
                     modstitchModCompileOnly ("curse.maven:fakerlib-853197:5503724")
@@ -17,20 +18,20 @@ object LoomDeps {
 
                     modstitchModCompileOnly ("curse.maven:tieredz-615948:5233351")
                     modstitchModCompileOnly ("curse.maven:photon-871522:6373235")
-                    modstitchModCompileOnly ("curse.maven:ldlib-626676:6417171")
+                    modstitchModCompileOnly ("curse.maven:ldlib-626676:6417171")*/
 
                     modstitchModImplementation ("curse.maven:modmenu-308702:5162837")
-                    modstitchModCompileOnly ("maven.modrinth:subtle-effects:TdzGdTcL")
-                    modstitchModCompileOnly ("maven.modrinth:subtle-effects:XhsIpffA")
+                    /*modstitchModCompileOnly ("maven.modrinth:subtle-effects:TdzGdTcL")
+                    modstitchModCompileOnly ("maven.modrinth:subtle-effects:XhsIpffA")*/
 
-                    modstitchModCompileOnly ("curse.maven:tierify-974356:5803071")
+                   /* modstitchModCompileOnly ("curse.maven:tierify-974356:5803071")
                     modstitchModCompileOnly ("curse.maven:necronomicon-586157:5772682")
                     modstitchModCompileOnly (("maven.modrinth:libz:1.0.2+1.20.1")) {
                         exclude(mapOf<String, String>("group" to "net.fabricmc.fabric-api"))
                     }
 
                     modstitchModCompileOnly ("curse.maven:malum-484064:5718977")
-                    modstitchModCompileOnly ("curse.maven:lodestone-616457:6070172")
+                    modstitchModCompileOnly ("curse.maven:lodestone-616457:6070172")*/
                 }
 
                 ("1.21.1") -> {
@@ -38,17 +39,17 @@ object LoomDeps {
                     modstitchModCompileOnly ("curse.maven:accessories-938917:5727156")
                     //modImplementation ("curse.maven:charm-of-undying-316873:5159191")
 
-                    modstitchModCompileOnly ("curse.maven:tieredz-615948:5934487")
+                    /*modstitchModCompileOnly ("curse.maven:tieredz-615948:5934487")
 
                     modstitchModCompileOnly ("curse.maven:tiered-forge-453889:6206677")
                     modstitchModCompileOnly ("curse.maven:unionlib-367806:5997472")
                     modstitchImplementation ("org.tomlj:tomlj:1.1.1")
 
-                    modstitchModImplementation ("maven.modrinth:subtle-effects:1.10.1")
+                    modstitchModImplementation ("maven.modrinth:subtle-effects:1.10.1")*/
                 }
 
                 ("1.21.4") -> {
-                    modstitchModCompileOnly ("maven.modrinth:subtle-effects:1.10.1")
+                    //modstitchModCompileOnly ("maven.modrinth:subtle-effects:1.10.1")
                 }
             }
         }

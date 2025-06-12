@@ -1,6 +1,6 @@
 package me.clefal.whats_your_build.network.c2s;
 
-import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import me.clefal.whats_your_build.chat.BuildClickEvent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,16 +10,14 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-public class C2SSendGlobalBuildPacket implements C2SModPacket {
+public class C2SSendGlobalBuildPacket implements C2SModPacket<C2SSendGlobalBuildPacket> {
 
     public C2SSendGlobalBuildPacket() {
     }
 
-    public C2SSendGlobalBuildPacket(FriendlyByteBuf buf) {
-    }
 
     @Override
-    public void handleServer(ServerPlayer serverPlayer) {
+    public void handleServer(ServerPlayer serverPlayer, C2SSendGlobalBuildPacket c2SSendGlobalBuildPacket, boolean b) {
         for (Player player : serverPlayer.getServer().getPlayerList().getPlayers()) {
             player.sendSystemMessage(Component.translatable("wyb.chat.receive_build", serverPlayer.getName(), Component.translatable("wyb.chat.build",serverPlayer.getName())
                     .withStyle(Style.EMPTY
@@ -34,4 +32,17 @@ public class C2SSendGlobalBuildPacket implements C2SModPacket {
     public void write(FriendlyByteBuf friendlyByteBuf) {
 
     }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+
+    }
+
+    @Override
+    public Class<C2SSendGlobalBuildPacket> getSelfClass() {
+        return C2SSendGlobalBuildPacket.class;
+    }
+
+
+
 }

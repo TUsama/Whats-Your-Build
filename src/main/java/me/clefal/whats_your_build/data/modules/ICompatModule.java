@@ -1,6 +1,6 @@
 package me.clefal.whats_your_build.data.modules;
 
-import com.clefal.nirvana_lib.platform.Services;
+import com.clefal.nirvana_lib.utils.ModUtils;
 import me.clefal.whats_your_build.event.server.ServerGatherHandlerEvent;
 
 public interface ICompatModule extends IModule{
@@ -9,6 +9,6 @@ public interface ICompatModule extends IModule{
 
     @Override
     default boolean shouldEnable(){
-        return Services.PLATFORM.isModLoaded(getModID());
+        return ModUtils.isModLoaded(getModID());
     }
 }

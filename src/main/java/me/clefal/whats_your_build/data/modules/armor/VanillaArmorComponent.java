@@ -5,13 +5,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildComponent<VanillaArmorComponent> {
-
     public static final Codec<VanillaArmorComponent> CODEC = RecordCodecBuilder.create(i -> i.group(ItemStack.CODEC.listOf().fieldOf("armors").forGetter(VanillaArmorComponent::armors)).apply(i, VanillaArmorComponent::new));
 
     @Override
@@ -19,10 +21,6 @@ public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildCom
         return ComponentType.VANILLA_ARMOR;
     }
 
-    @Override
-    public Codec<VanillaArmorComponent> getCodeC() {
-        return CODEC;
-    }
 
     @Override
     public ResourceLocation getRenderIcon() {
@@ -30,9 +28,10 @@ public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildCom
     }
 
     @Override
-    public VanillaArmorComponent self() {
-        return this;
+    public Codec<VanillaArmorComponent> getCodec() {
+        return CODEC;
     }
+
 
 
 }

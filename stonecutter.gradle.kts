@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.bsh.commands.dir
+
 plugins {
     id("dev.kikugie.stonecutter")
 }
@@ -17,14 +19,15 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+
         maven("https://maven.neoforged.net/releases")
         maven("https://maven.fabricmc.net/")
-        maven("https://repo.spongepowered.org/repository/maven-public/")
-        maven("https://maven.blamejared.com")
+       // maven("https://repo.spongepowered.org/repository/maven-public/")
+        //maven("https://maven.blamejared.com")
 
 
         maven("https://cursemaven.com")
-        maven("https://oss.sonatype.org/content/repositories/snapshots")
+        //maven("https://oss.sonatype.org/content/repositories/snapshots")
 
         maven("https://maven.parchmentmc.org")
 
@@ -40,7 +43,9 @@ allprojects {
 
         maven("https://maven.theillusivec4.top/")
 
-        maven ("https://maven.shedaniel.me/")
-        maven("https://maven.bawnorton.com/releases")
+        //maven ("https://maven.shedaniel.me/")
+        //maven("https://maven.bawnorton.com/releases")
+        flatDir { dir("libs") }
+
     }
 }
