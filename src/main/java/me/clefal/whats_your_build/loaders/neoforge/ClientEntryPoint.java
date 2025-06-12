@@ -1,3 +1,4 @@
+//? if neoforge {
 package me.clefal.whats_your_build.loaders.neoforge;
 
 import me.clefal.whats_your_build.CommonClass;
@@ -24,3 +25,4 @@ public class ClientEntryPoint {
 
     }
 }
+//?}

@@ -1,4 +1,5 @@
-package me.clefal.whats_your_build.loaders.neoforge;//? if neoforge {
+//? if neoforge {
+package me.clefal.whats_your_build.loaders.neoforge;
 
 import com.mojang.logging.LogUtils;
 import me.clefal.whats_your_build.CommonClass;
