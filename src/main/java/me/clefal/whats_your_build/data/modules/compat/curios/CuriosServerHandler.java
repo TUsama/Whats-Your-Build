@@ -1,3 +1,4 @@
+//? if neoforge || forge {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
@@ -47,3 +48,4 @@ public class CuriosServerHandler implements IComponentServerHandler {
         return ComponentType.CURIOS;
     }
 }
+//?}

@@ -1,3 +1,4 @@
+//? if neoforge || forge {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
 import com.mojang.serialization.Codec;
@@ -34,3 +35,4 @@ public class CuriosClientHandler implements IComponentClientHandler<CuriosCompon
         return CuriosComponent.CODEC;
     }
 }
+//?}

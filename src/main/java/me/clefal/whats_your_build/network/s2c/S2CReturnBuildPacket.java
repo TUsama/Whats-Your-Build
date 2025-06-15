@@ -23,6 +23,9 @@ public class S2CReturnBuildPacket implements S2CModPacket<S2CReturnBuildPacket> 
         this.index = index;
     }
 
+    public S2CReturnBuildPacket() {
+    }
+
 
     @Override
     public void handleClient() {

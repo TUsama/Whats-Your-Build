@@ -1,11 +1,15 @@
 package me.clefal.whats_your_build.client.screen;
 
+import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
+//? >1.20.1
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,15 +23,17 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
 
 
     public BuildMenuTab(Component message, E component, PlayerBuildScreen screen) {
-        super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {
-        }, message);
+        //? 1.20.1
+        /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {}, message);*/
+        //? >1.20.1
+        super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "non-highlight"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "highlight"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "highlight")), button -> {}, message);
         this.component = component;
         this.setTooltip(Tooltip.create(message));
         this.screen = screen;
     }
 
-
-    @Override
+    //? 1.20.1 {
+    /*@Override
     public void renderTexture(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int uOffset, int vOffset, int textureDifference, int width, int height, int textureWidth, int textureHeight) {
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
@@ -36,6 +42,28 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
         pose.translate(0, 0, 10);
         if (!this.isHoveredOrFocused()) {
             guiGraphics.setColor(1, 1, 1, 0.7f);
+            screen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64, pose.last().pose()));
+            //guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64);
+            guiGraphics.setColor(1, 1, 1, 1);
+        } else {
+            screen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 64, pose.last().pose()));
+            //guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 64);
+        }
+        pose.popPose();
+    }
+    *///?} else {
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        RenderSystem.enableBlend();
+        RenderSystem.enableDepthTest();
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 10);
+        boolean hoveredOrFocused = this.isHoveredOrFocused();
+        ResourceLocation resourceLocation = this.sprites.get(this.isActive(), hoveredOrFocused);
+        if (hoveredOrFocused) {
+            guiGraphics.setColor(1, 1, 1, 0.7f);
             guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64);
             guiGraphics.setColor(1, 1, 1, 1);
         } else {
@@ -43,6 +71,10 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
         }
         pose.popPose();
     }
+
+
+    //?}
+
 
     public abstract Function<PlayerBuildScreen, T> getMenu();
 

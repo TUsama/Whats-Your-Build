@@ -8,11 +8,8 @@ import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.event.server.ServerAskBuildPermissionCheckEvent;
 import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
@@ -30,6 +27,9 @@ public class C2SAskBuildPacket implements C2SModPacket<C2SAskBuildPacket> {
         this.forceAllow = forceAllow;
     }
 
+    public C2SAskBuildPacket() {
+    }
+
 
     @Override
     public void handleServer(ServerPlayer serverPlayer, C2SAskBuildPacket c2SAskBuildPacket, boolean b) {
@@ -37,12 +37,12 @@ public class C2SAskBuildPacket implements C2SModPacket<C2SAskBuildPacket> {
 
         if (targetPlayer != null) {
             boolean allow = forceAllow || DevUtils.isInDev();
-            if (!forceAllow){
+            if (!forceAllow) {
                 ServerAskBuildPermissionCheckEvent serverAskBuildPermissionCheckEvent = CommonClass.post(new ServerAskBuildPermissionCheckEvent(targetPlayer, serverPlayer));
                 allow = serverAskBuildPermissionCheckEvent.isAllowed;
             }
 
-            if (allow){
+            if (allow) {
                 ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
                 S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), target, post.getIndex());
                 NetworkUtils.sendToClient(s2CReturnBuildPacket, serverPlayer);
@@ -58,12 +58,6 @@ public class C2SAskBuildPacket implements C2SModPacket<C2SAskBuildPacket> {
         }
     }
 
-
-    public final static StreamCodec<FriendlyByteBuf, C2SAskBuildPacket> CODEC = StreamCodec.composite(
-            UUIDUtil.STREAM_CODEC, c2SAskBuildPacket -> c2SAskBuildPacket.target,
-            ByteBufCodecs.BOOL, c2SAskBuildPacket -> c2SAskBuildPacket.forceAllow,
-            C2SAskBuildPacket::new
-    );
 
     @Override
     public void write(FriendlyByteBuf friendlyByteBuf) {

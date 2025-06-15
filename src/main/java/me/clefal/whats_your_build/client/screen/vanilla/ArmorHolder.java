@@ -1,6 +1,7 @@
 package me.clefal.whats_your_build.client.screen.vanilla;
 
 import com.clefal.nirvana_lib.utils.DevUtils;
+import com.clefal.nirvana_lib.utils.ResourceLocationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
@@ -53,7 +54,7 @@ public class ArmorHolder extends AbstractWidget {
                 float scale = getWidth() / 16.0f;
                 pose.translate(getX(), getY(), 0);
                 pose.scale(scale, scale, 1);
-                ItemStack defaultInstance = BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:stick")).getDefaultInstance();
+                ItemStack defaultInstance = BuiltInRegistries.ITEM.get(ResourceLocationUtils.make("minecraft","stick")).getDefaultInstance();
                 guiGraphics.renderItem(defaultInstance, 0, 0);
                 pose.popPose();
                 if (isHovered) {

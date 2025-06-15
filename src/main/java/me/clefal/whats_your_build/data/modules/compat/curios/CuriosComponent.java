@@ -1,3 +1,4 @@
+//? if neoforge || forge {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
@@ -18,10 +19,19 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
         return ComponentType.CURIOS;
     }
 
-    @Override
+
+    //? 1.20.1 {
+    /*@Override
     public ResourceLocation getRenderIcon() {
         return CommonClass.id("textures/gui/ring.png");
     }
+    *///?} else {
+
+    @Override
+    public String getIdentifier() {
+        return "ring";
+    }
+    //?}
 
     @Override
     public Codec<CuriosComponent> getCodec() {
@@ -29,3 +39,4 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
     }
 
 }
+//?}

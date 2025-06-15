@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "me.clefal.whats_your_build.mixin",
-  "refmap": "${mod_id}.refmap.json",
+  "refmap": "whats_your_build.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
   ],

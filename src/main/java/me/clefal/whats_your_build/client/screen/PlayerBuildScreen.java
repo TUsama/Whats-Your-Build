@@ -1,10 +1,18 @@
 package me.clefal.whats_your_build.client.screen;
 
+import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
+import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
+import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
+import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import lombok.Getter;
+import lombok.experimental.ExtensionMethod;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.config.WYBClientConfig;
+import me.clefal.whats_your_build.utils.GuiUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,20 +28,26 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Function;
 
+@ExtensionMethod(GuiUtils.class)
 public class PlayerBuildScreen extends Screen {
 
     public final static ResourceLocation COMPONENT = CommonClass.id("textures/gui/component.png");
     protected static int BACKGROUND_WIDTH = 128;
     protected static int BACKGROUND_HEIGHT = 128;
+    @Getter
     private float topLeftX;
+    @Getter
     private float topLeftY;
     public final Player targetPlayer;
     private final List<BuildMenuTab<?, ?>> tabs;
+    @Getter
     private float tabOriginalX;
+    @Getter
     private float tabOriginalY;
     @Nullable
     private BuildMenu<?> currentMenu;
     public float scale;
+    public final VertexContainer vertexContainer = new VertexContainer();
 
 
     public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs, UUID target) {
@@ -49,22 +63,6 @@ public class PlayerBuildScreen extends Screen {
         if (!Minecraft.getInstance().player.level().players().contains(targetPlayer)) {
             Minecraft.getInstance().setScreen(null);
         }
-    }
-
-    public float getTopLeftX() {
-        return topLeftX;
-    }
-
-    public float getTopLeftY() {
-        return topLeftY;
-    }
-
-    public float getTabOriginalX() {
-        return tabOriginalX;
-    }
-
-    public float getTabOriginalY() {
-        return tabOriginalY;
     }
 
     public void setNewMenu(BuildMenu<?> menu) {
@@ -125,8 +123,12 @@ public class PlayerBuildScreen extends Screen {
         RenderSystem.enableDepthTest();
 
         pose.pushPose();
-
+        /*
+        VertexConsumer apply = guiGraphics.bufferSource().getBuffer(RenderTypeCreator.gui.apply(COMPONENT));
+        apply.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).color(1.0f, 1, 1, 1).endVertex();
+        apply.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).color(1.0f, 1, 1, 1).endVertex();*/
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+
         float portion = 8.0f;
         float interval = BACKGROUND_WIDTH * (1 / portion);
         float lineStartX = topLeftX + interval;
@@ -134,8 +136,9 @@ public class PlayerBuildScreen extends Screen {
         {
             //tab line
             pose.pushPose();
-            pose.translate(lineStartX, lineStartY, 0);
-            guiGraphics.blit(COMPONENT ,0, 0, (int)(BACKGROUND_WIDTH * ((portion - 2) / portion)), 1, 128, 0, 128, 1, 256, 256);
+            pose.translate(lineStartX, lineStartY, 10);
+            vertexContainer.putBliz(COMPONENT, TextureBufferInfo.of(0, 0, (int)(BACKGROUND_WIDTH * ((portion - 2) / portion)), 1, 128, 0, 128, 1, 256, 256, pose.last().pose()));
+            //guiGraphics.blit(COMPONENT ,0, 0, (int)(BACKGROUND_WIDTH * ((portion - 2) / portion)), 1, 128, 0, 128, 1, 256, 256);
             pose.popPose();
         }
         {
@@ -144,10 +147,14 @@ public class PlayerBuildScreen extends Screen {
             {
                 //background
                 pose.translate(0, 0, -10);
-                renderBackground(guiGraphics);
+                //? 1.20.1 {
+                /*renderBackground(guiGraphics);
+                *///?} else {
+                renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+                //?}
                 pose.translate(topLeftX, topLeftY, 1);
-                guiGraphics.blitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0);
-
+                vertexContainer.putBlitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0, pose.last().pose());
+                //guiGraphics.blitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0);
             }
 
             {
@@ -160,7 +167,9 @@ public class PlayerBuildScreen extends Screen {
                 float mx = BACKGROUND_WIDTH / 2.0f - Minecraft.getInstance().font.width(translatable.getString()) * scale / 2.0f;
                 float my = BACKGROUND_HEIGHT / (2.0f * 4.0f) - Minecraft.getInstance().font.lineHeight * scale / 2.0f;
                 pose.translate(mx * scaleReciprocal, my * scaleReciprocal, 0);
-                guiGraphics.drawString(Minecraft.getInstance().font, translatable, 0, 0, ChatFormatting.BLACK.getColor(), false);
+                //guiGraphics.drawString(Minecraft.getInstance().font, translatable, 0, 0, ChatFormatting.BLACK.getColor(), false);
+                vertexContainer.putString(DrawStringBufferInfo.of(translatable.getString(), 0, 0, ChatFormatting.BLACK.getColor(), pose.last().pose()));
+
 
                 pose.popPose();
             }
@@ -186,5 +195,6 @@ public class PlayerBuildScreen extends Screen {
         }
 
         pose.popPose();
+        vertexContainer.draw(guiGraphics.bufferSource(), RenderTypeCreator.gui);
     }
 }

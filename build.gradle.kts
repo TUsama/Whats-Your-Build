@@ -51,7 +51,7 @@ modstitch {
     val mid = "whats_your_build"
     metadata {
         modId = mid
-        modName = "What's your build?"
+        modName = "What's your build"
         modVersion = modv
         modGroup = "me.clefal"
         modAuthor = "Clefal"
@@ -153,11 +153,13 @@ modstitch {
         // You do not need to specify mixins in any mods.json/toml file if this is set to
         // true, it will automatically be generated.
         addMixinsToModManifest = true
+        configs.register(mid)
+        /*
         when {
             isModDevGradleLegacy -> configs.register("${mid}-1.20.1")
             minecraft == "1.21.1" -> configs.register("${mid}-1.21")
             else -> configs.register("${mid}-1.21.4")
-        }
+        }*/
 
 
         // Most of the time you wont ever need loader specific mixins.
@@ -169,7 +171,7 @@ modstitch {
 }
 base {
     val meta = modstitch.metadata
-    archivesName = "${meta.modName.get()}-${loader}-${minecraft}"
+    archivesName = "${meta.modName.get()}-$loader-$minecraft"
 }
 
 // Stonecutter constants for mod loaders.
@@ -240,9 +242,14 @@ dependencies {
         modstitchModImplementation(group = "blank", name = target.name.replace("-$libVersion.jar", ""), version = libVersion)
     }*/
 
+    modstitchImplementation("com.google.code.findbugs:jsr305:3.0.2")
+    if(minecraft == "1.20.1" && loader == "forge") {
+        modstitchModImplementation("blank:Nirvana Lib-forge-1.20.1:2.0.13")
+    } else {
+        modstitchModImplementation("maven.modrinth:nirvana-library:$loader-$minecraft-$libVersion")
+    }
 
-    modstitchModImplementation("maven.modrinth:nirvana-library:${loader}-${minecraft}-${libVersion}")
-    modstitchModRuntimeOnly("maven.modrinth:common-network:${property("deps.common_network")}")
+    modstitchModImplementation("maven.modrinth:common-network:${property("deps.common_network")}")
     //loader-specified deps
 
     DependencyConfig.getDependencies(loaderEnum, minecraft).forEach { dep ->

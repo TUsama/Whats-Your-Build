@@ -5,9 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,11 +18,21 @@ public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildCom
         return ComponentType.VANILLA_ARMOR;
     }
 
-
-    @Override
+    //? 1.20.1 {
+    /*@Override
     public ResourceLocation getRenderIcon() {
         return CommonClass.id("textures/gui/armor-icon.png");
     }
+    *///?} else {
+
+    @Override
+    public String getIdentifier() {
+        return "armor";
+    }
+
+    //?}
+
+
 
     @Override
     public Codec<VanillaArmorComponent> getCodec() {

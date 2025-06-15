@@ -9,18 +9,11 @@ import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
 public class Packets {
 
     public static void registerAllS2CPackets(){
-        //? if =1.20.1 {
-        /*NetworkUtils.registerClientMessage(S2CReturnBuildPacket.class, S2CReturnBuildPacket::new);
-        *///?} else {
-        //?}
+        NetworkUtils.registerPacket(S2CReturnBuildPacket::new);
     }
 
     public static void registerAllC2SPackets(){
-        //? if =1.20.1 {
-        /*NetworkUtils.registerServerMessage(C2SAskBuildPacket.class, C2SAskBuildPacket::new);
-        NetworkUtils.registerServerMessage(C2SSendGlobalBuildPacket.class, C2SSendGlobalBuildPacket::new);
-        *///?} else {
-
-        //?}
+        NetworkUtils.registerPacket(C2SAskBuildPacket::new);
+        NetworkUtils.registerPacket(C2SSendGlobalBuildPacket::new);
     }
 }

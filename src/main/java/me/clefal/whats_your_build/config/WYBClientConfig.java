@@ -34,7 +34,7 @@ public class WYBClientConfig extends Config {
         super(CommonClass.id("wyb_client_config"));
     }
 
-    public static <T> T make(Supplier<T> supplier) {
+    private static <T> T make(Supplier<T> supplier) {
         return supplier.get();
     }
 

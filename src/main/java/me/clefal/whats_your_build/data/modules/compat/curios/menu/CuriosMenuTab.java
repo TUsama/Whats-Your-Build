@@ -1,3 +1,4 @@
+//? if neoforge || forge {
 package me.clefal.whats_your_build.data.modules.compat.curios.menu;
 
 import me.clefal.whats_your_build.client.screen.BuildMenuTab;
@@ -18,3 +19,4 @@ public class CuriosMenuTab extends BuildMenuTab<CuriosComponent, CuriosMenu> {
         return screen1 -> new CuriosMenu(component, screen1);
     }
 }
+//?}

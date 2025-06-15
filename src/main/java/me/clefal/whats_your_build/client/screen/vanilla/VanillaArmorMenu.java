@@ -40,7 +40,10 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
         // x and y, two magic numbers
         //4, 1.5 and (32 * (1 + screen.scale / 4.0f)) are all magic numbers
         if (screen.targetPlayer != null){
-            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (getX() + getWidth() / 4f), (int) (getY() + getHeight() / 1.3f), (int) (32 + (35f * Math.pow(screen.scale - 1, 1.0d))), (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, screen.targetPlayer);
+            //? 1.20.1 {
+            /*InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (getX() + getWidth() / 4f), (int) (getY() + getHeight() / 1.3f), (int) (32 + (35f * Math.pow(screen.scale - 1, 1.0d))), (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, screen.targetPlayer);
+            *///?} else {
+            //?}
         }
 
         pose.popPose();

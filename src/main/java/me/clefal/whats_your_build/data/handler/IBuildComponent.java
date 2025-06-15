@@ -5,6 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface IBuildComponent<SELF> {
     byte getHandlerIndex();
-    ResourceLocation getRenderIcon();
+    //? 1.20.1
+    /*ResourceLocation getRenderIcon();*/
+    //? > 1.20.1
+    String getIdentifier();
     Codec<SELF> getCodec();
 }
