@@ -7,12 +7,10 @@ import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Getter;
-import lombok.experimental.ExtensionMethod;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.config.WYBClientConfig;
-import me.clefal.whats_your_build.utils.GuiUtils;
+import me.clefal.whats_your_build.utils.IBufferSourceProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -28,7 +26,6 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Function;
 
-@ExtensionMethod(GuiUtils.class)
 public class PlayerBuildScreen extends Screen {
 
     public final static ResourceLocation COMPONENT = CommonClass.id("textures/gui/component.png");
@@ -47,7 +44,7 @@ public class PlayerBuildScreen extends Screen {
     @Nullable
     private BuildMenu<?> currentMenu;
     public float scale;
-    public final VertexContainer vertexContainer = new VertexContainer();
+    public static VertexContainer vertexContainer = new VertexContainer();
 
 
     public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs, UUID target) {
@@ -75,7 +72,7 @@ public class PlayerBuildScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
+        vertexContainer = new VertexContainer();
         scale = WYBClientConfig.config.globalScale;
 
         BACKGROUND_WIDTH = (int) (128 * scale);
@@ -93,7 +90,6 @@ public class PlayerBuildScreen extends Screen {
         this.tabOriginalX = topLeftX + BACKGROUND_WIDTH / 5.0f;
         this.tabOriginalY = topLeftY + BACKGROUND_HEIGHT / 5.0f;
         int i = (int) tabOriginalX;
-
         for (BuildMenuTab<?, ?> tab : tabs) {
             tab.setPosition(i, (int) tabOriginalY);
             addRenderableWidget(tab);
@@ -150,7 +146,7 @@ public class PlayerBuildScreen extends Screen {
                 //? 1.20.1 {
                 /*renderBackground(guiGraphics);
                 *///?} else {
-                renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+                //renderBackground(guiGraphics, mouseX, mouseY, partialTick);
                 //?}
                 pose.translate(topLeftX, topLeftY, 1);
                 vertexContainer.putBlitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0, pose.last().pose());
@@ -195,6 +191,6 @@ public class PlayerBuildScreen extends Screen {
         }
 
         pose.popPose();
-        vertexContainer.draw(guiGraphics.bufferSource(), RenderTypeCreator.gui);
+        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.gui);
     }
 }

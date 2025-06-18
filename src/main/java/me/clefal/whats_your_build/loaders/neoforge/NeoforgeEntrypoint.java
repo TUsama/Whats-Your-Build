@@ -16,6 +16,7 @@ public class NeoforgeEntrypoint {
     public NeoforgeEntrypoint(IEventBus modBus) {
         WhatsYourBuildModulesRegister.registerModules();
         CommonClass.packetInit();
+        CommonClass.serverInit();
     }
 }
 //?}

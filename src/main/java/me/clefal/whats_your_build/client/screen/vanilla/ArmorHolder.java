@@ -1,5 +1,6 @@
 package me.clefal.whats_your_build.client.screen.vanilla;
 
+import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.nirvana_lib.utils.ResourceLocationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -31,11 +32,12 @@ public class ArmorHolder extends AbstractWidget {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
-        RenderSystem.enableBlend();
+        PlayerBuildScreen.vertexContainer.putBliz(PlayerBuildScreen.COMPONENT, TextureBufferInfo.of(getX(), getY(), width, height, 128, 41, 17, 17, 256, 256, pose.last().pose()).withRenderInfo(TextureBufferInfo.RenderInfo.ofOpacity(0.5f)));
+        /*
         guiGraphics.setColor(1.0f, 1.0f, 1.0f, 0.5f);
         guiGraphics.blit(PlayerBuildScreen.COMPONENT, getX(), getY(), width, height, 128, 41, 17, 17, 256, 256);
         guiGraphics.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-
+*/
         if (itemStack != null) {
             pose.pushPose();
             //original radius 16
@@ -54,7 +56,12 @@ public class ArmorHolder extends AbstractWidget {
                 float scale = getWidth() / 16.0f;
                 pose.translate(getX(), getY(), 0);
                 pose.scale(scale, scale, 1);
+                //? if < 1.21.4 {
                 ItemStack defaultInstance = BuiltInRegistries.ITEM.get(ResourceLocationUtils.make("minecraft","stick")).getDefaultInstance();
+                //?} else {
+                /*ItemStack defaultInstance = BuiltInRegistries.ITEM.get(ResourceLocationUtils.make("minecraft","stick")).get().value().getDefaultInstance();
+                *///?}
+
                 guiGraphics.renderItem(defaultInstance, 0, 0);
                 pose.popPose();
                 if (isHovered) {

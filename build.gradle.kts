@@ -243,11 +243,11 @@ dependencies {
     }*/
 
     modstitchImplementation("com.google.code.findbugs:jsr305:3.0.2")
-    if(minecraft == "1.20.1" && loader == "forge") {
+    /*if(minecraft == "1.20.1" && loader == "forge") {
         modstitchModImplementation("blank:Nirvana Lib-forge-1.20.1:2.0.13")
-    } else {
+    } else {*/
         modstitchModImplementation("maven.modrinth:nirvana-library:$loader-$minecraft-$libVersion")
-    }
+    //}
 
     modstitchModImplementation("maven.modrinth:common-network:${property("deps.common_network")}")
     //loader-specified deps

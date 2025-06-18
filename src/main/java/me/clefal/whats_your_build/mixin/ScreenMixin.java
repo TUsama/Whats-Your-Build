@@ -7,15 +7,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-//? 1.20.1
+//? =1.20.1 || fabric {
 /*@Mixin(value = Screen.class)*/
-//? >1.20.1
+//?} else {
 @Mixin(value = Screen.class, remap = false)
+//?}
+
 public class ScreenMixin {
     @Inject(
             method = "handleComponentClicked", at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/network/chat/ClickEvent;getAction()Lnet/minecraft/network/chat/ClickEvent$Action;"
+            target = "Lnet/minecraft/network/chat/Style;getClickEvent()Lnet/minecraft/network/chat/ClickEvent;"
     ),
             cancellable = true)
     public void onClickBuildClickEvent(Style style, CallbackInfoReturnable<Boolean> cir) {

@@ -43,6 +43,7 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
             //? 1.20.1 {
             /*InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (getX() + getWidth() / 4f), (int) (getY() + getHeight() / 1.3f), (int) (32 + (35f * Math.pow(screen.scale - 1, 1.0d))), (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, screen.targetPlayer);
             *///?} else {
+            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i - 46, j + 28, i + 95, j + 98, 35, 0.0625F, mouseX, mouseY, this.minecraft.player);
             //?}
         }
 

@@ -26,7 +26,7 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
         //? 1.20.1
         /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {}, message);*/
         //? >1.20.1
-        super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "non-highlight"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "highlight"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "highlight")), button -> {}, message);
+        super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/non-highlight.png"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "highlight"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/highlight.png")), button -> {}, message);
         this.component = component;
         this.setTooltip(Tooltip.create(message));
         this.screen = screen;
@@ -42,11 +42,11 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
         pose.translate(0, 0, 10);
         if (!this.isHoveredOrFocused()) {
             guiGraphics.setColor(1, 1, 1, 0.7f);
-            screen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64, pose.last().pose()));
+            PlayerBuildScreen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64, pose.last().pose()));
             //guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64);
             guiGraphics.setColor(1, 1, 1, 1);
         } else {
-            screen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 64, pose.last().pose()));
+            PlayerBuildScreen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 64, pose.last().pose()));
             //guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 64);
         }
         pose.popPose();
@@ -63,11 +63,11 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
         boolean hoveredOrFocused = this.isHoveredOrFocused();
         ResourceLocation resourceLocation = this.sprites.get(this.isActive(), hoveredOrFocused);
         if (hoveredOrFocused) {
-            guiGraphics.setColor(1, 1, 1, 0.7f);
-            guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 64);
-            guiGraphics.setColor(1, 1, 1, 1);
+
+            PlayerBuildScreen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 32, pose.last().pose()).withRenderInfo(TextureBufferInfo.RenderInfo.ofOpacity(0.7f)));
+
         } else {
-            guiGraphics.blit(resourceLocation, (int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 64);
+            PlayerBuildScreen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 32, pose.last().pose()));
         }
         pose.popPose();
     }

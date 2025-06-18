@@ -5,6 +5,7 @@ import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.modules.ModulesManager;
 import me.clefal.whats_your_build.network.NetworkHelper;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -29,7 +30,6 @@ public class S2CReturnBuildPacket implements S2CModPacket<S2CReturnBuildPacket> 
 
     @Override
     public void handleClient() {
-
         if (DevUtils.isInDev()) {
             NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(index, components), targetPlayer);
         } else {

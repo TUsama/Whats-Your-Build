@@ -18,10 +18,16 @@ public class ClientEntryPoint {
         CommonClass.clientInit();
 
         modBus.<RegisterKeyMappingsEvent>addListener(registerKeyMappingsEvent -> WYBKeys.registerAllKey(keyMappings -> keyMappings.forEach(registerKeyMappingsEvent::register)));
-
-        NeoForge.EVENT_BUS.<ClientTickEvent>addListener(event -> {
+        //? if < 1.21.1 {
+        /*NeoForge.EVENT_BUS.<ClientTickEvent>addListener(event -> {
             WYBKeys.consumerKeys();
         });
+        *///?} else {
+        NeoForge.EVENT_BUS.<ClientTickEvent.Post>addListener(event -> {
+            WYBKeys.consumerKeys();
+        });
+
+        //?}
 
     }
 }
