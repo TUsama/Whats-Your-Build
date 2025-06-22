@@ -1,9 +1,9 @@
 package me.clefal.whats_your_build.data.modules.armor;
 
 import com.mojang.serialization.Codec;
-import me.clefal.whats_your_build.client.screen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
-import me.clefal.whats_your_build.client.screen.vanilla.VanillaArmorMenuTab;
+import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.vanilla.VanillaArmorMenuTab;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
 
@@ -30,8 +30,5 @@ public class VanillaArmorComponentClientHandler implements IComponentClientHandl
     }
 
 
-    @Override
-    public Codec<VanillaArmorComponent> getCodeC() {
-        return VanillaArmorComponent.CODEC;
-    }
+
 }

@@ -2,8 +2,8 @@
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
 import com.mojang.serialization.Codec;
-import me.clefal.whats_your_build.client.screen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
 import me.clefal.whats_your_build.data.modules.compat.curios.menu.CuriosMenuTab;
@@ -30,9 +30,6 @@ public class CuriosClientHandler implements IComponentClientHandler<CuriosCompon
         return screen -> new CuriosMenuTab(((CuriosComponent) component), screen);
     }
 
-    @Override
-    public Codec<CuriosComponent> getCodeC() {
-        return CuriosComponent.CODEC;
-    }
+
 }
 //?}

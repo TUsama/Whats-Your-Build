@@ -1,14 +1,13 @@
-package me.clefal.whats_your_build.client.screen.vanilla;
+package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 
-import com.clefal.nirvana_lib.relocated.io.vavr.collection.Stream;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.clefal.whats_your_build.client.screen.BuildMenu;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenu;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 
-import java.util.List;
 
 public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
     private final List<ArmorHolder> holders;
@@ -19,14 +18,13 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
 
         holderRadius = (int) (holderRadius * screen.scale);
 
-        holders = Stream.of(0, 1, 2, 3)
+        holders = List.of(0, 1, 2, 3)
                 .map(integer -> {
                     if (component.armors().size() - 1 >= integer) {
                         return new ArmorHolder(holderRadius, component.armors().get(integer));
                     }
                     return new ArmorHolder(holderRadius, null);
-                })
-                .asJava();
+                });
     }
 
 

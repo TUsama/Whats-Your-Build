@@ -2,12 +2,11 @@
 package me.clefal.whats_your_build.data.modules.compat.curios.menu;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.clefal.whats_your_build.client.screen.BuildMenu;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
-import me.clefal.whats_your_build.client.screen.vanilla.ArmorHolder;
+import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenu;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.vanilla.ArmorHolder;
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 
 import java.util.List;
 

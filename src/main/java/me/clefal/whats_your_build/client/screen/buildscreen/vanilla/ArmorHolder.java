@@ -1,18 +1,16 @@
-package me.clefal.whats_your_build.client.screen.vanilla;
+package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 
 import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.nirvana_lib.utils.ResourceLocationUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 

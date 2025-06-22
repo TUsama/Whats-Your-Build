@@ -1,14 +1,18 @@
 package me.clefal.whats_your_build.data.handler;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.Iterator;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.Seq;
 import com.clefal.nirvana_lib.utils.SideUtils;
 import com.google.common.collect.ImmutableList;
-import me.clefal.whats_your_build.client.screen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
+import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.modules.ModulesManager;
-import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -43,16 +47,21 @@ public class HandlerManager {
         return API.For(clientHandlers).yield();
     }
 
-    public List<IBuildComponent<?>> readBuf(List<Byte> index, FriendlyByteBuf buf){
-        return API.For(index)
-                .yield(x -> clientHandlers.get(x).readBuf(buf))
-                .collect(ImmutableList.toImmutableList());
+
+    public List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
+        Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
+        return components
+                .map(byteTuple2 -> clientHandlers.get(byteTuple2._1()).getBuildMenuTabFunction(components.get(byteTuple2._1())))
+                .asJava();
+
     }
 
-    public List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(List<Byte> index, List<IBuildComponent<?>> components){
-        return API.For(index)
-                .yield(x -> clientHandlers.get(x).getBuildMenuTabFunction(components.get(x)))
-                .collect(ImmutableList.toImmutableList());
+    public List<IComponentClientHandler<?>> getClientHandlers(Build build){
+        Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
+        Seq<IComponentClientHandler<?>> map = Seq.narrow(components
+                .map(byteTuple2 -> (clientHandlers.get(byteTuple2._1()))));
+
+        return map.asJava();
     }
 
 

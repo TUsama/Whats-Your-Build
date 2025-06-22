@@ -1,8 +1,8 @@
 //? if neoforge || forge {
 package me.clefal.whats_your_build.data.modules.compat.curios.menu;
 
-import me.clefal.whats_your_build.client.screen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import net.minecraft.network.chat.Component;
 

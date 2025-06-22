@@ -3,6 +3,7 @@ package me.clefal.whats_your_build.network.s2c;
 
 import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.nirvana_lib.utils.DevUtils;
+import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.ModulesManager;
@@ -13,15 +14,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class S2CReturnBuildPacket implements S2CModPacket<S2CReturnBuildPacket> {
-    private List<IBuildComponent<?>> components;
     private UUID targetPlayer;
-    private List<Byte> index;
+    private Build build;
 
 
-    public S2CReturnBuildPacket(List<IBuildComponent<?>> components, UUID targetPlayer, List<Byte> index) {
-        this.components = components;
+    public S2CReturnBuildPacket(Build build, UUID targetPlayer) {
         this.targetPlayer = targetPlayer;
-        this.index = index;
+        this.build = build;
     }
 
     public S2CReturnBuildPacket() {
@@ -31,10 +30,10 @@ public class S2CReturnBuildPacket implements S2CModPacket<S2CReturnBuildPacket> 
     @Override
     public void handleClient() {
         if (DevUtils.isInDev()) {
-            NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(index, components), targetPlayer);
+            NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(build), targetPlayer);
         } else {
-            if (!index.isEmpty()) {
-                NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(index, components), targetPlayer);
+            if (!build.isEmpty()) {
+                NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(build), targetPlayer);
             }
         }
 
@@ -45,21 +44,13 @@ public class S2CReturnBuildPacket implements S2CModPacket<S2CReturnBuildPacket> 
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeUUID(targetPlayer);
-        try {
-            buf.writeCollection(index, (buf1, aByte) -> buf1.writeByte(aByte));
-            for (IBuildComponent component : components) {
-                buf.writeJsonWithCodec(component.getCodec(), component);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        buf.writeJsonWithCodec(Build.CODEC, build);
     }
 
     @Override
     public void read(FriendlyByteBuf friendlyByteBuf) {
         targetPlayer = friendlyByteBuf.readUUID();
-        index = friendlyByteBuf.readList(FriendlyByteBuf::readByte);
-        this.components = HandlerManager.getInstance().readBuf(index, friendlyByteBuf);
+        build = friendlyByteBuf.readJsonWithCodec(Build.CODEC);
     }
 
     @Override

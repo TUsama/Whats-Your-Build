@@ -1,6 +1,7 @@
 package me.clefal.whats_your_build.data.modules.armor;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.data.handler.ComponentType;
@@ -11,8 +12,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildComponent<VanillaArmorComponent> {
-    public static final Codec<VanillaArmorComponent> CODEC = RecordCodecBuilder.create(i -> i.group(ItemStack.CODEC.listOf().fieldOf("armors").forGetter(VanillaArmorComponent::armors)).apply(i, VanillaArmorComponent::new));
-
+    public static final MapCodec<VanillaArmorComponent> CODEC = RecordCodecBuilder.mapCodec(i ->
+            i.group(
+                    ItemStack.CODEC.listOf().fieldOf("armors").forGetter(VanillaArmorComponent::armors)
+            ).apply(i, VanillaArmorComponent::new)
+    );
     @Override
     public byte getHandlerIndex() {
         return ComponentType.VANILLA_ARMOR;
@@ -35,7 +39,7 @@ public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildCom
 
 
     @Override
-    public Codec<VanillaArmorComponent> getCodec() {
+    public MapCodec<VanillaArmorComponent> getCodec() {
         return CODEC;
     }
 

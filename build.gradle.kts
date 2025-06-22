@@ -145,7 +145,6 @@ modstitch {
                 //gameDirectory = file("run")
             }
             runOnJBR(project)
-            //runOnJBR()
         }
     }
 

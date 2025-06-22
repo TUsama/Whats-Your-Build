@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.client.screen;
+package me.clefal.whats_your_build.client.screen.buildscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.mojang.blaze3d.systems.RenderSystem;

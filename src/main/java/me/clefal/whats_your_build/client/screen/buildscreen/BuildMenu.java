@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.client.screen;
+package me.clefal.whats_your_build.client.screen.buildscreen;
 
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.client.Minecraft;

@@ -44,7 +44,7 @@ public class C2SAskBuildPacket implements C2SModPacket<C2SAskBuildPacket> {
 
             if (allow) {
                 ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
-                S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), target, post.getIndex());
+                S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getResultBuild(), target);
                 NetworkUtils.sendToClient(s2CReturnBuildPacket, serverPlayer);
             } else {
                 serverPlayer.sendSystemMessage(Component.translatable("wyb.ask.reject"));
@@ -52,7 +52,7 @@ public class C2SAskBuildPacket implements C2SModPacket<C2SAskBuildPacket> {
         } else {
             DevUtils.runWhenOnDev(() -> {
                 ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(serverPlayer));
-                S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getComponents(), serverPlayer.getUUID(), post.getIndex());
+                S2CReturnBuildPacket s2CReturnBuildPacket = new S2CReturnBuildPacket(post.getResultBuild(), serverPlayer.getUUID());
                 NetworkUtils.sendToClient(s2CReturnBuildPacket, serverPlayer);
             });
         }

@@ -1,7 +1,7 @@
-package me.clefal.whats_your_build.client.screen.vanilla;
+package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 
-import me.clefal.whats_your_build.client.screen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import net.minecraft.network.chat.Component;
 

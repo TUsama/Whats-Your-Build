@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.client.screen;
+package me.clefal.whats_your_build.client.screen.buildscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
 import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
@@ -146,7 +146,7 @@ public class PlayerBuildScreen extends Screen {
                 //? 1.20.1 {
                 /*renderBackground(guiGraphics);
                 *///?} else {
-                //renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+                renderBackground(guiGraphics, mouseX, mouseY, partialTick);
                 //?}
                 pose.translate(topLeftX, topLeftY, 1);
                 vertexContainer.putBlitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0, pose.last().pose());
