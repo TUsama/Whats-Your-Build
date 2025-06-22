@@ -26,6 +26,7 @@ public class BuildSelectionList extends AbstractSelectionList<BuildSelectionList
         super(Minecraft.getInstance(), width, height, y1 - y0, HEIGHT);
         //setLeftPos(-10);
 
+        //? !=1.21.4
         this.setRenderHeader(false, 0);
         //? 1.20.1 {
         /*this.setRenderBackground(false);
@@ -40,10 +41,7 @@ public class BuildSelectionList extends AbstractSelectionList<BuildSelectionList
 
     }
 
-    @Override
-    protected int getScrollbarPosition() {
-        return this.width / 2 + 115;
-    }
+
 
 
     //not WIDTH!!

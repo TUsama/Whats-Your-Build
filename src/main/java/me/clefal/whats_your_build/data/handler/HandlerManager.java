@@ -51,7 +51,7 @@ public class HandlerManager {
     public List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return components
-                .map(byteTuple2 -> clientHandlers.get(byteTuple2._1()).getBuildMenuTabFunction(components.get(byteTuple2._1())))
+                .map(byteTuple2 -> clientHandlers.get(byteTuple2._1()).getBuildMenuTabFunction(components.get(byteTuple2._1()).get()))
                 .asJava();
 
     }

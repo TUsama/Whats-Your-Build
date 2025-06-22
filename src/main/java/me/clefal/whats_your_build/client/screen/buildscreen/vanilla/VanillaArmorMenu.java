@@ -32,6 +32,7 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
+        pose.translate(0, 0, 0.2);
         int i = (int) screen.getTabOriginalX();
         int j = (int) screen.getTabOriginalY();
         pose.pushPose();

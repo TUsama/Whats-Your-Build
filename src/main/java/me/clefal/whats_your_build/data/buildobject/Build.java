@@ -16,10 +16,12 @@ import java.util.Comparator;
 public class Build implements INetworkObject, IPersistedObject<Build> {
 
     public static final Codec<Build> CODEC = Codec.unboundedMap(
-            Codec.BYTE, IBuildComponent.COMPONENT_CODEC
+            Codec.STRING, IBuildComponent.COMPONENT_CODEC
     ).xmap(x -> new Build(List.ofAll(x.values())), build -> {
         Map<Byte, IBuildComponent<?>> components1 = Map.narrow(build.components);
-        return components1.toJavaMap();
+        return components1
+                .mapKeys(String::valueOf)
+                .toJavaMap();
     });
 
     private Map<Byte, ? extends IBuildComponent<?>> components;

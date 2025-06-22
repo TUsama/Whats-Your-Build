@@ -142,12 +142,7 @@ public class PlayerBuildScreen extends Screen {
 
             {
                 //background
-                pose.translate(0, 0, -10);
-                //? 1.20.1 {
-                /*renderBackground(guiGraphics);
-                *///?} else {
-                renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-                //?}
+                pose.translate(0, 0, -1);
                 pose.translate(topLeftX, topLeftY, 1);
                 vertexContainer.putBlitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0, pose.last().pose());
                 //guiGraphics.blitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0);
