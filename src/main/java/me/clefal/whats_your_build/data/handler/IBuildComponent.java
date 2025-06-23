@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 //? forge || neoforge
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IBuildComponent<SELF> {
     Map<Byte, MapCodec<? extends IBuildComponent<?>>> COMPONENT_CODECS = LinkedHashMap.of(
@@ -17,7 +18,10 @@ public interface IBuildComponent<SELF> {
 
     Codec<IBuildComponent<?>> COMPONENT_CODEC = Codec.BYTE.dispatch(
             IBuildComponent::getHandlerIndex,
-            index -> COMPONENT_CODECS.get(index).getOrElseThrow(() -> new IllegalArgumentException("can't find a Codec with index: " + index)));
+            index -> COMPONENT_CODECS.get(index).getOrElseThrow(() -> new IllegalArgumentException("can't find a Codec with index: " + index))
+    //? 1.20.1
+                    /*.codec()*/
+    );
 
     byte getHandlerIndex();
     //? 1.20.1

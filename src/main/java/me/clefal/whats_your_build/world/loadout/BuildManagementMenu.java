@@ -1,4 +1,4 @@
-//? forge || neoforge {
+//? neoforge {
 package me.clefal.whats_your_build.world.loadout;
 
 import me.clefal.whats_your_build.loaders.WYBMenuType;

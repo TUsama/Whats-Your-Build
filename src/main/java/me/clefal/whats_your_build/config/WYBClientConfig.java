@@ -56,7 +56,7 @@ public class WYBClientConfig extends Config {
         if (Minecraft.getInstance().getConnection() != null) {
             //? =1.20.1 {
             /*NetworkUtils.sendToServer(new C2SSendSyncingConfigPacket(UUIDUtil.getOrCreatePlayerUUID(Minecraft.getInstance().getUser().getGameProfile()), Map.of(
-                    "showYourBuildFor", new StringListValue(showYourBuildFor)
+                    "showYourBuildFor", new StringListValue(config.showYourBuildFor)
             )));
             *///?} else {
             NetworkUtils.sendToServer(new C2SSendSyncingConfigPacket(Minecraft.getInstance().getUser().getProfileId(), Map.of(

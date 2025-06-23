@@ -1,3 +1,4 @@
+//? neoforge {
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
@@ -61,3 +62,4 @@ public class BuildSelectionList extends AbstractSelectionList<BuildSelectionList
         }
     }
 }
+//?}
