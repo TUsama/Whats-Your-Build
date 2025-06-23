@@ -2,12 +2,16 @@
 
 /*package me.clefal.whats_your_build.loaders.forge;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.logging.LogUtils;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.loaders.WhatsYourBuildModulesRegister;
+import me.clefal.whats_your_build.network.s2c.S2CAskConfigPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -33,6 +37,9 @@ public class ForgeEntrypoint {
         });
 
         CommonClass.packetInit();
+        MinecraftForge.EVENT_BUS.<PlayerEvent.PlayerLoggedInEvent>addListener(x -> {
+            if (x.getEntity() instanceof ServerPlayer serverPlayer) NetworkUtils.sendToClient(new S2CAskConfigPacket(), serverPlayer);
+        });
     }
 }
 *///?}

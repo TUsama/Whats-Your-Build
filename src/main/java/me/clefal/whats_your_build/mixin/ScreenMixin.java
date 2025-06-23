@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 //? =1.20.1 || fabric {
-/*@Mixin(value = Screen.class)*/
-//?} else {
+/*@Mixin(value = Screen.class)
+*///?} else {
 @Mixin(value = Screen.class, remap = false)
 //?}
 

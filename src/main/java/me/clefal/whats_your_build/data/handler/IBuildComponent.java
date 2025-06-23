@@ -5,12 +5,14 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
+//? forge || neoforge
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 
 public interface IBuildComponent<SELF> {
     Map<Byte, MapCodec<? extends IBuildComponent<?>>> COMPONENT_CODECS = LinkedHashMap.of(
-            ComponentType.VANILLA_ARMOR, VanillaArmorComponent.CODEC,
-            ComponentType.CURIOS, CuriosComponent.CODEC
+            ComponentType.VANILLA_ARMOR, VanillaArmorComponent.CODEC
+            //? forge || neoforge
+            ,ComponentType.CURIOS, CuriosComponent.CODEC
     );
 
     Codec<IBuildComponent<?>> COMPONENT_CODEC = Codec.BYTE.dispatch(

@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class ServerAskBuildPermissionCheckEvent extends ServerEvent implements ICancellableEvent {
     public final ServerPlayer beAsked;
     public final ServerPlayer asker;
-    public boolean isAllowed = false;
+    public boolean isAllowed = true;
 
     public ServerAskBuildPermissionCheckEvent(ServerPlayer beAsked, ServerPlayer asker) {
         this.beAsked = beAsked;

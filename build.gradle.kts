@@ -289,11 +289,11 @@ msPublishing {
         //dryRun = true
         val cfOptions = curseforgeOptions {
             accessToken = file("D:\\curseforge-key.txt").readText()
-            projectId = "1150640"
+            projectId = "1233310"
             minecraftVersions.add(minecraft)
             requires("nirvana-library")
         }
-
+/*
         // Modrinth options used by both Fabric and Forge
         val mrOptions = modrinthOptions {
             accessToken = file("D:\\modrinth-key.txt").readText()
@@ -302,16 +302,16 @@ msPublishing {
             minecraftVersions.add(minecraft)
             requires("nirvana-library")
         }
-
+*/
         curseforge("toCurseForge") {
             from(cfOptions)
         }
 
-
+/*
         modrinth("toModrinth") {
             from(mrOptions)
         }
-
+*/
 
     }
 

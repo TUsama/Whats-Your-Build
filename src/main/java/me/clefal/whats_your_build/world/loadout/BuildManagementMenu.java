@@ -1,6 +1,7 @@
+//? forge || neoforge {
 package me.clefal.whats_your_build.world.loadout;
 
-import me.clefal.whats_your_build.register.WYBMenuType;
+import me.clefal.whats_your_build.loaders.WYBMenuType;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -10,7 +11,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class BuildManagementMenu extends AbstractContainerMenu {
+public class BuildManagementMenu
+        extends
+        AbstractContainerMenu
+{
     public static final int listWidth = 80;
     public static final int previewWidth = 120;
 
@@ -57,3 +61,4 @@ public class BuildManagementMenu extends AbstractContainerMenu {
         return true;
     }
 }
+//?}

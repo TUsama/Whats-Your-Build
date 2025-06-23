@@ -6,6 +6,7 @@ import com.clefal.nirvana_lib.config.StringListValue;
 import com.clefal.nirvana_lib.config.SyncingPersonalConfig;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.IEventBus;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
+import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.event.server.ServerAskBuildPermissionCheckEvent;
 import net.minecraft.server.level.ServerPlayer;
 

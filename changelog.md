@@ -1,3 +1,10 @@
+### 0.3.0
+fix a bug that sometime the share build to all feature can't work properly.
+multiversion.
+
+**Know issue:**
+the background of build item will change its opacity when you change the game widow size.
+
 ### 0.2.2
 try to fix start up crash
 
