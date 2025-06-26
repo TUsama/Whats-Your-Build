@@ -21,7 +21,7 @@ public class ServerGatherBuildComponentEvent extends ServerEvent {
     }
 
     public Build getResultBuild(){
-        return new Build(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(components));
+        return new Build(com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(components), "current_build");
     }
 
 }

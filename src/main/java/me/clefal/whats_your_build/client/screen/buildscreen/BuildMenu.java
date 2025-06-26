@@ -16,12 +16,12 @@ public abstract class BuildMenu<T extends IBuildComponent<?>> extends AbstractWi
     protected final Minecraft minecraft = Minecraft.getInstance();
 
     protected final T component;
-    protected final PlayerBuildScreen screen;
+    protected final RenderContext context;
 
-    public BuildMenu(T component, PlayerBuildScreen screen) {
+    public BuildMenu(T component, RenderContext context) {
         super(0, 0, 0, 0, Component.literal(""));
         this.component = component;
-        this.screen = screen;
+        this.context = context;
     }
 
 

@@ -1,14 +1,20 @@
 //? neoforge {
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
+import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.data.buildobject.Build;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.resources.ResourceLocation;
+
+import javax.annotation.Nullable;
 
 public class BuildSelectionList extends AbstractSelectionList<BuildSelectionList.BuildEntry> {
 
@@ -53,12 +59,31 @@ public class BuildSelectionList extends AbstractSelectionList<BuildSelectionList
 
 
 
-    public abstract class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
+    public class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
+        @Nullable
+        public Build storageBuild;
+
+
+        public BuildEntry(@Nullable Build storageBuild) {
+            this.storageBuild = storageBuild;
+        }
+
+        @Override
+        public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
+            if (storageBuild != null){
+                vertexContainer.putString(DrawStringBufferInfo.of("" + index, left + 24, top, ChatFormatting.BLACK.getColor(), pose.last().pose()));
+
+                vertexContainer.putString(DrawStringBufferInfo.of(storageBuild.getName(), left + 48, top, ChatFormatting.BLACK.getColor(), pose.last().pose()));
+            }
+
+            pose.popPose();
+        }
 
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            RenderSystem.enableDepthTest();
-            vertexContainer.putBlitNineSliced(TEXTURE, left, top, rowWidth, HEIGHT, 5, 5, 5, 5, WIDTH, HEIGHT, 0, 166, guiGraphics.pose().last().pose());
+            //vertexContainer.putBlitNineSliced(TEXTURE, left, top, rowWidth, HEIGHT, 5, 5, 5, 5, WIDTH, HEIGHT, 0, 166, guiGraphics.pose().last().pose());
         }
     }
 }

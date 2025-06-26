@@ -11,6 +11,8 @@ import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+
 public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent<CuriosComponent> {
 
     public static final MapCodec<CuriosComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(ItemStack.CODEC.listOf().fieldOf("curios").forGetter(x -> x.curios().asJava())).apply(i, x -> new CuriosComponent(List.ofAll(x))));
@@ -37,6 +39,12 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
     @Override
     public MapCodec<CuriosComponent> getCodec() {
         return CODEC;
+    }
+
+    @Override
+    public CuriosComponent copy() {
+
+        return new CuriosComponent(curios.map(ItemStack::copy));
     }
 
 }

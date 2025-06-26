@@ -47,9 +47,9 @@ public class PlayerBuildScreen extends Screen {
     public static VertexContainer vertexContainer = new VertexContainer();
 
 
-    public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs, UUID target) {
+    public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs, Player target) {
         super(Component.literal(""));
-        this.targetPlayer = Minecraft.getInstance().player.level().getPlayerByUUID(target);
+        this.targetPlayer = target;
         this.tabs = tabs.map(x -> x.apply(this));
 
     }
@@ -99,7 +99,7 @@ public class PlayerBuildScreen extends Screen {
         this.currentMenu = null;
         if (!tabs.isEmpty()) {
             if (!this.tabs.headOption().isEmpty()) {
-                this.currentMenu = this.tabs.headOption().get().getMenu().apply(this);
+                this.currentMenu = this.tabs.headOption().get().getMenu().get();
                 setInitialFocus(this.tabs.headOption().get());
             }
         }
@@ -119,10 +119,6 @@ public class PlayerBuildScreen extends Screen {
         RenderSystem.enableDepthTest();
 
         pose.pushPose();
-        /*
-        VertexConsumer apply = guiGraphics.bufferSource().getBuffer(RenderTypeCreator.gui.apply(COMPONENT));
-        apply.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).color(1.0f, 1, 1, 1).endVertex();
-        apply.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).color(1.0f, 1, 1, 1).endVertex();*/
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         float portion = 8.0f;
@@ -187,5 +183,9 @@ public class PlayerBuildScreen extends Screen {
 
         pose.popPose();
         vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.gui);
+    }
+
+    public RenderContext generateRenderContext(){
+        return new RenderContext(((int) this.getTabOriginalX()), ((int) this.getTabOriginalY()), this.scale, this.targetPlayer);
     }
 }

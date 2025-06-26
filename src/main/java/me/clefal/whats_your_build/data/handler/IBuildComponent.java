@@ -29,4 +29,5 @@ public interface IBuildComponent<SELF> {
     //? > 1.20.1
     String getIdentifier();
     MapCodec<SELF> getCodec();
+    SELF copy();
 }

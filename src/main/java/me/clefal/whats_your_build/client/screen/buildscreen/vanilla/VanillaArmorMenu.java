@@ -3,7 +3,7 @@ package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenu;
-import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.RenderContext;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -13,10 +13,10 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
     private final List<ArmorHolder> holders;
     private int holderRadius = 16;
 
-    public VanillaArmorMenu(VanillaArmorComponent component, PlayerBuildScreen screen) {
-        super(component, screen);
+    public VanillaArmorMenu(VanillaArmorComponent component, RenderContext context) {
+        super(component, context);
 
-        holderRadius = (int) (holderRadius * screen.scale);
+        holderRadius = (int) (holderRadius * context.scale());
 
         holders = List.of(0, 1, 2, 3)
                 .map(integer -> {
@@ -33,18 +33,18 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(0, 0, 0.2);
-        int i = (int) screen.getTabOriginalX();
-        int j = (int) screen.getTabOriginalY();
+        int i = context.tabOriginalX();
+        int j = context.tabOriginalY();
         pose.pushPose();
         // x and y, two magic numbers
         //4, 1.5 and (32 * (1 + screen.scale / 4.0f)) are all magic numbers
-        if (screen.targetPlayer != null){
-            //? 1.20.1 {
-            /*InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (getX() + getWidth() / 4f), (int) (getY() + getHeight() / 1.3f), (int) (32 + (35f * Math.pow(screen.scale - 1, 1.0d))), (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, screen.targetPlayer);
-            *///?} else {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i - 46, j + 28, i + 95, j + 98, 35, 0.0625F, mouseX, mouseY, this.minecraft.player);
-            //?}
-        }
+
+        //? 1.20.1 {
+        /*InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, (int) (getX() + getWidth() / 4f), (int) (getY() + getHeight() / 1.3f), (int) (32 + (35f * Math.pow(context.scale() - 1, 1.0d))), (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, context.player());
+        *///?} else {
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, i - 46, j + 28, i + 95, j + 98, 35, 0.0625F, mouseX, mouseY, context.player());
+        //?}
+
 
         pose.popPose();
 

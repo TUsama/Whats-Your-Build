@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends BuildMenu<E>> extends ImageButton {
     public static int TAB_WIDTH = 14;
@@ -76,11 +77,11 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
     //?}
 
 
-    public abstract Function<PlayerBuildScreen, T> getMenu();
+    public abstract Supplier<T> getMenu();
 
     @Override
     public final void onPress() {
-        screen.setNewMenu(getMenu().apply(screen));
+        screen.setNewMenu(getMenu().get());
     }
 
 

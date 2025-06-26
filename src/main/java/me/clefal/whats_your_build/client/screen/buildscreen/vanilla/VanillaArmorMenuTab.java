@@ -2,10 +2,11 @@ package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
+import me.clefal.whats_your_build.client.screen.buildscreen.RenderContext;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import net.minecraft.network.chat.Component;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class VanillaArmorMenuTab extends BuildMenuTab<VanillaArmorComponent, VanillaArmorMenu> {
 
@@ -15,8 +16,8 @@ public class VanillaArmorMenuTab extends BuildMenuTab<VanillaArmorComponent, Van
     }
 
     @Override
-    public Function<PlayerBuildScreen, VanillaArmorMenu> getMenu() {
-        return (screen) -> new VanillaArmorMenu(component, screen);
+    public Supplier<VanillaArmorMenu> getMenu() {
+        return () -> new VanillaArmorMenu(component, screen.generateRenderContext());
     }
 
 }
