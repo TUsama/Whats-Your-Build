@@ -6,6 +6,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Seq;
 import com.clefal.nirvana_lib.utils.SideUtils;
 import com.google.common.collect.ImmutableList;
+import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.buildobject.Build;
@@ -48,7 +49,7 @@ public class HandlerManager {
     }
 
 
-    public List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
+    public List<Function<BaseBuildScreen, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return components
                 .map(byteTuple2 -> clientHandlers.get(byteTuple2._1()).getBuildMenuTabFunction(components.get(byteTuple2._1()).get()))

@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
 import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.utils.IBufferSourceProvider;
 import net.minecraft.ChatFormatting;
@@ -26,7 +27,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Function;
 
-public class PlayerBuildScreen extends Screen {
+public class PlayerBuildScreen extends BaseBuildScreen {
 
     public final static ResourceLocation COMPONENT = CommonClass.id("textures/gui/component.png");
     protected static int BACKGROUND_WIDTH = 128;
@@ -35,8 +36,6 @@ public class PlayerBuildScreen extends Screen {
     private float topLeftX;
     @Getter
     private float topLeftY;
-    public final Player targetPlayer;
-    private final List<BuildMenuTab<?, ?>> tabs;
     @Getter
     private float tabOriginalX;
     @Getter
@@ -47,11 +46,8 @@ public class PlayerBuildScreen extends Screen {
     public static VertexContainer vertexContainer = new VertexContainer();
 
 
-    public PlayerBuildScreen(List<Function<PlayerBuildScreen, BuildMenuTab<?, ?>>> tabs, Player target) {
-        super(Component.literal(""));
-        this.targetPlayer = target;
-        this.tabs = tabs.map(x -> x.apply(this));
-
+    public PlayerBuildScreen(List<Function<BaseBuildScreen, BuildMenuTab<?, ?>>> tabs, Player target) {
+        super(target, tabs);
     }
 
     @Override
@@ -62,9 +58,6 @@ public class PlayerBuildScreen extends Screen {
         }
     }
 
-    public void setNewMenu(BuildMenu<?> menu) {
-        this.currentMenu = menu;
-    }
 
 
 
@@ -90,7 +83,7 @@ public class PlayerBuildScreen extends Screen {
         this.tabOriginalX = topLeftX + BACKGROUND_WIDTH / 5.0f;
         this.tabOriginalY = topLeftY + BACKGROUND_HEIGHT / 5.0f;
         int i = (int) tabOriginalX;
-        for (BuildMenuTab<?, ?> tab : tabs) {
+        for (BuildMenuTab<?, ?> tab : super.tabs) {
             tab.setPosition(i, (int) tabOriginalY);
             addRenderableWidget(tab);
             i += tab.getWidth();

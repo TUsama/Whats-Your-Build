@@ -4,6 +4,7 @@ import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -20,10 +21,10 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
     public static int TAB_WIDTH = 14;
     public static int TAB_HEIGHT = 8;
     protected E component;
-    protected PlayerBuildScreen screen;
+    protected BaseBuildScreen screen;
 
 
-    public BuildMenuTab(Component message, E component, PlayerBuildScreen screen) {
+    public BuildMenuTab(Component message, E component, BaseBuildScreen screen) {
         //? 1.20.1
         /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {}, message);*/
         //? >1.20.1

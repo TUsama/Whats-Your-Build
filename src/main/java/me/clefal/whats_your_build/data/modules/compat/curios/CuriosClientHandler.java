@@ -2,6 +2,7 @@
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
 import com.mojang.serialization.Codec;
+import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.handler.ComponentType;
@@ -26,7 +27,7 @@ public class CuriosClientHandler implements IComponentClientHandler<CuriosCompon
     }
 
     @Override
-    public Function<PlayerBuildScreen, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
+    public Function<BaseBuildScreen, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
         return screen -> new CuriosMenuTab(((CuriosComponent) component), screen);
     }
 

@@ -1,5 +1,6 @@
 package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 
+import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.RenderContext;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 public class VanillaArmorMenuTab extends BuildMenuTab<VanillaArmorComponent, VanillaArmorMenu> {
 
 
-    public VanillaArmorMenuTab(VanillaArmorComponent component, PlayerBuildScreen screen) {
+    public VanillaArmorMenuTab(VanillaArmorComponent component, BaseBuildScreen screen) {
         super(Component.translatable("wyb.screen.tab.armor"), component, screen);
     }
 
