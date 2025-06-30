@@ -9,6 +9,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Seq;
 import com.clefal.nirvana_lib.utils.SideUtils;
 import lombok.SneakyThrows;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.modules.ModulesManager;
@@ -50,17 +51,15 @@ public class HandlerManager {
     }
 
 
-    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<Function<IBuildMenuContainer, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<Function<IBuildMenuContainerHolder<?>, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return this.getClientHandlers(build)
-                .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()))).toList();
+                .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()).get())).toList();
 
     }
 
-    @SneakyThrows
     public Seq<IComponentClientHandler<?>> getClientHandlers(Build build){
-        CheckedFunction1<IBuildComponent<?>, IComponentClientHandler<?>> checkedFunction1 = iBuildComponent -> clientHandlers.get(iBuildComponent.getHandlerIndex());
-        return build.getComponents().values().map(checkedFunction1::apply);
+        return build.getComponents().values().map(x -> clientHandlers.get(x.getHandlerIndex()));
     }
 
 

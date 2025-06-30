@@ -66,7 +66,7 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
         ResourceLocation resourceLocation = this.sprites.get(this.isActive(), hoveredOrFocused);
         if (hoveredOrFocused) {
 
-            PlayerBuildScreen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 32, pose.last().pose()).withRenderInfo(TextureBufferInfo.RenderInfo.ofOpacity(0.7f)));
+            PlayerBuildScreen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 4), getY(), getHeight(), getHeight(), 0, 0, 32, 32, 32, 32, pose.last().pose()));
 
         } else {
             PlayerBuildScreen.vertexContainer.putBliz(resourceLocation, TextureBufferInfo.of((int) (getX() + (getWidth() / 2.0f) - 5), getY() - 1, getHeight() + 1, getHeight() + 1, 0, 32, 32, 32, 32, 32, pose.last().pose()));

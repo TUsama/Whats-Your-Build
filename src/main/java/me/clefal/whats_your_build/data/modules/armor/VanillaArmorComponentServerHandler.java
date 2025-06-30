@@ -26,7 +26,7 @@ public class VanillaArmorComponentServerHandler implements IComponentServerHandl
         event.addComponent(new VanillaArmorComponent(List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
                 .filter(x -> player.inventoryMenu.slots.get(8 - x.getIndex()).hasItem())
                 .map(x -> player.inventoryMenu.slots.get(8 - x.getIndex()).getItem())
-                .asJava()));
+                ));
 
     }
 

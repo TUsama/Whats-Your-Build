@@ -34,11 +34,11 @@ public class ClientEntryPoint {
         NeoForge.EVENT_BUS.<ClientTickEvent.Post>addListener(event -> {
             WYBKeys.consumerKeys();
         });
-
+/*
         NeoForge.EVENT_BUS.<RegisterMenuScreensEvent>addListener(x -> {
             x.register(WYBMenuType.buildManagementMenuType.get(), (menu, inventory, title) -> new BuildManagementScreen(menu, inventory, ));
         });
-
+*/
         //?}
 
     }

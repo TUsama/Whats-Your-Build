@@ -6,25 +6,35 @@ import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.BuildPresentContainer;
+import me.clefal.whats_your_build.client.screen.loadoutscreen.BuildViewOnlyContainer;
 import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.utils.IBufferSourceProvider;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
+
+import static com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator.createRenderType;
 
 public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHolder<BuildPresentContainer> {
 
@@ -32,7 +42,7 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
     public static VertexContainer vertexContainer = new VertexContainer();
     protected static int BACKGROUND_WIDTH = 128;
     protected static int BACKGROUND_HEIGHT = 128;
-    private final BuildPresentContainer buildViewContainer;
+    private BuildPresentContainer buildViewContainer;
     public float scale;
     @Getter
     private float topLeftX;
@@ -42,13 +52,12 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
     private float tabOriginalX;
     @Getter
     private float tabOriginalY;
-    @Nullable
-    private BuildMenu<?> currentMenu;
+
 
 
     public PlayerBuildScreen(Build build, Player target) {
         super(Component.literal(""));
-        this.buildViewContainer = new BuildPresentContainer(target, build);
+        this.buildViewContainer = new BuildViewOnlyContainer(target, build);
     }
 
     @Override
@@ -80,8 +89,12 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
 
         this.tabOriginalX = topLeftX + BACKGROUND_WIDTH / 5.0f;
         this.tabOriginalY = topLeftY + BACKGROUND_HEIGHT / 5.0f;
-        int i = (int) tabOriginalX;
-        List<BuildMenuTab<?, ?>> tabs = buildViewContainer.tabs;
+        buildViewContainer.initTabs(this);
+        buildViewContainer.initTabsPosition(((int) tabOriginalX), ((int) tabOriginalY));
+        addRenderableWidget(buildViewContainer);
+        setFocused(buildViewContainer);
+
+        /*
         for (BuildMenuTab<?, ?> tab : tabs) {
             tab.setPosition(i, (int) tabOriginalY);
             addRenderableWidget(tab);
@@ -95,14 +108,14 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
                 setInitialFocus(tabs.headOption().get());
             }
         }
-
+*/
     }
-
+    //always focus on buildViewContainer
 
     @Override
     public void setFocused(@Nullable GuiEventListener listener) {
-        if (!(listener instanceof BuildMenuTab<?, ?> tab)) return;
-        super.setFocused(tab);
+        if (!(listener instanceof BuildPresentContainer container)) return;
+        super.setFocused(container);
     }
 
     @Override
@@ -111,7 +124,7 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
         RenderSystem.enableDepthTest();
 
         pose.pushPose();
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
 
         float portion = 8.0f;
         float interval = BACKGROUND_WIDTH * (1 / portion);
@@ -156,26 +169,24 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
             pose.popPose();
         }
 
+        //menu
 
-        {
-            //menu
-            pose.pushPose();
 
-            if (currentMenu != null) {
+        pose.pushPose();
+        float menuOffsetY = 5 * scale;
+        buildViewContainer.setCurrentMenuSize((int) (BACKGROUND_WIDTH - 2 * interval), (int) (topLeftY + BACKGROUND_HEIGHT - lineStartY));
+        buildViewContainer.setCurrentMenuPosition(((int) lineStartX), (int) (lineStartY + menuOffsetY));
+        pose.popPose();
 
-                pose.pushPose();
-                float menuOffsetY = 5 * scale;
-                currentMenu.setSize((int) (BACKGROUND_WIDTH - 2 * interval), (int) (topLeftY + BACKGROUND_HEIGHT - lineStartY));
-                currentMenu.setPosition((int) lineStartX, (int) (lineStartY + menuOffsetY));
-                currentMenu.render(guiGraphics, mouseX, mouseY, partialTick);
-                pose.popPose();
-            }
-            pose.popPose();
-        }
 
         pose.popPose();
-        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.gui);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), gui);
     }
+
+    public static final Function<ResourceLocation, RenderType> gui = Util.memoize((resourceLocation) -> {
+        return createRenderType("nl_normal_gui", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 1024, false, true, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexColorShader)).setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false)).setTransparencyState(new RenderStateShard.TransparencyStateShard("normal_blend", RenderSystem::enableBlend, RenderSystem::disableBlend)).setDepthTestState(new RenderStateShard.DepthTestStateShard("nl_normal_gui_depth", 515)).createCompositeState(false));
+    });
 
 
     public RenderContext generateRenderContext() {
@@ -186,4 +197,6 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
     public BuildPresentContainer getContainer() {
         return buildViewContainer;
     }
+
+
 }

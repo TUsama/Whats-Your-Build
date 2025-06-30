@@ -1,17 +1,15 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenu;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.buildscreen.RenderContext;
 import me.clefal.whats_your_build.data.buildobject.Build;
-import me.clefal.whats_your_build.data.handler.HandlerManager;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 
-public class BuildManagementViewContainer implements IBuildMenuContainer {
+public class BuildManagementViewContainer extends BuildPresentContainer {
 
     public final Player targetPlayer;
     public Build currentBuild;
@@ -19,16 +17,16 @@ public class BuildManagementViewContainer implements IBuildMenuContainer {
     @Nullable
     private BuildMenu<?> currentMenu;
 
-    public BuildManagementViewContainer(Player targetPlayer) {
+    public BuildManagementViewContainer(Player targetPlayer, Build build) {
+        super(targetPlayer, build);
         this.targetPlayer = targetPlayer;
         this.tabs = List.of();
     }
 
-    public void setCurrentBuild(Build build){
+    public void setCurrentBuild(Build build) {
         this.currentBuild = build;
-        this.tabs = HandlerManager.getInstance().getBuildMenuTabFunction(build).map(x -> x.apply(this));
         this.currentMenu = null;
-        if (!tabs.isEmpty()){
+        if (!tabs.isEmpty()) {
             this.currentMenu = tabs.headOption().get().getMenu().get();
         }
     }
@@ -44,4 +42,9 @@ public class BuildManagementViewContainer implements IBuildMenuContainer {
         this.currentMenu = menu;
     }
 
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+
+    }
 }
