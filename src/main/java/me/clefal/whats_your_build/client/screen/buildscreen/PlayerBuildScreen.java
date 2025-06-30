@@ -9,8 +9,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
+import me.clefal.whats_your_build.client.screen.loadoutscreen.BuildPresentContainer;
 import me.clefal.whats_your_build.config.WYBClientConfig;
+import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.utils.IBufferSourceProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -22,16 +24,16 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-
 import javax.annotation.Nullable;
-import java.util.UUID;
-import java.util.function.Function;
 
-public class PlayerBuildScreen extends BaseBuildScreen {
+public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHolder<BuildPresentContainer> {
 
     public final static ResourceLocation COMPONENT = CommonClass.id("textures/gui/component.png");
+    public static VertexContainer vertexContainer = new VertexContainer();
     protected static int BACKGROUND_WIDTH = 128;
     protected static int BACKGROUND_HEIGHT = 128;
+    private final BuildPresentContainer buildViewContainer;
+    public float scale;
     @Getter
     private float topLeftX;
     @Getter
@@ -42,24 +44,20 @@ public class PlayerBuildScreen extends BaseBuildScreen {
     private float tabOriginalY;
     @Nullable
     private BuildMenu<?> currentMenu;
-    public float scale;
-    public static VertexContainer vertexContainer = new VertexContainer();
 
 
-    public PlayerBuildScreen(List<Function<BaseBuildScreen, BuildMenuTab<?, ?>>> tabs, Player target) {
-        super(target, tabs);
+    public PlayerBuildScreen(Build build, Player target) {
+        super(Component.literal(""));
+        this.buildViewContainer = new BuildPresentContainer(target, build);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (!Minecraft.getInstance().player.level().players().contains(targetPlayer)) {
+        if (!Minecraft.getInstance().player.level().players().contains(buildViewContainer.targetPlayer)) {
             Minecraft.getInstance().setScreen(null);
         }
     }
-
-
-
 
 
     @Override
@@ -83,7 +81,8 @@ public class PlayerBuildScreen extends BaseBuildScreen {
         this.tabOriginalX = topLeftX + BACKGROUND_WIDTH / 5.0f;
         this.tabOriginalY = topLeftY + BACKGROUND_HEIGHT / 5.0f;
         int i = (int) tabOriginalX;
-        for (BuildMenuTab<?, ?> tab : super.tabs) {
+        List<BuildMenuTab<?, ?>> tabs = buildViewContainer.tabs;
+        for (BuildMenuTab<?, ?> tab : tabs) {
             tab.setPosition(i, (int) tabOriginalY);
             addRenderableWidget(tab);
             i += tab.getWidth();
@@ -91,9 +90,9 @@ public class PlayerBuildScreen extends BaseBuildScreen {
 
         this.currentMenu = null;
         if (!tabs.isEmpty()) {
-            if (!this.tabs.headOption().isEmpty()) {
-                this.currentMenu = this.tabs.headOption().get().getMenu().get();
-                setInitialFocus(this.tabs.headOption().get());
+            if (!tabs.headOption().isEmpty()) {
+                this.currentMenu = tabs.headOption().get().getMenu().get();
+                setInitialFocus(tabs.headOption().get());
             }
         }
 
@@ -122,7 +121,7 @@ public class PlayerBuildScreen extends BaseBuildScreen {
             //tab line
             pose.pushPose();
             pose.translate(lineStartX, lineStartY, 10);
-            vertexContainer.putBliz(COMPONENT, TextureBufferInfo.of(0, 0, (int)(BACKGROUND_WIDTH * ((portion - 2) / portion)), 1, 128, 0, 128, 1, 256, 256, pose.last().pose()));
+            vertexContainer.putBliz(COMPONENT, TextureBufferInfo.of(0, 0, (int) (BACKGROUND_WIDTH * ((portion - 2) / portion)), 1, 128, 0, 128, 1, 256, 256, pose.last().pose()));
             //guiGraphics.blit(COMPONENT ,0, 0, (int)(BACKGROUND_WIDTH * ((portion - 2) / portion)), 1, 128, 0, 128, 1, 256, 256);
             pose.popPose();
         }
@@ -178,7 +177,13 @@ public class PlayerBuildScreen extends BaseBuildScreen {
         vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.gui);
     }
 
-    public RenderContext generateRenderContext(){
-        return new RenderContext(((int) this.getTabOriginalX()), ((int) this.getTabOriginalY()), this.scale, this.targetPlayer);
+
+    public RenderContext generateRenderContext() {
+        return new RenderContext(((int) this.getTabOriginalX()), ((int) this.getTabOriginalY()), this.scale, buildViewContainer.targetPlayer);
+    }
+
+    @Override
+    public BuildPresentContainer getContainer() {
+        return buildViewContainer;
     }
 }

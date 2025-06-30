@@ -4,7 +4,8 @@ import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -14,24 +15,23 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends BuildMenu<E>> extends ImageButton {
     public static int TAB_WIDTH = 14;
     public static int TAB_HEIGHT = 8;
     protected E component;
-    protected BaseBuildScreen screen;
+    protected IBuildMenuContainerHolder<?> holder;
 
 
-    public BuildMenuTab(Component message, E component, BaseBuildScreen screen) {
+    public BuildMenuTab(Component message, E component, IBuildMenuContainerHolder<?> holder) {
         //? 1.20.1
         /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {}, message);*/
         //? >1.20.1
         super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/non-highlight.png"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "highlight"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/highlight.png")), button -> {}, message);
         this.component = component;
         this.setTooltip(Tooltip.create(message));
-        this.screen = screen;
+        this.holder = holder;
     }
 
     //? 1.20.1 {
@@ -82,7 +82,7 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
 
     @Override
     public final void onPress() {
-        screen.setNewMenu(getMenu().get());
+        holder.getContainer().setNewMenu(getMenu().get());
     }
 
 

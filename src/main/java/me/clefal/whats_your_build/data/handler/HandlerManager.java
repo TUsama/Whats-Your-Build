@@ -1,14 +1,15 @@
 package me.clefal.whats_your_build.data.handler;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
+import com.clefal.nirvana_lib.relocated.io.vavr.CheckedFunction0;
+import com.clefal.nirvana_lib.relocated.io.vavr.CheckedFunction1;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Iterator;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Seq;
 import com.clefal.nirvana_lib.utils.SideUtils;
-import com.google.common.collect.ImmutableList;
-import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
+import lombok.SneakyThrows;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.modules.ModulesManager;
 
@@ -49,20 +50,17 @@ public class HandlerManager {
     }
 
 
-    public List<Function<BaseBuildScreen, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<Function<IBuildMenuContainer, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
-        return components
-                .map(byteTuple2 -> clientHandlers.get(byteTuple2._1()).getBuildMenuTabFunction(components.get(byteTuple2._1()).get()))
-                .asJava();
+        return this.getClientHandlers(build)
+                .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()))).toList();
 
     }
 
-    public List<IComponentClientHandler<?>> getClientHandlers(Build build){
-        Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
-        Seq<IComponentClientHandler<?>> map = Seq.narrow(components
-                .map(byteTuple2 -> (clientHandlers.get(byteTuple2._1()))));
-
-        return map.asJava();
+    @SneakyThrows
+    public Seq<IComponentClientHandler<?>> getClientHandlers(Build build){
+        CheckedFunction1<IBuildComponent<?>, IComponentClientHandler<?>> checkedFunction1 = iBuildComponent -> clientHandlers.get(iBuildComponent.getHandlerIndex());
+        return build.getComponents().values().map(checkedFunction1::apply);
     }
 
 

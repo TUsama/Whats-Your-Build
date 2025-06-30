@@ -27,10 +27,10 @@ public class S2CReturnBuildPacket implements S2CModPacket<S2CReturnBuildPacket> 
     @Override
     public void handleClient() {
         if (DevUtils.isInDev()) {
-            NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(build), targetPlayer);
+            NetworkHelper.startPlayerBuildScreen(build, targetPlayer);
         } else {
             if (!build.isEmpty()) {
-                NetworkHelper.startPlayerBuildScreen(HandlerManager.getInstance().getBuildMenuTabFunction(build), targetPlayer);
+                NetworkHelper.startPlayerBuildScreen(build, targetPlayer);
             }
         }
 

@@ -1,9 +1,8 @@
 package me.clefal.whats_your_build.data.modules.armor;
 
-import com.mojang.serialization.Codec;
-import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.vanilla.VanillaArmorMenuTab;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
@@ -26,8 +25,8 @@ public class VanillaArmorComponentClientHandler implements IComponentClientHandl
     }
 
     @Override
-    public Function<BaseBuildScreen, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
-        return playerBuildScreen -> new VanillaArmorMenuTab(((VanillaArmorComponent) component), playerBuildScreen);
+    public Function<IBuildMenuContainerHolder<?>, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
+        return holder -> new VanillaArmorMenuTab(((VanillaArmorComponent) component), holder);
     }
 
 

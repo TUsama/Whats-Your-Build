@@ -4,6 +4,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Lazy;
 import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.blaze3d.platform.InputConstants;
+import me.clefal.whats_your_build.client.screen.loadoutscreen.BuildManagementScreen;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
 import me.clefal.whats_your_build.network.c2s.C2SSendGlobalBuildPacket;
 import net.minecraft.client.KeyMapping;
@@ -37,8 +38,12 @@ public class WYBKeys {
             Lazy.of(() -> new WYBKey("key.wyb.send_build_to_chat", GLFW.GLFW_KEY_I, client -> {
                 if (client.player != null) {
                     NetworkUtils.sendToServer(new C2SSendGlobalBuildPacket());
-                }}, InputConstants.Type.KEYSYM))
+                }}, InputConstants.Type.KEYSYM)),
 
+            Lazy.of(() -> new WYBKey("key.wyb.open_management_screen", GLFW.GLFW_KEY_K, client -> {
+                if (client.player != null) {
+
+                }}, InputConstants.Type.KEYSYM))
 
     );
 

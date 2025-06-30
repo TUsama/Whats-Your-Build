@@ -1,10 +1,9 @@
 //? if neoforge || forge {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
-import com.mojang.serialization.Codec;
-import me.clefal.whats_your_build.client.screen.BaseBuildScreen;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
+import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
-import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
 import me.clefal.whats_your_build.data.modules.compat.curios.menu.CuriosMenuTab;
@@ -27,8 +26,8 @@ public class CuriosClientHandler implements IComponentClientHandler<CuriosCompon
     }
 
     @Override
-    public Function<BaseBuildScreen, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
-        return screen -> new CuriosMenuTab(((CuriosComponent) component), screen);
+    public Function<IBuildMenuContainerHolder<?>, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
+        return holder -> new CuriosMenuTab(((CuriosComponent) component), holder);
     }
 
 
