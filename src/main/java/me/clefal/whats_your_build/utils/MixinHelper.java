@@ -19,9 +19,11 @@ public class MixinHelper {
 
         if (clickEvent != null && clickEvent.getValue().contains(Constants.MOD_ID)) {
             UUID uuid = UUID.fromString(clickEvent.getValue().replace(Constants.MOD_ID, ""));
-            Player playerByUUID = Minecraft.getInstance().level.getPlayerByUUID(uuid);
-            if (playerByUUID != null) {
-                NetworkUtils.sendToServer(new C2SAskBuildPacket(uuid, true));
+            if (Minecraft.getInstance().level != null ){
+                Player playerByUUID = Minecraft.getInstance().level.getPlayerByUUID(uuid);
+                if (playerByUUID != null) {
+                    NetworkUtils.sendToServer(new C2SAskBuildPacket(uuid, true));
+                }
             }
             cir.setReturnValue(true);
         }
