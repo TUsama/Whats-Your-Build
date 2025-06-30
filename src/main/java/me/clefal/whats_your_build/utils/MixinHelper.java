@@ -17,7 +17,7 @@ public class MixinHelper {
     public static void screenMixin(Style style, CallbackInfoReturnable<Boolean> cir) {
         ClickEvent clickEvent = style.getClickEvent();
 
-        if (clickEvent.getValue().contains(Constants.MOD_ID)) {
+        if (clickEvent != null && clickEvent.getValue().contains(Constants.MOD_ID)) {
             UUID uuid = UUID.fromString(clickEvent.getValue().replace(Constants.MOD_ID, ""));
             Player playerByUUID = Minecraft.getInstance().level.getPlayerByUUID(uuid);
             if (playerByUUID != null) {

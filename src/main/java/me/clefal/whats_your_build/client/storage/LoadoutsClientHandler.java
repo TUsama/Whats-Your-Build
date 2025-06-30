@@ -39,7 +39,12 @@ public class LoadoutsClientHandler {
 
             // 将 build 编码为 JSON
             JsonElement json = Build.CODEC.encodeStart(JsonOps.INSTANCE, build)
+                    //? if 1.20.1 {
+                    /*.getOrThrow(false, Constants.LOG::error);
+                    *///?} else {
                     .getOrThrow();
+                    //?}
+
 
             // 写入文件
             try (BufferedWriter writer = Files.newBufferedWriter(buildFile)) {

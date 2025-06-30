@@ -7,10 +7,8 @@ import me.clefal.whats_your_build.control.PermissionChecker;
 import me.clefal.whats_your_build.event.client.ClientEvent;
 import me.clefal.whats_your_build.event.server.ServerEvent;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
-import me.clefal.whats_your_build.loaders.WYBMenuType;
 import me.clefal.whats_your_build.network.Packets;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
+
 import net.minecraft.resources.ResourceLocation;
 
 

@@ -1,3 +1,7 @@
+### 0.3.1
+fix a bug that crashes the game when clicking on random place due to NPE
+fix the background blend issue.
+
 ### 0.3.0
 fix a bug that sometime the share build to all feature can't work properly.
 multiversion.

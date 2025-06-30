@@ -1,3 +1,5 @@
+//? neoforge {
+
 package me.clefal.whats_your_build.network.c2s;
 
 import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
@@ -42,3 +44,4 @@ public class C2SOpenBuildManagementScreenPacket implements C2SModPacket<C2SOpenB
         return C2SOpenBuildManagementScreenPacket.class;
     }
 }
+//?}

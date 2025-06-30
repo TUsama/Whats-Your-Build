@@ -181,12 +181,9 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
 
         pose.popPose();
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), gui);
+        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.gui);
     }
 
-    public static final Function<ResourceLocation, RenderType> gui = Util.memoize((resourceLocation) -> {
-        return createRenderType("nl_normal_gui", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 1024, false, true, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexColorShader)).setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false)).setTransparencyState(new RenderStateShard.TransparencyStateShard("normal_blend", RenderSystem::enableBlend, RenderSystem::disableBlend)).setDepthTestState(new RenderStateShard.DepthTestStateShard("nl_normal_gui_depth", 515)).createCompositeState(false));
-    });
 
 
     public RenderContext generateRenderContext() {

@@ -1,3 +1,4 @@
+//? neoforge {
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import me.clefal.whats_your_build.world.loadout.BuildManagementMenu;
@@ -26,3 +27,4 @@ public class BuildManagementScreen extends AbstractContainerScreen<BuildManageme
 
     }
 }
+//?}
