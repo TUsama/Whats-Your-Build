@@ -42,6 +42,9 @@ allprojects {
         maven("https://maven.ladysnake.org/releases")
 
         maven("https://maven.theillusivec4.top/")
+        maven("https://maven.ithundxr.dev/snapshots")
+        maven("https://mvn.devos.one/snapshots/")
+        maven("https://maven.tterrag.com/")
 
         //maven ("https://maven.shedaniel.me/")
         //maven("https://maven.bawnorton.com/releases")

@@ -7,6 +7,7 @@ import me.clefal.whats_your_build.client.screen.buildscreen.RenderContext;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.entity.EquipmentSlot;
 
 
 public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
@@ -18,13 +19,9 @@ public class VanillaArmorMenu extends BuildMenu<VanillaArmorComponent> {
 
         holderRadius = (int) (holderRadius * context.scale());
 
-        holders = List.of(0, 1, 2, 3)
-                .map(integer -> {
-                    if (component.armors().size() - 1 >= integer) {
-                        return new ArmorHolder(holderRadius, component.armors().get(integer));
-                    }
-                    return new ArmorHolder(holderRadius, null);
-                });
+        holders = List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
+                .map(EquipmentSlot::getName)
+                .map(str -> new ArmorHolder(holderRadius, component.armors().get(str).getOrNull()));
     }
 
 

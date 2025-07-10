@@ -37,12 +37,9 @@ public class WYBKeys {
             Lazy.of(() -> new WYBKey("key.wyb.send_build_to_chat", GLFW.GLFW_KEY_I, client -> {
                 if (client.player != null) {
                     NetworkUtils.sendToServer(new C2SSendGlobalBuildPacket());
-                }}, InputConstants.Type.KEYSYM))/*,
+                }}, InputConstants.Type.KEYSYM))
 
-            Lazy.of(() -> new WYBKey("key.wyb.open_management_screen", GLFW.GLFW_KEY_K, client -> {
-                if (client.player != null) {
 
-                }}, InputConstants.Type.KEYSYM))*/
 
     );
 

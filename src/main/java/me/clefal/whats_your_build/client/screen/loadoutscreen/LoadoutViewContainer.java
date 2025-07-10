@@ -1,15 +1,15 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import me.clefal.whats_your_build.client.screen.component.BuildPresentContainer;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenu;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.buildobject.Build;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 
-public class BuildManagementViewContainer extends BuildPresentContainer {
+public class LoadoutViewContainer extends BuildPresentContainer {
 
     public final Player targetPlayer;
     public Build currentBuild;
@@ -17,7 +17,7 @@ public class BuildManagementViewContainer extends BuildPresentContainer {
     @Nullable
     private BuildMenu<?> currentMenu;
 
-    public BuildManagementViewContainer(Player targetPlayer, Build build) {
+    public LoadoutViewContainer(Player targetPlayer, Build build) {
         super(targetPlayer, build);
         this.targetPlayer = targetPlayer;
         this.tabs = List.of();
@@ -43,8 +43,4 @@ public class BuildManagementViewContainer extends BuildPresentContainer {
     }
 
 
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-
-    }
 }

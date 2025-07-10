@@ -10,6 +10,7 @@ object LoomDeps {
                 ("1.20.1") -> {
                     modstitchModCompileOnly ("dev.emi:trinkets:3.7.2")
                     modstitchModImplementation("blank:Advanced Team-fabric-1.20.1:1.6.2")
+                    modstitchImplementation("com.tterrag.registrate_fabric:Registrate:1.3.79-MC1.20.1")
                     /*
                     modstitchModCompileOnly ("curse.maven:zenith-620928:5904438")
                     modstitchModCompileOnly ("curse.maven:zenith-attributes-910078:5918684")
@@ -37,6 +38,8 @@ object LoomDeps {
                 ("1.21.1") -> {
                     modstitchModCompileOnly ("dev.emi:trinkets:3.10.0")
                     modstitchModCompileOnly ("curse.maven:accessories-938917:5727156")
+                    modstitchImplementation("com.tterrag.registrate_fabric:Registrate:1.3.77-MC1.21.1")
+
                     //modImplementation ("curse.maven:charm-of-undying-316873:5159191")
 
                     /*modstitchModCompileOnly ("curse.maven:tieredz-615948:5934487")

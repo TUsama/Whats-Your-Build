@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.client.screen.loadoutscreen;
+package me.clefal.whats_your_build.client.screen.component;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
@@ -8,17 +8,15 @@ import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
+import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
-public abstract class BuildPresentContainer extends AbstractContainerEventHandler implements IBuildMenuContainer, Renderable, NarratableEntry {
+public abstract class BuildPresentContainer extends AbstractContainerWidget implements IBuildMenuContainer {
 
     public final Player targetPlayer;
     protected final Build build;
@@ -28,7 +26,7 @@ public abstract class BuildPresentContainer extends AbstractContainerEventHandle
     protected BuildMenu<?> currentMenu;
 
     public BuildPresentContainer(Player targetPlayer, Build build) {
-        super();
+        super(0, 0, 0, 0, Component.literal(""));
         this.targetPlayer = targetPlayer;
         this.build = build;
     }
@@ -41,7 +39,7 @@ public abstract class BuildPresentContainer extends AbstractContainerEventHandle
         if (currentMenu != null) currentMenu.setPosition(x, y);
     }
 
-    public void initTabsPosition(int x, int y){
+    public void initTabsPosition(int x, int y) {
         int i = x;
         for (BuildMenuTab<?, ?> tab : tabs) {
             tab.setPosition(i, y);
@@ -71,6 +69,10 @@ public abstract class BuildPresentContainer extends AbstractContainerEventHandle
                 });
     }
 
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+
+    }
 
     @Override
     public java.util.List<? extends GuiEventListener> children() {
@@ -78,18 +80,7 @@ public abstract class BuildPresentContainer extends AbstractContainerEventHandle
     }
 
     @Override
-    public NarrationPriority narrationPriority() {
-        return NarrationPriority.NONE;
-    }
+    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 
-
-    @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (tabs != null && !tabs.isEmpty()) tabs.forEach(x -> x.render(guiGraphics, mouseX, mouseY, partialTick));
     }
 }

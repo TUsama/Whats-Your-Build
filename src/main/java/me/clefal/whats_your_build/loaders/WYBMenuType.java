@@ -2,7 +2,7 @@
 package me.clefal.whats_your_build.loaders;
 
 import me.clefal.whats_your_build.Constants;
-import me.clefal.whats_your_build.world.loadout.BuildManagementMenu;
+import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
@@ -15,7 +15,8 @@ public class WYBMenuType {
             Constants.MOD_ID
     );
 
-    public static final DeferredHolder<MenuType<?>, MenuType<BuildManagementMenu>> buildManagementMenuType = MENU_TYPE_DEFERRED_REGISTER.register("build_management_menu", () -> new MenuType<>((BuildManagementMenu::new), FeatureFlags.DEFAULT_FLAGS));
+
+
 
 }
 //?}

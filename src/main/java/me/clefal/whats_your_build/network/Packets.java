@@ -9,12 +9,12 @@ import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
 
 public class Packets {
 
-    public static void registerAllS2CPackets(){
+    public static void registerAllS2CPackets() {
         NetworkUtils.registerPacket(S2CReturnBuildPacket::new);
         NetworkUtils.registerPacket(S2CAskConfigPacket::new);
     }
 
-    public static void registerAllC2SPackets(){
+    public static void registerAllC2SPackets() {
         NetworkUtils.registerPacket(C2SAskBuildPacket::new);
         NetworkUtils.registerPacket(C2SSendGlobalBuildPacket::new);
     }

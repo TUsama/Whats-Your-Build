@@ -11,18 +11,19 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class BuildManagementMenu
+public class LoadoutMenu
         extends
         AbstractContainerMenu
 {
     public static final int listWidth = 80;
     public static final int previewWidth = 120;
+    public static final int size = 9 * 4;
 
-    public BuildManagementMenu(int containerId, Inventory playerInventory) {
-        this(WYBMenuType.buildManagementMenuType.get(), containerId, playerInventory, new SimpleContainer(9 * 6));
+    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory) {
+        this(menuType, containerId, playerInventory, new SimpleContainer(size));
     }
 
-    public BuildManagementMenu(MenuType<BuildManagementMenu> menuType, int containerId, Inventory playerInventory, Container armory) {
+    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, Container armory) {
         super(menuType, containerId);
         int i1;
         int j1;
@@ -38,7 +39,7 @@ public class BuildManagementMenu
 
         int armoryStartX = 8 + 9 * 18 + 8; // 物品栏右边（9列宽 + 一点间隔）
         int armoryStartY = 8;              // 对齐头盔槽
-        int armoryColumns = 6;
+        int armoryColumns = 4;
         int armoryRows = 9;
 
         for (int row = 0; row < armoryRows; row++) {

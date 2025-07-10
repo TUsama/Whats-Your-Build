@@ -11,6 +11,7 @@ object NeoForgeDeps {
                     modstitchModCompileOnly ("curse.maven:accessories-938917:5727153")
                     modstitchModCompileOnly ("curse.maven:curios-continuation-1037991:5747224")*/
                     modstitchModImplementation ("maven.modrinth:curios:9.5.1+1.21.1")
+                    modstitchImplementation ("com.tterrag.registrate:Registrate:MC1.21-1.3.0+67")
 /*
                     if (enableApotheosis){
                         modstitchModImplementation ("curse.maven:apotheosis-313970:6023693")

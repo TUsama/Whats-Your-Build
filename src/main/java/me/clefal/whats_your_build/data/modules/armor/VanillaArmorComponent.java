@@ -1,6 +1,10 @@
 package me.clefal.whats_your_build.data.modules.armor;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.API;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashMap;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
@@ -10,11 +14,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 
-public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildComponent<VanillaArmorComponent> {
+public record VanillaArmorComponent(Map<String, ItemStack> armors) implements IBuildComponent<VanillaArmorComponent> {
     public static final MapCodec<VanillaArmorComponent> CODEC = RecordCodecBuilder.mapCodec(i ->
             i.group(
-                    ItemStack.CODEC.listOf().fieldOf("armors").forGetter(x -> x.armors.toJavaList())
-            ).apply(i, x -> new VanillaArmorComponent(List.ofAll(x)))
+                    Codec.unboundedMap(Codec.STRING, ItemStack.CODEC).xmap(x -> Map.narrow(HashMap.ofAll(x)), Map::toJavaMap).fieldOf("map").forGetter(x -> x.armors)
+            ).apply(i, VanillaArmorComponent::new)
     );
     @Override
     public byte getHandlerIndex() {
@@ -44,7 +48,7 @@ public record VanillaArmorComponent(List<ItemStack> armors) implements IBuildCom
 
     @Override
     public VanillaArmorComponent copy() {
-        return new VanillaArmorComponent(armors.map(ItemStack::copy));
+        return new VanillaArmorComponent(HashMap.ofEntries(armors.map(x -> API.Tuple(x._1, x._2.copy()))));
     }
 
 

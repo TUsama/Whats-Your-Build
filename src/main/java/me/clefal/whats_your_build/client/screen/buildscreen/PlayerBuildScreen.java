@@ -4,37 +4,27 @@ import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
 import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
-import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
-import me.clefal.whats_your_build.client.screen.loadoutscreen.BuildPresentContainer;
-import me.clefal.whats_your_build.client.screen.loadoutscreen.BuildViewOnlyContainer;
+import me.clefal.whats_your_build.client.screen.component.BuildPresentContainer;
+import me.clefal.whats_your_build.client.screen.component.BuildViewOnlyContainer;
 import me.clefal.whats_your_build.config.WYBClientConfig;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.utils.IBufferSourceProvider;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
-import java.util.function.Function;
-
-import static com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator.createRenderType;
 
 public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHolder<BuildPresentContainer> {
 
@@ -94,21 +84,6 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
         addRenderableWidget(buildViewContainer);
         setFocused(buildViewContainer);
 
-        /*
-        for (BuildMenuTab<?, ?> tab : tabs) {
-            tab.setPosition(i, (int) tabOriginalY);
-            addRenderableWidget(tab);
-            i += tab.getWidth();
-        }
-
-        this.currentMenu = null;
-        if (!tabs.isEmpty()) {
-            if (!tabs.headOption().isEmpty()) {
-                this.currentMenu = tabs.headOption().get().getMenu().get();
-                setInitialFocus(tabs.headOption().get());
-            }
-        }
-*/
     }
     //always focus on buildViewContainer
 
@@ -181,7 +156,7 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
 
         pose.popPose();
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.gui);
+        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.guiBlend);
     }
 
 
