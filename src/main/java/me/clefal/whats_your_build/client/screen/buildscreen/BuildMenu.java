@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BuildMenu<T extends IBuildComponent<?>> extends AbstractWidget implements Renderable {
+public abstract class BuildMenu<T extends IBuildComponent<?>> extends AbstractWidget{
     protected final List<? extends GuiEventListener> children = new ArrayList<>();
     protected final Minecraft minecraft = Minecraft.getInstance();
 

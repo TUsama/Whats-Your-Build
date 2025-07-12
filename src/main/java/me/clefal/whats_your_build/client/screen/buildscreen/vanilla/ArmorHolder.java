@@ -20,11 +20,15 @@ public class ArmorHolder extends AbstractWidget {
     @Nullable
     private final ItemStack itemStack;
 
+    @Nullable
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
     public ArmorHolder(int radius, @Nullable ItemStack itemStack) {
         super(0, 0, radius, radius, Component.literal(""));
         this.itemStack = itemStack;
     }
-
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
