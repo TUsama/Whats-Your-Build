@@ -8,26 +8,33 @@ import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutScreen;
 import me.clefal.whats_your_build.world.block.LoadoutChest;
 import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
 public class WYBRegistrate {
-    public static final BlockEntityEntry<LoadoutChestEntity> loadoutEntity = Constants.REGISTRATE.object("loadout_chest_entity")
-            .blockEntity(LoadoutChestEntity::new)
-            .register();
+
 
     public static final BlockEntry<LoadoutChest> loadoutChest = Constants.REGISTRATE
             .object("loadout_chest")
-            .block(properties -> new LoadoutChest(
-                    BlockBehaviour.Properties.of()
-                            .mapColor(MapColor.WOOD)
-                            .instrument(NoteBlockInstrument.BASS)
-                            .strength(2.5F)
-                            .sound(SoundType.WOOD), loadoutEntity::get))
-            .simpleItem()
+            .block(LoadoutChest::new)
+            .properties(x -> BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .instrument(NoteBlockInstrument.BASS)
+                    .strength(2.5F)
+                    .sound(SoundType.WOOD))
+            .blockstate((blockLoadoutChestDataGenContext, registrateBlockstateProvider) -> {
+            })
+            .item()
+            .build()
             .lang("Loadout Chest")
+            .register();
+
+    public static final BlockEntityEntry<LoadoutChestEntity> loadoutEntity = Constants.REGISTRATE.object("loadout_chest_entity")
+            .blockEntity(LoadoutChestEntity::new)
+            .validBlock(loadoutChest::get)
             .register();
 
     public static final MenuEntry<LoadoutMenu> loadoutMenu = Constants.REGISTRATE

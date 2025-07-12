@@ -5,7 +5,6 @@ import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.logging.LogUtils;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.Constants;
-import me.clefal.whats_your_build.loaders.WYBMenuType;
 import me.clefal.whats_your_build.loaders.WYBRegistrate;
 import me.clefal.whats_your_build.loaders.WhatsYourBuildModulesRegister;
 import me.clefal.whats_your_build.network.s2c.S2CAskConfigPacket;
@@ -29,7 +28,6 @@ public class NeoforgeEntrypoint {
         WhatsYourBuildModulesRegister.registerModules();
         CommonClass.packetInit();
         CommonClass.serverInit();
-        WYBMenuType.MENU_TYPE_DEFERRED_REGISTER.register(modBus);
         NeoForge.EVENT_BUS.<PlayerEvent.PlayerLoggedInEvent>addListener(x -> {
             if (x.getEntity() instanceof ServerPlayer serverPlayer)
                 NetworkUtils.sendToClient(new S2CAskConfigPacket(), serverPlayer);

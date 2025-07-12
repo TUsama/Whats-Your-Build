@@ -6,50 +6,38 @@ import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.AbstractChestBlock;
+import net.minecraft.world.level.block.DoubleBlockCombiner;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> implements SimpleWaterloggedBlock {
-    public static final MapCodec<LoadoutChest> CODEC = simpleCodec(properties1 -> new LoadoutChest(properties1, WYBRegistrate.loadoutEntity::get));
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final Supplier<MapCodec<LoadoutChest>> CODEC = () -> simpleCodec(LoadoutChest::new);
 
-    public LoadoutChest(Properties properties, Supplier<BlockEntityType<? extends LoadoutChestEntity>> blockEntityType) {
-        super(properties, blockEntityType);
+    public LoadoutChest(Properties properties) {
+        super(properties, WYBRegistrate.loadoutEntity::get);
+
     }
 
     @Override
     protected MapCodec<? extends AbstractChestBlock<LoadoutChestEntity>> codec() {
-        return CODEC;
+        return CODEC.get();
     }
+
 
     @Override
     public DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override) {
         return DoubleBlockCombiner.Combiner::acceptNone;
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
     }
 
     @Override

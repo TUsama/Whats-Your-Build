@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 public abstract class BuildPresentContainer extends AbstractContainerWidget implements IBuildMenuContainer {
 
     public final Player targetPlayer;
-    protected final Build build;
+    protected Build build;
     @Nullable
     public List<BuildMenuTab<?, ?>> tabs;
     @Nullable

@@ -60,7 +60,7 @@ public class LoadoutsClientHandler {
         Path playerFolder = buildsLocation.resolve(playerUUID.toString());
 
         if (!Files.exists(playerFolder) || !Files.isDirectory(playerFolder)) {
-            Constants.LOG.debug("non-exist directory! : {}, return empty list.", playerFolder);
+            Constants.LOG.debug("non-exist directory: {}, return empty list.", playerFolder);
             return builds;
         }
 

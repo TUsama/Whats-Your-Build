@@ -23,8 +23,9 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     public static final int buttonXInterval = 24;
     public static final int buttonYInterval = 8;
     private static final ResourceLocation TEXTURE = CommonClass.id("textures/gui/screen_background.png");
+    private final LoadoutScreen screen;
 
-    public LoadoutSelectionList(int width, int height, int y0, int y1) {
+    public LoadoutSelectionList(int width, int height, int y0, int y1, LoadoutScreen screen) {
         //? 1.20.1
         /*super(Minecraft.getInstance(), width, height, y0, y1, HEIGHT);*/
         //? >1.20.1
@@ -38,7 +39,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         this.setRenderTopAndBottom(false);
         this.setRenderSelection(false);
         *///?}
-
+        this.screen = screen;
     }
 
     @Override
@@ -59,6 +60,12 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         }
     }
 
+    public void setBuildForScreenContainer(){
+        children().stream().filter(x -> x.storageBuild != null).findFirst().ifPresent(x -> {
+            this.screen.changeContainer(new BuildWritableContainer(minecraft.player, x.storageBuild));
+        });
+
+    }
 
     @Nullable
     public Build getCurrentBuild(){
@@ -79,9 +86,21 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     public class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
         @Nullable
         public Build storageBuild;
-        @Nullable
-        public Build editingBuild;
 
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            BuildWritableContainer container = screen.container;
+            //means currently user has editing content.
+            if (container != null && container.editingBuild != null){
+                //only if the entry user clicked have a build, means it will overwrite the edit.
+                if (storageBuild != null) screen.changeContainer(new BuildWritableContainer(minecraft.player, storageBuild));
+            } else {
+                //if the user isn't editing build, change the container anyway.
+                screen.changeContainer(new BuildWritableContainer(minecraft.player, storageBuild));
+            }
+
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
 
         public BuildEntry(@Nullable Build storageBuild) {
             this.storageBuild = storageBuild;

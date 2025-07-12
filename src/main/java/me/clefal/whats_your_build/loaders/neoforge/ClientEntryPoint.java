@@ -4,15 +4,11 @@ package me.clefal.whats_your_build.loaders.neoforge;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.keybind.WYBKeys;
-import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutScreen;
-import me.clefal.whats_your_build.loaders.WYBMenuType;
-import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)

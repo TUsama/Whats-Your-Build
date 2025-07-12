@@ -1,7 +1,6 @@
 //? neoforge {
 package me.clefal.whats_your_build.world.loadout;
 
-import me.clefal.whats_your_build.loaders.WYBMenuType;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,7 +16,10 @@ public class LoadoutMenu
 {
     public static final int listWidth = 80;
     public static final int previewWidth = 120;
-    public static final int size = 9 * 4;
+    public static final int armoryRows = 9;
+    public static final int armoryColumns = 3;
+    public static final int size = armoryRows * armoryColumns;
+    private final Container armory;
 
     public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory) {
         this(menuType, containerId, playerInventory, new SimpleContainer(size));
@@ -25,6 +27,20 @@ public class LoadoutMenu
 
     public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, Container armory) {
         super(menuType, containerId);
+        this.armory = armory;
+        int armoryStartX = 8 + 9 * 18 + 14;
+        int armoryStartY = 12;
+
+
+        for (int row = 0; row < armoryRows; row++) {
+            for (int col = 0; col < armoryColumns; col++) {
+                int index = row * armoryColumns + col;
+                int x = armoryStartX + col * 18;
+                int y = armoryStartY + row * 18;
+                this.addSlot(new Slot(armory, index, x, y));
+            }
+        }
+
         int i1;
         int j1;
         for(i1 = 0; i1 < 3; ++i1) {
@@ -37,29 +53,37 @@ public class LoadoutMenu
             this.addSlot(new Slot(playerInventory, i1, 8 + i1 * 18, 142));
         }
 
-        int armoryStartX = 8 + 9 * 18 + 8; // 物品栏右边（9列宽 + 一点间隔）
-        int armoryStartY = 8;              // 对齐头盔槽
-        int armoryColumns = 4;
-        int armoryRows = 9;
 
-        for (int row = 0; row < armoryRows; row++) {
-            for (int col = 0; col < armoryColumns; col++) {
-                int index = row * armoryColumns + col;
-                int x = armoryStartX + col * 18;
-                int y = armoryStartY + row * 18;
-                this.addSlot(new Slot(armory, index, x, y));
-            }
-        }
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int i) {
-        return null;
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(i);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
+            itemstack = itemstack1.copy();
+            if (i < size) {
+                if (!this.moveItemStackTo(itemstack1, armoryColumns * 9, this.slots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!this.moveItemStackTo(itemstack1, 0, armoryColumns * 9, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (itemstack1.isEmpty()) {
+                slot.setByPlayer(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+        }
+
+        return itemstack;
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        return this.armory.stillValid(player);
     }
 }
 //?}
