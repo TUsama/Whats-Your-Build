@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.client.screen.buildscreen;
+package me.clefal.whats_your_build.client.screen;
 
 import net.minecraft.world.entity.player.Player;
 

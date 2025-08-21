@@ -22,7 +22,7 @@ public class CommonClass {
     public static void clientInit() {
         WYBServerConfig.init();
         WYBClientConfig.init();
-        /*for (IComponentClientHandler<?> clientHandler : HandlerManager.INSTANCE.clientHandlers) {
+        /*for (IComponentClientHandler clientHandler : HandlerManager.INSTANCE.clientHandlers) {
             Constants.clientBus.register(clientHandler);
         }*/
     }

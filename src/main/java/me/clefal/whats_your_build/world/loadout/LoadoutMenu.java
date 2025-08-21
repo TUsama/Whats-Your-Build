@@ -14,12 +14,12 @@ public class LoadoutMenu
         extends
         AbstractContainerMenu
 {
-    public static final int listWidth = 80;
-    public static final int previewWidth = 120;
     public static final int armoryRows = 9;
     public static final int armoryColumns = 3;
     public static final int size = armoryRows * armoryColumns;
     private final Container armory;
+    public int startX;
+    public int startY;
 
     public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory) {
         this(menuType, containerId, playerInventory, new SimpleContainer(size));
@@ -30,6 +30,8 @@ public class LoadoutMenu
         this.armory = armory;
         int armoryStartX = 8 + 9 * 18 + 14;
         int armoryStartY = 12;
+        startX = armoryStartX;
+        startY = armoryStartY;
 
 
         for (int row = 0; row < armoryRows; row++) {

@@ -1,27 +1,25 @@
-package me.clefal.whats_your_build.client.screen.component;
+package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenu;
-import me.clefal.whats_your_build.client.screen.buildscreen.RenderContext;
-import me.clefal.whats_your_build.client.screen.buildscreen.vanilla.ArmorHolder;
-import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import me.clefal.whats_your_build.client.screen.RenderContext;
+import me.clefal.whats_your_build.client.screen.loadoutscreen.InMenuMutableArmorHolder;
+import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.entity.EquipmentSlot;
 
-
-public abstract class NormalArmorHolder<T extends IBuildComponent<?>> extends BuildMenu<T> {
-
-    protected List<ArmorHolder> holders;
-    protected int holderRadius = 16;
-
-    public NormalArmorHolder(T component, RenderContext context) {
+public class WritableVanillaArmorMenu extends VanillaArmorMenu{
+    public WritableVanillaArmorMenu(VanillaArmorComponent component, RenderContext context) {
         super(component, context);
-        holderRadius = (int) (holderRadius * context.scale());
-        initHolders();
     }
 
-    public abstract void initHolders();
+    @Override
+    public void initHolders() {
+        holders = List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
+                .map(EquipmentSlot::getName)
+                .map(str -> new InMenuMutableArmorHolder(holderRadius, component.armors().get(str).getOrNull()));
+    }
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

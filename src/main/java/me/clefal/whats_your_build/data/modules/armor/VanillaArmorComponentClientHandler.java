@@ -4,12 +4,17 @@ import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.buildscreen.vanilla.VanillaArmorMenuTab;
+import me.clefal.whats_your_build.client.screen.buildscreen.vanilla.WritableVanillaArmorMenuTab;
 import me.clefal.whats_your_build.data.handler.ComponentType;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
+import me.clefal.whats_your_build.world.IRewritableMenu;
 
+import java.rmi.UnexpectedException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class VanillaArmorComponentClientHandler implements IComponentClientHandler<VanillaArmorComponent> {
+public class VanillaArmorComponentClientHandler implements IComponentClientHandler {
     private static VanillaArmorComponentClientHandler INSTANCE;
 
     public static VanillaArmorComponentClientHandler getInstance() {
@@ -25,10 +30,9 @@ public class VanillaArmorComponentClientHandler implements IComponentClientHandl
     }
 
     @Override
-    public Function<IBuildMenuContainerHolder<?>, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
-        return holder -> new VanillaArmorMenuTab(((VanillaArmorComponent) component), holder);
+    public BiFunction<IBuildMenuContainerHolder<?>, IRewritableMenu, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component) {
+        return (x, y) -> new VanillaArmorMenuTab((VanillaArmorComponent) component, x, y);
     }
-
 
 
 }

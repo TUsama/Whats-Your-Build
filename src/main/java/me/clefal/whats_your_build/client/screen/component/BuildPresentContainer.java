@@ -1,9 +1,10 @@
 package me.clefal.whats_your_build.client.screen.component;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import lombok.Getter;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
-import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenu;
+import me.clefal.whats_your_build.client.screen.buildscreen.AbstractBuildMenu;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
@@ -19,11 +20,12 @@ import javax.annotation.Nullable;
 public abstract class BuildPresentContainer extends AbstractContainerWidget implements IBuildMenuContainer {
 
     public final Player targetPlayer;
+    @Getter
     protected Build build;
     @Nullable
     public List<BuildMenuTab<?, ?>> tabs;
     @Nullable
-    protected BuildMenu<?> currentMenu;
+    protected AbstractBuildMenu<?> currentMenu;
 
     public BuildPresentContainer(Player targetPlayer, Build build) {
         super(0, 0, 0, 0, Component.literal(""));
@@ -55,16 +57,16 @@ public abstract class BuildPresentContainer extends AbstractContainerWidget impl
 
 
     @Override
-    public void setNewMenu(BuildMenu<?> menu) {
+    public void setNewMenu(AbstractBuildMenu<?> menu) {
         this.currentMenu = menu;
     }
 
     @Override
     public void initTabs(IBuildMenuContainerHolder<?> holder) {
-        this.tabs = HandlerManager.getInstance().getBuildMenuTabFunction(build).map(x -> x.apply(holder));
+        this.tabs = HandlerManager.getInstance().getImmutableBuildMenuTabFunction(build).map(x -> x.apply(holder));
         tabs.headOption()
                 .forEach(x -> {
-                    this.currentMenu = x.getMenu().get();
+                    this.currentMenu = x.getNewSlots().get();
                     setFocused(x);
                 });
     }
@@ -81,6 +83,12 @@ public abstract class BuildPresentContainer extends AbstractContainerWidget impl
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        if (tabs != null){
+            for (BuildMenuTab<?, ?> tab : tabs) {
+                tab.render(guiGraphics, mouseX, mouseY, partialTick);
+            }
+        }
 
+        if (currentMenu != null) currentMenu.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 }

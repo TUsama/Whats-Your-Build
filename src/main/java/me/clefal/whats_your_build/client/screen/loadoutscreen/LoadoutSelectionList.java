@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -83,7 +84,9 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         return false;
     }
 
+
     public class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
+
         @Nullable
         public Build storageBuild;
 
@@ -93,10 +96,16 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             //means currently user has editing content.
             if (container != null && container.editingBuild != null){
                 //only if the entry user clicked have a build, means it will overwrite the edit.
-                if (storageBuild != null) screen.changeContainer(new BuildWritableContainer(minecraft.player, storageBuild));
+                if (storageBuild != null) screen.nextContainer = new BuildWritableContainer(minecraft.player, storageBuild);
             } else {
                 //if the user isn't editing build, change the container anyway.
-                screen.changeContainer(new BuildWritableContainer(minecraft.player, storageBuild));
+                if (storageBuild == null) {
+                    //In this case, user want to create a new loadout
+                    if (screen.template != null) screen.nextContainer = new BuildWritableContainer(minecraft.player, screen.template.copy());
+                } else {
+                    //normally change build
+                    screen.nextContainer = new BuildWritableContainer(minecraft.player, storageBuild);
+                }
             }
 
             return super.mouseClicked(mouseX, mouseY, button);
@@ -116,9 +125,9 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
                 LoadoutScreen.vertexContainer.putString(DrawStringBufferInfo.of(storageBuild.getName(), left + 48, top, ChatFormatting.BLACK.getColor(), pose.last().pose()));
             } else {
                 if (hovering){
-                    guiGraphics.drawString(Minecraft.getInstance().font, "222", left, top, ChatFormatting.GOLD.getColor());
+                    guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("wyb.screen.loadout.no_loadout"), left, top, ChatFormatting.GOLD.getColor());
                 } else {
-                    guiGraphics.drawString(Minecraft.getInstance().font, "111", left, top, ChatFormatting.GOLD.getColor());
+                    guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("wyb.screen.loadout.no_loadout"), left, top, ChatFormatting.GOLD.getColor());
                 }
 
             }

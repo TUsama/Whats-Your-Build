@@ -5,23 +5,29 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class MutableArmorHolder extends ArmorHolder {
+public class InMenuMutableArmorHolder extends ArmorHolder {
 
     public ItemStack itemStack;
-    private final AbstractContainerMenu menu;
+    @Nullable
+    private AbstractContainerMenu menu;
 
-    public MutableArmorHolder(int radius, @Nullable ItemStack itemStack, AbstractContainerMenu menu) {
+    public InMenuMutableArmorHolder(int radius, @Nullable ItemStack itemStack) {
         super(radius, itemStack);
+    }
+
+    public void initMenu(AbstractContainerMenu menu){
         this.menu = menu;
     }
 
+    
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        itemStack = menu.getCarried();
+        if (menu != null) itemStack = menu.getCarried();
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    public static MutableArmorHolder fromImmutable(ArmorHolder holder, AbstractContainerMenu menu){
-        return new MutableArmorHolder(holder.getWidth(), holder.getItemStack(), menu);
+    public static InMenuMutableArmorHolder fromImmutable(ArmorHolder holder){
+        return new InMenuMutableArmorHolder(holder.getWidth(), holder.getItemStack());
     }
 }

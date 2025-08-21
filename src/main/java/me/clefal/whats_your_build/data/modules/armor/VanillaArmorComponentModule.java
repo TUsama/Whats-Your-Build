@@ -24,7 +24,7 @@ public class VanillaArmorComponentModule extends InternalModule {
         HandlerManager instance = HandlerManager.getInstance();
         instance.addHandlers(VanillaArmorComponentServerHandler.getInstance(), new HandlerManager.safeInvoker() {
             @Override
-            public Supplier<IComponentClientHandler<?>> get() {
+            public Supplier<IComponentClientHandler> get() {
                 return VanillaArmorComponentClientHandler::getInstance;
             }
         });

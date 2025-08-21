@@ -6,56 +6,28 @@ import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Getter;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
-import me.clefal.whats_your_build.client.screen.component.BuildPresentContainer;
-import me.clefal.whats_your_build.client.screen.component.BuildViewOnlyContainer;
-import me.clefal.whats_your_build.config.WYBClientConfig;
-import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.utils.IBufferSourceProvider;
+import me.clefal.whats_your_build.world.player_build.PlayerBuildMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 
-import javax.annotation.Nullable;
-
-public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHolder<BuildPresentContainer> {
+public class PlayerBuildScreen extends AbstractContainerScreen<PlayerBuildMenu> {
 
     public final static ResourceLocation COMPONENT = CommonClass.id("textures/gui/component.png");
     public static VertexContainer vertexContainer = new VertexContainer();
     protected static int BACKGROUND_WIDTH = 128;
     protected static int BACKGROUND_HEIGHT = 128;
-    private BuildPresentContainer buildViewContainer;
-    public float scale;
-    @Getter
-    private float topLeftX;
-    @Getter
-    private float topLeftY;
-    @Getter
-    private float tabOriginalX;
-    @Getter
-    private float tabOriginalY;
 
 
-
-    public PlayerBuildScreen(Build build, Player target) {
-        super(Component.literal(""));
-        this.buildViewContainer = new BuildViewOnlyContainer(target, build);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (!Minecraft.getInstance().player.level().players().contains(buildViewContainer.targetPlayer)) {
-            Minecraft.getInstance().setScreen(null);
-        }
+    public PlayerBuildScreen(PlayerBuildMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title);
     }
 
 
@@ -63,38 +35,19 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
     protected void init() {
         super.init();
         vertexContainer = new VertexContainer();
-        scale = WYBClientConfig.config.globalScale;
 
-        BACKGROUND_WIDTH = (int) (128 * scale);
-        BACKGROUND_HEIGHT = (int) (128 * scale);
-
-        topLeftX = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2.0f - BACKGROUND_WIDTH / 2.0f;
-        topLeftY = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2.0f - BACKGROUND_HEIGHT / 2.0f;
-/*
-        topLeftX *= 1 / scale;
-        topLeftY *= 1 / scale;*/
-
-        BuildMenuTab.TAB_WIDTH = (int) (14 * scale);
-        BuildMenuTab.TAB_HEIGHT = (int) (8 * scale);
-
-        this.tabOriginalX = topLeftX + BACKGROUND_WIDTH / 5.0f;
-        this.tabOriginalY = topLeftY + BACKGROUND_HEIGHT / 5.0f;
-        buildViewContainer.initTabs(this);
-        buildViewContainer.initTabsPosition(((int) tabOriginalX), ((int) tabOriginalY));
-        addRenderableWidget(buildViewContainer);
-        setFocused(buildViewContainer);
 
     }
-    //always focus on buildViewContainer
 
-    @Override
-    public void setFocused(@Nullable GuiEventListener listener) {
-        if (!(listener instanceof BuildPresentContainer container)) return;
-        super.setFocused(container);
-    }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.guiBlend);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         PoseStack pose = guiGraphics.pose();
         RenderSystem.enableDepthTest();
 
@@ -103,8 +56,8 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
 
         float portion = 8.0f;
         float interval = BACKGROUND_WIDTH * (1 / portion);
-        float lineStartX = topLeftX + interval;
-        float lineStartY = tabOriginalY + BuildMenuTab.TAB_HEIGHT;
+        float lineStartX = 0 + interval;
+        float lineStartY = 0;
         {
             //tab line
             pose.pushPose();
@@ -119,15 +72,15 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
             {
                 //background
                 pose.translate(0, 0, -1);
-                pose.translate(topLeftX, topLeftY, 1);
-                vertexContainer.putBlitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0, pose.last().pose());
+                pose.translate(leftPos, topPos, 1);
+                vertexContainer.putBlitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6), 8, 128, 256, 0, 0, pose.last().pose());
                 //guiGraphics.blitNineSliced(COMPONENT, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, (int) (6 * scale), 8, 128, 256, 0, 0);
             }
 
             {
                 //title
                 pose.pushPose();
-                float scale = 0.8f * this.scale;
+                float scale = 0.8f;
                 float scaleReciprocal = 1.0f / scale;
                 pose.scale(scale, scale, 1.0f);
                 MutableComponent translatable = Component.translatable("wyb.screen.head.player_build");
@@ -148,26 +101,10 @@ public class PlayerBuildScreen extends Screen implements IBuildMenuContainerHold
 
 
         pose.pushPose();
-        float menuOffsetY = 5 * scale;
-        buildViewContainer.setCurrentMenuSize((int) (BACKGROUND_WIDTH - 2 * interval), (int) (topLeftY + BACKGROUND_HEIGHT - lineStartY));
-        buildViewContainer.setCurrentMenuPosition(((int) lineStartX), (int) (lineStartY + menuOffsetY));
         pose.popPose();
 
 
         pose.popPose();
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        vertexContainer.draw(((IBufferSourceProvider) guiGraphics).whats_Your_Build$getBufferSource(), RenderTypeCreator.guiBlend);
-    }
-
-
-
-    public RenderContext generateRenderContext() {
-        return new RenderContext(((int) this.getTabOriginalX()), ((int) this.getTabOriginalY()), this.scale, buildViewContainer.targetPlayer);
-    }
-
-    @Override
-    public BuildPresentContainer getContainer() {
-        return buildViewContainer;
     }
 
 

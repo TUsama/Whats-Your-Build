@@ -4,7 +4,6 @@ package me.clefal.whats_your_build.network.c2s;
 
 import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import me.clefal.whats_your_build.loaders.WYBRegistrate;
-import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +31,7 @@ public class C2SOpenBuildManagementScreenPacket implements C2SModPacket<C2SOpenB
 
             @Override
             public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-                return WYBRegistrate.loadoutMenu.asProvider().createMenu(containerId, playerInventory, player);
+                return WYBRegistrate.playerBuildMenu.asProvider().createMenu(containerId, playerInventory, player);
             }
         });
     }

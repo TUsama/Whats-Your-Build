@@ -3,6 +3,7 @@
   "wyb.container.title.armory": "Armory",
   "wyb.compat.screen.tab.curios": "Curios",
   "wyb.screen.head.player_build": "Player Build",
+  "wyb.screen.loadout.no_loadout": "No Loadout",
   "whats_your_build.wyb_client_config.showYourBuildFor.all": "All",
   "whats_your_build.wyb_client_config.showYourBuildFor.no_one": "No one",
   "whats_your_build.wyb_client_config.showYourBuildFor.teammates": "Teammates",

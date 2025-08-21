@@ -1,28 +1,26 @@
 package me.clefal.whats_your_build.data.handler;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
-import com.clefal.nirvana_lib.relocated.io.vavr.CheckedFunction0;
-import com.clefal.nirvana_lib.relocated.io.vavr.CheckedFunction1;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Iterator;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Seq;
 import com.clefal.nirvana_lib.utils.SideUtils;
-import lombok.SneakyThrows;
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.modules.ModulesManager;
+import me.clefal.whats_your_build.world.IRewritableMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class HandlerManager {
     private static HandlerManager INSTANCE;
     private final List<IComponentServerHandler> serverHandlers = new ArrayList<>();
-    private final List<IComponentClientHandler<?>> clientHandlers = new ArrayList<>();
+    private final List<IComponentClientHandler> clientHandlers = new ArrayList<>();
 
     public static HandlerManager getInstance() {
         if (INSTANCE == null) {
@@ -34,7 +32,7 @@ public class HandlerManager {
         ModulesManager.init();
     }
 
-    public abstract static class safeInvoker implements Supplier<Supplier<IComponentClientHandler<?>>>{}
+    public abstract static class safeInvoker implements Supplier<Supplier<IComponentClientHandler>>{}
 
     public void addHandlers(IComponentServerHandler serverHandler, safeInvoker clientHandler){
         if (!this.serverHandlers.contains(serverHandler)) this.serverHandlers.add(serverHandler.getIndex(), serverHandler);
@@ -46,19 +44,26 @@ public class HandlerManager {
         return API.For(serverHandlers).yield();
     }
 
-    public Iterator<IComponentClientHandler<?>> forClientHandlers(){
+    public Iterator<IComponentClientHandler> forClientHandlers(){
         return API.For(clientHandlers).yield();
     }
 
 
-    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<Function<IBuildMenuContainerHolder<?>, BuildMenuTab<?, ?>>> getBuildMenuTabFunction(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<IBuildMenuContainerHolder<?>, IRewritableMenu, BuildMenuTab<?>>> getImmutableBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return this.getClientHandlers(build)
                 .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()).get())).toList();
 
     }
 
-    public Seq<IComponentClientHandler<?>> getClientHandlers(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<IBuildMenuContainerHolder<?>, IRewritableMenu, BuildMenuTab<?>>> getWritableBuildMenuTabFunction(Build build){
+        Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
+        return this.getClientHandlers(build)
+                .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()).get())).toList();
+
+    }
+
+    public Seq<IComponentClientHandler> getClientHandlers(Build build){
         return build.getComponents().values().map(x -> clientHandlers.get(x.getHandlerIndex()));
     }
 

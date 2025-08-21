@@ -8,7 +8,6 @@ import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutScreen;
 import me.clefal.whats_your_build.world.block.LoadoutChest;
 import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -40,6 +39,14 @@ public class WYBRegistrate {
     public static final MenuEntry<LoadoutMenu> loadoutMenu = Constants.REGISTRATE
             .<LoadoutMenu, LoadoutScreen>menu(
                     "loadout_menu",
+                    (type, windowId, inv) -> new LoadoutMenu(type, windowId, inv),
+                    () -> (menu, inv, displayName) -> new LoadoutScreen(menu, inv)
+
+            ).register();
+
+    public static final MenuEntry<LoadoutMenu> playerBuildMenu = Constants.REGISTRATE
+            .<LoadoutMenu, LoadoutScreen>menu(
+                    "player_build_menu",
                     (type, windowId, inv) -> new LoadoutMenu(type, windowId, inv),
                     () -> (menu, inv, displayName) -> new LoadoutScreen(menu, inv)
 

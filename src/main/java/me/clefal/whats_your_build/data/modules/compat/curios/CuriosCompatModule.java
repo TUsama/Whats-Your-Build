@@ -38,7 +38,7 @@ public class CuriosCompatModule implements ICompatModule {
         HandlerManager instance = HandlerManager.getInstance();
         instance.addHandlers(CuriosServerHandler.getInstance(), new HandlerManager.safeInvoker() {
             @Override
-            public Supplier<IComponentClientHandler<?>> get() {
+            public Supplier<IComponentClientHandler> get() {
                 return CuriosClientHandler::getInstance;
             }
         });

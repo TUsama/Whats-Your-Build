@@ -1,12 +1,13 @@
 package me.clefal.whats_your_build.client.screen.buildscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import me.clefal.whats_your_build.world.IRewritableMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -14,17 +15,18 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
 
-import java.util.function.Supplier;
 
-public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends BuildMenu<E>> extends ImageButton {
+public abstract class BuildMenuTab<E extends IBuildComponent<?>> extends ImageButton {
     public static int TAB_WIDTH = 14;
     public static int TAB_HEIGHT = 8;
     protected E component;
     protected IBuildMenuContainerHolder<?> holder;
+    private IRewritableMenu menu;
 
 
-    public BuildMenuTab(Component message, E component, IBuildMenuContainerHolder<?> holder) {
+    public BuildMenuTab(Component message, E component, IBuildMenuContainerHolder<?> holder, IRewritableMenu menu) {
         //? 1.20.1
         /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {}, message);*/
         //? >1.20.1
@@ -32,6 +34,7 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
         this.component = component;
         this.setTooltip(Tooltip.create(message));
         this.holder = holder;
+        this.menu = menu;
     }
 
     //? 1.20.1 {
@@ -78,11 +81,11 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>, T extends Build
     //?}
 
 
-    public abstract Supplier<T> getMenu();
+    public abstract List<Slot> getNewSlots();
 
     @Override
     public final void onPress() {
-        holder.getContainer().setNewMenu(getMenu().get());
+        menu.rewriteSlots(getNewSlots());
     }
 
 

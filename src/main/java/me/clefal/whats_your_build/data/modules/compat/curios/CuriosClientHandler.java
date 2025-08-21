@@ -1,16 +1,20 @@
 //? if neoforge || forge {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.handler.ComponentType;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
 import me.clefal.whats_your_build.data.modules.compat.curios.menu.CuriosMenuTab;
+import me.clefal.whats_your_build.data.modules.compat.curios.menu.WritableCuriosMenuTab;
+import me.clefal.whats_your_build.world.IRewritableMenu;
 
+import java.rmi.UnexpectedException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class CuriosClientHandler implements IComponentClientHandler<CuriosComponent> {
+public class CuriosClientHandler implements IComponentClientHandler {
 
     private static CuriosClientHandler INSTANCE;
 
@@ -26,8 +30,8 @@ public class CuriosClientHandler implements IComponentClientHandler<CuriosCompon
     }
 
     @Override
-    public Function<IBuildMenuContainerHolder<?>, BuildMenuTab<?, ?>> getBuildMenuTabFunction(Object component) {
-        return holder -> new CuriosMenuTab(((CuriosComponent) component), holder);
+    public BiFunction<IBuildMenuContainerHolder<?>, IRewritableMenu, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component) {
+        return null;
     }
 
 
