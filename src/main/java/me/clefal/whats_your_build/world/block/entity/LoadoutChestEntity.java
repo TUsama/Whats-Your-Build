@@ -1,5 +1,8 @@
 package me.clefal.whats_your_build.world.block.entity;
 
+import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.data.buildobject.Build;
+import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.loaders.WYBRegistrate;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.minecraft.core.BlockPos;
@@ -7,6 +10,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -53,7 +57,12 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
-        return new LoadoutMenu(WYBRegistrate.playerBuildMenu.get(), containerId, inventory, this);
+        if (inventory.player instanceof ServerPlayer player){
+            Build resultBuild = CommonClass.post(new ServerGatherBuildComponentEvent(player)).getResultBuild();
+            return new LoadoutMenu(WYBRegistrate.playerBuildMenu.get(), containerId, inventory, this, resultBuild);
+        }
+        return null;
+
     }
 
     @Override

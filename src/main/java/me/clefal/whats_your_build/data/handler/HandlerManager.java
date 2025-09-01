@@ -6,6 +6,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Seq;
 import com.clefal.nirvana_lib.utils.SideUtils;
 import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
+import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.modules.ModulesManager;
@@ -49,14 +50,14 @@ public class HandlerManager {
     }
 
 
-    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<IBuildMenuContainerHolder<?>, IRewritableMenu, BuildMenuTab<?>>> getImmutableBuildMenuTabFunction(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<WYBScreen<?>, IRewritableMenu, BuildMenuTab<?>>> getImmutableBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return this.getClientHandlers(build)
                 .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()).get())).toList();
 
     }
 
-    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<IBuildMenuContainerHolder<?>, IRewritableMenu, BuildMenuTab<?>>> getWritableBuildMenuTabFunction(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<WYBScreen<?>, IRewritableMenu, BuildMenuTab<?>>> getWritableBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return this.getClientHandlers(build)
                 .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()).get())).toList();

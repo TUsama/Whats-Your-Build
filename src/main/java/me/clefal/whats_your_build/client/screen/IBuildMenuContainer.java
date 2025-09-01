@@ -6,7 +6,7 @@ import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 
 public interface IBuildMenuContainer {
 
-    List<BuildMenuTab<?, ?>> getTabs();
+    List<BuildMenuTab<?>> getTabs();
 
     void setNewMenu(AbstractBuildMenu<?> menu);
 

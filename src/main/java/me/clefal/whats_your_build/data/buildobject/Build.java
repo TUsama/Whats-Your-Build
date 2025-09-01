@@ -4,6 +4,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashMap;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
+import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,7 +26,7 @@ public class Build implements INetworkObject, IPersistedObject<Build> {
             ).apply(instance, (x, y) -> new Build(List.ofAll(y), x))
     );
 
-
+    public final static Build EMPTY = new Build(List.empty(), "empty");
 
     private Map<Byte, IBuildComponent<?>> components;
     public final String name;
@@ -55,5 +56,21 @@ public class Build implements INetworkObject, IPersistedObject<Build> {
 
     public Build copy(){
         return new Build(this.components.values().toList(), name);
+    }
+
+    public Build cleanCopy(){
+        return new Build(List.narrow(components.mapValues(x -> ((IBuildComponent<?>) x.makeCleanCopy())).values().toList()), name);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Build build)) return false;
+        return Objects.equal(components, build.components) && Objects.equal(name, build.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(components, name);
     }
 }

@@ -6,15 +6,13 @@ import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.CommonClass;
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
-import me.clefal.whats_your_build.client.screen.RenderContext;
+import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.network.c2s.C2SAskTemplateBuildPacket;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,28 +21,23 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
-public class LoadoutScreen extends AbstractContainerScreen<LoadoutMenu> implements IBuildMenuContainerHolder<BuildWritableContainer> {
+public class LoadoutScreen extends WYBScreen<LoadoutMenu> {
+    public static final ResourceLocation INVENTORY_LOCATION = CommonClass.id("textures/gui/container/background.png");
+    public static final ResourceLocation ARMORY = CommonClass.id("textures/gui/container/armory.png");
     public final LoadoutSelectionList buildList;
-
     @Nullable
     public Build template;
 
-    @Nullable
-    public BuildWritableContainer container;
-    public static final VertexContainer vertexContainer = new VertexContainer();
-    public static final ResourceLocation INVENTORY_LOCATION = CommonClass.id("textures/gui/container/background.png");
-    public static final ResourceLocation ARMORY = CommonClass.id("textures/gui/container/armory.png");
-    @Nullable
-    //avoid CME cause by changeContainer()
-    public BuildWritableContainer nextContainer;
+    public VertexContainer vertexContainer = new VertexContainer();
+
 
     public LoadoutScreen(LoadoutMenu menu, Inventory playerInventory) {
         super(menu, playerInventory, Component.literal(""));
-        this.buildList = new LoadoutSelectionList(80, 60, 20, 100,this);
+        this.buildList = new LoadoutSelectionList(80, 60, 20, 100, this);
         NetworkUtils.sendToServer(new C2SAskTemplateBuildPacket());
     }
 
-    public void initTemplate(Build build){
+    public void initTemplate(Build build) {
         this.template = build;
     }
 
@@ -62,16 +55,7 @@ public class LoadoutScreen extends AbstractContainerScreen<LoadoutMenu> implemen
         }
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean b = super.mouseClicked(mouseX, mouseY, button);
-        if (nextContainer != null){
-            changeContainer(nextContainer);
-            nextContainer = null;
-        }
-        return b;
-    }
-
+/*
     public void changeContainer(BuildWritableContainer container){
         if (this.container != null) removeWidget(this.container);
         this.container = container;
@@ -80,17 +64,17 @@ public class LoadoutScreen extends AbstractContainerScreen<LoadoutMenu> implemen
         this.container.initTabsPosition(renderContext.tabOriginalX(), renderContext.tabOriginalY());
         addRenderableWidget(this.container);
     }
-
+*/
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (container == null){
+        if (buildList.noBuild()) {
 
             vertexContainer.putString(DrawStringBufferInfo.of(Component.translatable("wyb.screen.loadout.no_loadout").getString(), leftPos + buildList.getWidth() + ((menu.startX - leftPos + buildList.getWidth()) / 2), topPos + buildList.getHeight() / 2, ChatFormatting.GRAY.getColor(), guiGraphics.pose().last().pose()));
         } else {
-            RenderContext renderContext = generateRenderContext();
+            /*RenderContext renderContext = generateRenderContext();
             container.setCurrentMenuPosition(renderContext.tabOriginalX(), renderContext.tabOriginalY());
-            container.setCurrentMenuSize(100, 100);
+            container.setCurrentMenuSize(100, 100);*/
         }
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         vertexContainer.draw(guiGraphics.bufferSource(), RenderTypeCreator.guiBlend);
@@ -106,14 +90,10 @@ public class LoadoutScreen extends AbstractContainerScreen<LoadoutMenu> implemen
         guiGraphics.blit(ARMORY, leftPos + imageWidth, topPos, 0, 0, 256, 256);
     }
 
-    @Override
-    public RenderContext generateRenderContext() {
-        return new RenderContext(leftPos + buildList.getWidth(), topPos, 1.0f, minecraft.player);
-    }
 
     @Override
-    public BuildWritableContainer getContainer() {
-        return container;
+    public VertexContainer getVertexContainer() {
+        return vertexContainer;
     }
 }
 //?}

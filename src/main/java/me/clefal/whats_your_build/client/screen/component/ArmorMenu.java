@@ -22,7 +22,7 @@ public abstract class ArmorMenu<T extends IBuildComponent<?>> extends AbstractBu
     }
 
 
-    @Override
+
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         {
             PoseStack pose = guiGraphics.pose();
@@ -44,6 +44,7 @@ public abstract class ArmorMenu<T extends IBuildComponent<?>> extends AbstractBu
             pose.popPose();
 
             pose.pushPose();
+            /*
             int holderOffsetX = (int) (getX() + getWidth() / 1.8f);
             int holderOffsetY = (int) (getY() + getHeight() / 12f);
             int time = 0;
@@ -59,7 +60,7 @@ public abstract class ArmorMenu<T extends IBuildComponent<?>> extends AbstractBu
                     pose.translate(xChange, 0, 0);
                 }
                 pose.popPose();
-            }
+            }*/
             pose.popPose();
 
             pose.popPose();

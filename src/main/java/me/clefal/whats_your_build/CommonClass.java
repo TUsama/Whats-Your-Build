@@ -57,4 +57,8 @@ public class CommonClass {
         //? >1.20.1
         return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
     }
+
+    public static ResourceLocation gui(String path){
+        return CommonClass.id("textures/gui/" + path + ".png");
+    }
 }

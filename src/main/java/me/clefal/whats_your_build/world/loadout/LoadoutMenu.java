@@ -1,18 +1,25 @@
 //? neoforge {
 package me.clefal.whats_your_build.world.loadout;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
+import me.clefal.whats_your_build.data.buildobject.Build;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
+import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
+import me.clefal.whats_your_build.world.BuildMenu;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.NonInteractiveResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class LoadoutMenu
-        extends
-        AbstractContainerMenu
+public class LoadoutMenu extends BuildMenu
 {
     public static final int armoryRows = 9;
     public static final int armoryColumns = 3;
@@ -20,14 +27,16 @@ public class LoadoutMenu
     private final Container armory;
     public int startX;
     public int startY;
+    private Build selfBuild;
 
-    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory) {
-        this(menuType, containerId, playerInventory, new SimpleContainer(size));
+    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
+        this(menuType, containerId, playerInventory, new SimpleContainer(size), buf.readJsonWithCodec(Build.CODEC));
     }
 
-    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, Container armory) {
+    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, Container armory, Build selfBuild) {
         super(menuType, containerId);
         this.armory = armory;
+        this.selfBuild = selfBuild;
         int armoryStartX = 8 + 9 * 18 + 14;
         int armoryStartY = 12;
         startX = armoryStartX;
@@ -55,7 +64,63 @@ public class LoadoutMenu
             this.addSlot(new Slot(playerInventory, i1, 8 + i1 * 18, 142));
         }
 
+    }
 
+    public void deployNewBuild(Build build){
+        placePlan.clear();
+        Map<String, ? extends IBuildComponent<?>> map = build.getComponents()
+                .map((aByte, iBuildComponent) -> Tuple.of(iBuildComponent.getIdentifier(), iBuildComponent));
+
+        map
+                .get(VanillaArmorComponent.ID)
+                .forEach(iBuildComponent -> placePlan.put(VanillaArmorComponent.ID,
+                        () -> {
+                            var simpleContainer = iBuildComponent.asContainer();
+                            int k = 0;
+                            int j = 0;
+                            for (int i = 0; i < simpleContainer.getContainerSize(); i++) {
+                                if (k >= 4) {
+                                    j++;
+                                    k = 0;
+                                }
+                                addSlot(new Slot(simpleContainer, i, j * 18 + 24, k * 18 + 52){
+                                    @Override
+                                    public boolean mayPickup(Player player) {
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public ItemStack safeInsert(ItemStack takingStack, int increment) {
+                                        this.setByPlayer(takingStack);
+                                        return takingStack;
+                                    }
+
+                                    @Override
+                                    public boolean isFake() {
+                                        return true;
+                                    }
+                                });
+                                k++;
+                            }
+                        }));
+
+        map
+                .get(CuriosComponent.ID)
+                .forEach(iBuildComponent -> placePlan.put(CuriosComponent.ID,
+                        () -> {
+                            var simpleContainer = iBuildComponent.asContainer();
+
+                            int k = 0;
+                            int j = 0;
+                            for (int i = 0; i < simpleContainer.getContainerSize(); i++) {
+                                if (k >= 4) {
+                                    j++;
+                                    k = 0;
+                                }
+                                addSlot(new Slot(simpleContainer, i, j * 18 + 24, k * 18 + 52));
+                                k++;
+                            }
+                        }));
     }
 
     @Override

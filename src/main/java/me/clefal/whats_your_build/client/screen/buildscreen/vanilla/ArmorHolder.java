@@ -35,7 +35,8 @@ public class ArmorHolder extends AbstractWidget {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(0, 0, 1f);
-        PlayerBuildScreen.vertexContainer.putBliz(PlayerBuildScreen.COMPONENT, TextureBufferInfo.of(getX(), getY(), width, height, 128, 41, 17, 17, 256, 256, pose.last().pose()).withRenderInfo(TextureBufferInfo.RenderInfo.ofOpacity(0.5f)));
+        /*
+        PlayerBuildScreen.vertexContainer.putBliz(PlayerBuildScreen.COMPONENT, TextureBufferInfo.of(getX(), getY(), width, height, 128, 41, 17, 17, 256, 256, pose.last().pose()).withRenderInfo(TextureBufferInfo.RenderInfo.ofOpacity(0.5f)));*/
         /*
         guiGraphics.setColor(1.0f, 1.0f, 1.0f, 0.5f);
         guiGraphics.blit(PlayerBuildScreen.COMPONENT, getX(), getY(), width, height, 128, 41, 17, 17, 256, 256);

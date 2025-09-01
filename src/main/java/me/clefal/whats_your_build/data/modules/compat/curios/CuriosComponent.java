@@ -8,13 +8,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
 public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent<CuriosComponent> {
 
+    public static final String ID = "ring";
     public static final MapCodec<CuriosComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(ItemStack.CODEC.listOf().fieldOf("curios").forGetter(x -> x.curios().asJava())).apply(i, x -> new CuriosComponent(List.ofAll(x))));
 
     @Override
@@ -32,7 +36,7 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
 
     @Override
     public String getIdentifier() {
-        return "ring";
+        return ID;
     }
     //?}
 
@@ -46,6 +50,24 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
 
         return new CuriosComponent(curios.map(ItemStack::copy));
     }
+
+    @Override
+    public CuriosComponent makeCleanCopy() {
+        return new CuriosComponent(Util.make(() -> {
+            List<ItemStack> objects = List.empty();
+            for (int i = 0; i < this.curios.size(); i++) {
+                objects = objects.prepend(ItemStack.EMPTY);
+            }
+            return objects;
+
+        }));
+    }
+
+    @Override
+    public Container asContainer() {
+        return new SimpleContainer(this.curios.toJavaArray(ItemStack[]::new));
+    }
+
 
 }
 //?}

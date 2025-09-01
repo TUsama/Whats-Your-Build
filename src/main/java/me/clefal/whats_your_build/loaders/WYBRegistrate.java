@@ -4,10 +4,12 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.MenuEntry;
 import me.clefal.whats_your_build.Constants;
+import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutScreen;
 import me.clefal.whats_your_build.world.block.LoadoutChest;
 import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
+import me.clefal.whats_your_build.world.player_build.PlayerBuildMenu;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -39,16 +41,16 @@ public class WYBRegistrate {
     public static final MenuEntry<LoadoutMenu> loadoutMenu = Constants.REGISTRATE
             .<LoadoutMenu, LoadoutScreen>menu(
                     "loadout_menu",
-                    (type, windowId, inv) -> new LoadoutMenu(type, windowId, inv),
+                    (type, windowId, inv, buf) -> new LoadoutMenu(type, windowId, inv, buf),
                     () -> (menu, inv, displayName) -> new LoadoutScreen(menu, inv)
 
             ).register();
 
-    public static final MenuEntry<LoadoutMenu> playerBuildMenu = Constants.REGISTRATE
-            .<LoadoutMenu, LoadoutScreen>menu(
+    public static final MenuEntry<PlayerBuildMenu> playerBuildMenu = Constants.REGISTRATE
+            .menu(
                     "player_build_menu",
-                    (type, windowId, inv) -> new LoadoutMenu(type, windowId, inv),
-                    () -> (menu, inv, displayName) -> new LoadoutScreen(menu, inv)
+                    (type, windowId, inv, buf) -> new PlayerBuildMenu(type, windowId, buf),
+                    () -> PlayerBuildScreen::new
 
             ).register();
 

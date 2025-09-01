@@ -1,20 +1,20 @@
 //? neoforge {
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
-import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
-import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.client.components.WYBImageButton;
+import me.clefal.whats_your_build.client.screen.loadoutscreen.components.BuildEntryFunctionButton;
 import me.clefal.whats_your_build.data.buildobject.Build;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Queue;
 
 public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelectionList.BuildEntry> {
 
@@ -25,6 +25,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     public static final int buttonYInterval = 8;
     private static final ResourceLocation TEXTURE = CommonClass.id("textures/gui/screen_background.png");
     private final LoadoutScreen screen;
+    private Queue<LoadoutSelectionList.BuildEntry> deletedEntry;
 
     public LoadoutSelectionList(int width, int height, int y0, int y1, LoadoutScreen screen) {
         //? 1.20.1
@@ -41,6 +42,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         this.setRenderSelection(false);
         *///?}
         this.screen = screen;
+        this.deletedEntry = new ArrayDeque<>();
     }
 
     @Override
@@ -55,23 +57,19 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         if (children().size() < targetAmount){
             int i = targetAmount - children().size();
             while (i > 0){
-                addEntry(new BuildEntry(null));
+                addEntry(new BuildEntry(Build.EMPTY));
                 i--;
             }
         }
     }
 
-    public void setBuildForScreenContainer(){
-        children().stream().filter(x -> x.storageBuild != null).findFirst().ifPresent(x -> {
-            this.screen.changeContainer(new BuildWritableContainer(minecraft.player, x.storageBuild));
-        });
-
+    public boolean noBuild(){
+        return getCurrentBuild() == Build.EMPTY;
     }
 
-    @Nullable
     public Build getCurrentBuild(){
-        if (getFocused() != null) return getFocused().storageBuild;
-        return null;
+        if (getFocused() != null) return getFocused().currentState.presentBuild();
+        return Build.EMPTY;
     }
 
     @Override
@@ -87,59 +85,90 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
 
     public class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
 
-        @Nullable
-        public Build storageBuild;
+        private BuildEntryState currentState;
+        private List<WYBImageButton> buttons;
 
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            BuildWritableContainer container = screen.container;
-            //means currently user has editing content.
-            if (container != null && container.editingBuild != null){
-                //only if the entry user clicked have a build, means it will overwrite the edit.
-                if (storageBuild != null) screen.nextContainer = new BuildWritableContainer(minecraft.player, storageBuild);
-            } else {
-                //if the user isn't editing build, change the container anyway.
-                if (storageBuild == null) {
-                    //In this case, user want to create a new loadout
-                    if (screen.template != null) screen.nextContainer = new BuildWritableContainer(minecraft.player, screen.template.copy());
-                } else {
-                    //normally change build
-                    screen.nextContainer = new BuildWritableContainer(minecraft.player, storageBuild);
-                }
+        public final BuildEntryFunctionButton save = new BuildEntryFunctionButton(CommonClass.gui("save"), this) {
+            @Override
+            public void execute() {
+                entry.save();
             }
+        };
 
-            return super.mouseClicked(mouseX, mouseY, button);
-        }
+        public final BuildEntryFunctionButton reset = new BuildEntryFunctionButton(CommonClass.gui("reset"), this) {
+            @Override
+            public void execute() {
+                entry.abortChanges();
+            }
+        };
+
+        public final BuildEntryFunctionButton clear = new BuildEntryFunctionButton(CommonClass.gui("clear"), this) {
+            @Override
+            public void execute() {
+                entry.clear();
+            }
+        };
+
+        public final BuildEntryFunctionButton delete = new BuildEntryFunctionButton(CommonClass.gui("reset"), this) {
+            @Override
+            public void execute() {
+                LoadoutSelectionList list1 = (LoadoutSelectionList) entry.list;
+                list1.removeEntry(entry);
+            }
+        };
+
 
         public BuildEntry(@Nullable Build storageBuild) {
-            this.storageBuild = storageBuild;
+            BuildEntryState.Waiting waiting = new BuildEntryState.Waiting(this);
+            waiting.storageBuild = storageBuild;
+            changeState(waiting);
+            this.buttons = List.of(save, reset, clear, delete);
+        }
+
+        protected void changeState(BuildEntryState state){
+            if (this.currentState != null) {
+                this.currentState.onChangeState(state);
+            }
+            this.currentState = state;
+            this.currentState.manipulateEntryComponents();
+        }
+
+        private void save(){
+            currentState.save();
+        }
+
+        private void abortChanges(){
+            currentState.abortChanges();
+        }
+
+        private void clear(){
+            currentState.clear();
         }
 
         @Override
         public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
-            if (storageBuild != null){
-                LoadoutScreen.vertexContainer.putString(DrawStringBufferInfo.of(index + " ", left + 24, top, ChatFormatting.BLACK.getColor(), pose.last().pose()));
-
-                LoadoutScreen.vertexContainer.putString(DrawStringBufferInfo.of(storageBuild.getName(), left + 48, top, ChatFormatting.BLACK.getColor(), pose.last().pose()));
-            } else {
-                if (hovering){
-                    guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("wyb.screen.loadout.no_loadout"), left, top, ChatFormatting.GOLD.getColor());
-                } else {
-                    guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable("wyb.screen.loadout.no_loadout"), left, top, ChatFormatting.GOLD.getColor());
+            if (!isHoveredOrFocused()) return;
+            for (int i = 0; i < buttons.size(); i++) {
+                WYBImageButton wybImageButton = buttons.get(i);
+                if (wybImageButton.isActive()){
+                    wybImageButton.setPosition(top + height / 2, left + width - 2 - i * 8);
+                    wybImageButton.render(guiGraphics, mouseX, mouseY, partialTick);
                 }
-
             }
-
-            pose.popPose();
         }
 
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            boolean flag = false;
+            for (WYBImageButton wybImageButton : this.buttons) {
+                flag = flag || wybImageButton.mouseClicked(mouseX, mouseY, button);
+            }
+            return flag;
+        }
 
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            //guiGraphics.drawString(Minecraft.getInstance().font, "11111", left, top, ChatFormatting.WHITE.getColor());
-            /*BuildManagementScreen.vertexContainer.putString(DrawStringBufferInfo.of("111", top, left, ChatFormatting.WHITE.getColor(), guiGraphics.pose().last().pose()));*/
+            currentState.renderBack(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, screen.vertexContainer);
         }
     }
 }

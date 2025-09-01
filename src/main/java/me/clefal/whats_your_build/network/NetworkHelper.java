@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class NetworkHelper {
     public static void startPlayerBuildScreen(Build build, UUID target) {
-        Player playerByUUID = Minecraft.getInstance().player.level().getPlayerByUUID(target);
+        /*Player playerByUUID = Minecraft.getInstance().player.level().getPlayerByUUID(target);
         if (playerByUUID != null) {
             Minecraft.getInstance().setScreen(new PlayerBuildScreen(build, playerByUUID));
         } else if (DevUtils.isInDev()) {
@@ -19,6 +19,6 @@ public class NetworkHelper {
             Minecraft.getInstance().setScreen(new PlayerBuildScreen(build, Minecraft.getInstance().player));
         }
 
-
+*/
     }
 }
