@@ -1,8 +1,19 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
+import me.clefal.whats_your_build.client.components.WYBImageButton;
+import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
+
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public abstract class BuildEntryState {
 
@@ -12,9 +23,9 @@ public abstract class BuildEntryState {
         this.buildEntry = buildEntry;
     }
 
-    public abstract void manipulateEntryComponents();
+    public abstract List<WYBImageButton> provideButtons();
     public abstract void onChangeState(BuildEntryState next);
-    public abstract void save();
+    public abstract void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots);
     public abstract void abortChanges();
     public abstract void clear();
     public abstract Build presentBuild();
@@ -41,37 +52,44 @@ public abstract class BuildEntryState {
         }
 
         @Override
-        public void manipulateEntryComponents() {
-            super.buildEntry.save.active = true;
-            super.buildEntry.reset.active = true;
-            super.buildEntry.delete.active = true;
-            super.buildEntry.clear.active = true;
+        public List<WYBImageButton> provideButtons() {
+            return List.of(super.buildEntry.save, super.buildEntry.reset, super.buildEntry.delete, super.buildEntry.clear);
         }
 
 
         @Override
         public void onChangeState(BuildEntryState next) {
-
+            if (next instanceof Waiting waiting){
+                waiting.storageBuild = baseBuild.copy();
+            }
         }
 
         @Override
-        public void save() {
-            this.baseBuild = this.editingBuild.copy();
+        public void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots) {
+            currentSlots.forEach((string, slots) -> {
+                this.baseBuild = this.baseBuild.createNewBuildFromContainer(string, slots.isEmpty() ? new SimpleContainer() : slots.getFirst().container);
+            });
+            try {
+                LoadoutsClientHandler.writeToLocal(this.baseBuild);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
         @Override
         public void abortChanges() {
-            this.editingBuild = this.baseBuild.copy();
+
         }
 
         @Override
         public void clear() {
-            this.editingBuild = this.editingBuild.cleanCopy();
+            this.baseBuild = this.baseBuild.cleanCopy();
         }
 
         @Override
         public Build presentBuild() {
-            return editingBuild;
+            return baseBuild;
         }
 
         @Override
@@ -81,7 +99,11 @@ public abstract class BuildEntryState {
 
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, VertexContainer vertexContainer) {
-
+            if (isMouseOver || buildEntry.isFocused()){
+                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left + 1, top - 1, ChatFormatting.WHITE.getColor());
+            } else {
+                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left, top, ChatFormatting.WHITE.getColor());
+            }
         }
     }
 
@@ -92,24 +114,23 @@ public abstract class BuildEntryState {
             super(buildEntry);
         }
 
+
         @Override
-        public void manipulateEntryComponents() {
-            super.buildEntry.save.active = false;
-            super.buildEntry.reset.active = true;
-            super.buildEntry.delete.active = true;
-            super.buildEntry.clear.active = true;
+        public List<WYBImageButton> provideButtons() {
+            return List.of(super.buildEntry.delete, super.buildEntry.clear);
         }
 
 
         @Override
         public void onChangeState(BuildEntryState next) {
             if (next instanceof Editing editing){
-                editing.editingBuild = storageBuild.copy();
+                Build copy = storageBuild.copy();
+                editing.baseBuild = copy;
             }
         }
 
         @Override
-        public void save() {
+        public void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots) {
 
         }
 
@@ -130,11 +151,16 @@ public abstract class BuildEntryState {
 
         @Override
         public void mouseClick(double mouseX, double mouseY, int button) {
-
+            System.out.println(storageBuild.getName());
         }
 
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, VertexContainer vertexContainer) {
+            if (isMouseOver || buildEntry.isFocused()){
+                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left + 1, top - 1, ChatFormatting.WHITE.getColor());
+            } else {
+                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left, top, ChatFormatting.WHITE.getColor());
+            }
 
         }
     }

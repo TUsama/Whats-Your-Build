@@ -3,7 +3,6 @@
   "wyb.container.title.armory": "Armory",
   "wyb.compat.screen.tab.curios": "Curios",
   "wyb.screen.head.player_build": "Player Build",
-  "wyb.screen.loadout.no_loadout": "No Loadout",
   "whats_your_build.wyb_client_config.showYourBuildFor.all": "All",
   "whats_your_build.wyb_client_config.showYourBuildFor.no_one": "No one",
   "whats_your_build.wyb_client_config.showYourBuildFor.teammates": "Teammates",
@@ -14,5 +13,13 @@
   "wyb.ask.reject": "You aren't allowed to see this player's build.",
   "wyb.chat.receive_build": "%1$s shares their build to you: %2$s",
   "wyb.chat.build": "[%1$s's build]",
-  "wyb.chat.click_to_show_build": "Click here to show the build."
+  "wyb.chat.click_to_show_build": "Click here to show the build.",
+
+  "wyb.screen.loadout.no_loadout": "No Loadout",
+  "wyb.screen.loadout.initial_build_name": "Loadout %1$s",
+  "wyb.screen.loadout.tab.new": "New Loadout",
+  "wyb.screen.loadout.right_click_menu.save": "Save",
+  "wyb.screen.loadout.right_click_menu.reset": "Reset",
+  "wyb.screen.loadout.right_click_menu.clear": "Clear",
+  "wyb.screen.loadout.right_click_menu.delete": "Delete"
 }

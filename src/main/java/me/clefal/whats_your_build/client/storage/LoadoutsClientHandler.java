@@ -26,6 +26,7 @@ public class LoadoutsClientHandler {
 
     public static void writeToLocal(Build build) throws IOException {
         LocalPlayer player = Minecraft.getInstance().player;
+        System.out.println("1");
         if (player != null) {
             UUID uuid = player.getUUID();
 
@@ -49,7 +50,9 @@ public class LoadoutsClientHandler {
             // 写入文件
             try (BufferedWriter writer = Files.newBufferedWriter(buildFile)) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                System.out.println("write!");
                 gson.toJson(json, writer);
+
             }
         }
     }
@@ -61,6 +64,7 @@ public class LoadoutsClientHandler {
 
         if (!Files.exists(playerFolder) || !Files.isDirectory(playerFolder)) {
             Constants.LOG.debug("non-exist directory: {}, return empty list.", playerFolder);
+            Files.createDirectories(playerFolder);
             return builds;
         }
 

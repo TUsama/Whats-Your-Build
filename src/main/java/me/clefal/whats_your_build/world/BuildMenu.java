@@ -7,18 +7,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class BuildMenu extends AbstractContainerMenu implements IRewritableMenu {
+public abstract class BuildMenu extends AbstractContainerMenu implements IBuildHandler {
 
-    protected Map<String, SlotPlacer> placePlan = new HashMap<>();
+
 
     protected BuildMenu(@Nullable MenuType<?> menuType, int containerId) {
         super(menuType, containerId);
     }
 
-    public void rewriteSlots(String id) {
-        this.slots.clear();
-        placePlan.get(id).place();
-    }
 
     @FunctionalInterface
     public interface SlotPlacer {

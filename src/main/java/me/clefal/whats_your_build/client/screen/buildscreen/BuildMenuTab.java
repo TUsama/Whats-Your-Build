@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
-import me.clefal.whats_your_build.world.IRewritableMenu;
+import me.clefal.whats_your_build.world.IRewritable;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -21,17 +21,17 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>> extends ImageBu
     public static int TAB_HEIGHT = 8;
     protected E component;
     protected WYBScreen<?> screen;
-    private IRewritableMenu menu;
+    private IRewritable rewritable;
 
 
-    public BuildMenuTab(Component message, E component, WYBScreen<?> screen, IRewritableMenu menu) {
+    public BuildMenuTab(Component message, E component, WYBScreen<?> screen, IRewritable rewritable) {
         //? 1.20.1
         /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {}, message);*/
         //? >1.20.1
         super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/non-highlight.png"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/highlight.png"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/highlight.png")), button -> {}, message);
         this.component = component;
         this.setTooltip(Tooltip.create(message));
-        this.menu = menu;
+        this.rewritable = rewritable;
         this.screen = screen;
     }
 
@@ -84,7 +84,7 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>> extends ImageBu
 
     @Override
     public final void onPress() {
-        menu.rewriteSlots(getIdentifier());
+        rewritable.rewriteSlots(getIdentifier());
     }
 
 

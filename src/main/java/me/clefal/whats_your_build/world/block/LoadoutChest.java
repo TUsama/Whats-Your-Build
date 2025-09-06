@@ -1,9 +1,14 @@
 package me.clefal.whats_your_build.world.block;
 
 import com.mojang.serialization.MapCodec;
+import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.data.buildobject.Build;
+import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.loaders.WYBRegistrate;
 import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
+import me.clefal.whats_your_build.world.loadout.LoadoutMenuProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -45,14 +50,17 @@ public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> impleme
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            MenuProvider menuprovider = this.getMenuProvider(state, level, pos);
-            if (menuprovider != null) {
-                player.openMenu(menuprovider);
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof LoadoutChestEntity loadoutChestEntity) {
+                Build resultBuild = CommonClass.post(new ServerGatherBuildComponentEvent(((ServerPlayer) player))).getResultBuild();
+                player.openMenu(new LoadoutMenuProvider(resultBuild, loadoutChestEntity), buf -> buf.writeJsonWithCodec(Build.CODEC, resultBuild));
             }
+
 
             return InteractionResult.CONSUME;
         }
     }
+
 
     @Override
     protected RenderShape getRenderShape(BlockState state) {

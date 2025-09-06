@@ -7,7 +7,7 @@ import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
 import me.clefal.whats_your_build.data.modules.compat.curios.menu.CuriosMenuTab;
-import me.clefal.whats_your_build.world.IRewritableMenu;
+import me.clefal.whats_your_build.world.IRewritable;
 
 import java.util.function.BiFunction;
 
@@ -27,7 +27,7 @@ public class CuriosClientHandler implements IComponentClientHandler {
     }
 
     @Override
-    public BiFunction<WYBScreen<?>, IRewritableMenu, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component) {
+    public BiFunction<WYBScreen<?>, IRewritable, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component) {
         return (x, y) -> new CuriosMenuTab((CuriosComponent) component, x, y);
     }
 

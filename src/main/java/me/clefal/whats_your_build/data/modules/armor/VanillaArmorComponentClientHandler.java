@@ -1,13 +1,12 @@
 package me.clefal.whats_your_build.data.modules.armor;
 
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.buildscreen.vanilla.VanillaArmorMenuTab;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.handler.IComponentClientHandler;
-import me.clefal.whats_your_build.world.IRewritableMenu;
+import me.clefal.whats_your_build.world.IRewritable;
 
 import java.util.function.BiFunction;
 
@@ -27,7 +26,7 @@ public class VanillaArmorComponentClientHandler implements IComponentClientHandl
     }
 
     @Override
-    public BiFunction<WYBScreen<?>, IRewritableMenu, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component) {
+    public BiFunction<WYBScreen<?>, IRewritable, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component) {
         return (x, y) -> new VanillaArmorMenuTab((VanillaArmorComponent) component, x, y);
     }
 

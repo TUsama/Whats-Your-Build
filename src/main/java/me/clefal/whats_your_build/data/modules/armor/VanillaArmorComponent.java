@@ -1,6 +1,6 @@
 package me.clefal.whats_your_build.data.modules.armor;
 
-import com.mojang.datafixers.util.Pair;
+import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,15 +12,41 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
-public record VanillaArmorComponent(Map<EquipmentSlot, ItemStack> armors) implements IBuildComponent<VanillaArmorComponent> {
+public class VanillaArmorComponent implements IBuildComponent<VanillaArmorComponent> {
+
     public static final String ID = "armor";
     public static final MapCodec<VanillaArmorComponent> CODEC = RecordCodecBuilder.mapCodec(i ->
             i.group(
-                    Codec.unboundedMap(EquipmentSlot.CODEC, ItemStack.CODEC).fieldOf("armors").forGetter(x -> x.armors)
+                    Codec.unboundedMap(EquipmentSlot.CODEC, ItemStack.CODEC).fieldOf("armors").forGetter(x -> {
+                        HashMap<EquipmentSlot, ItemStack> equipmentSlotItemStackHashMap = new HashMap<>(x.armors);
+                        x.armors.entrySet().stream().filter(entry -> entry.getValue().isEmpty()).map(Map.Entry::getKey).forEach(equipmentSlotItemStackHashMap::remove);
+                        return equipmentSlotItemStackHashMap;
+                    })
             ).apply(i, VanillaArmorComponent::new)
     );
+    public Map<EquipmentSlot, ItemStack> armors;
+
+    public VanillaArmorComponent(Map<EquipmentSlot, ItemStack> armors) {
+        this.armors = Stream.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND)
+                .map(x -> Tuple.of(x, armors.getOrDefault(x, ItemStack.EMPTY)))
+                .collect(HashMap::new, (equipmentSlotItemStackHashMap, equipmentSlotItemStackTuple2) -> equipmentSlotItemStackHashMap.put(equipmentSlotItemStackTuple2._1, equipmentSlotItemStackTuple2._2), HashMap::putAll);
+    }
+
+    private VanillaArmorComponent(List<ItemStack> itemStacks){
+        if (itemStacks.size() != 6) throw new RuntimeException("illegally invoke this constructor!");
+        List<EquipmentSlot> head = List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
+
+        this.armors = IntStream.rangeClosed(0, 5)
+                .boxed()
+                .map(x -> Tuple.of(head.get(x), itemStacks.get(x)))
+                .collect(HashMap::new,
+                        (equipmentSlotItemStackHashMap, equipmentSlotItemStackTuple2) -> equipmentSlotItemStackHashMap.put(equipmentSlotItemStackTuple2._1, equipmentSlotItemStackTuple2._2),
+                        HashMap::putAll);
+    }
 
     @Override
     public byte getHandlerIndex() {
@@ -63,7 +89,7 @@ public record VanillaArmorComponent(Map<EquipmentSlot, ItemStack> armors) implem
         this.armors.forEach((x, y) -> {
             objectObjectHashMap.put(x, ItemStack.EMPTY);
         });
-        return null;
+        return new VanillaArmorComponent(objectObjectHashMap);
     }
 
     @Override
@@ -72,9 +98,19 @@ public record VanillaArmorComponent(Map<EquipmentSlot, ItemStack> armors) implem
 
         SimpleContainer simpleContainer = new SimpleContainer(list.size());
         for (int i = 0; i < simpleContainer.getContainerSize(); i++) {
-            simpleContainer.setItem(i, this.armors().getOrDefault(list.get(i), ItemStack.EMPTY));
+            simpleContainer.setItem(i, this.armors.getOrDefault(list.get(i), ItemStack.EMPTY));
         }
         return simpleContainer;
+    }
+
+    @Override
+    public VanillaArmorComponent getFromContainer(Container container) {
+        ArrayList<ItemStack> itemStacks = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            itemStacks.add(container.getItem(i));
+        }
+
+        return new VanillaArmorComponent(itemStacks);
     }
 
 

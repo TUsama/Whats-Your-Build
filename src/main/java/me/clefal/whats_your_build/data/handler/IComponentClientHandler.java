@@ -1,13 +1,10 @@
 package me.clefal.whats_your_build.data.handler;
 
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainer;
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
-import me.clefal.whats_your_build.world.IRewritableMenu;
+import me.clefal.whats_your_build.world.IRewritable;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public interface IComponentClientHandler {
 
@@ -18,6 +15,6 @@ public interface IComponentClientHandler {
 
     byte getIndex();
 
-    BiFunction<WYBScreen<?>, IRewritableMenu, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component);
+    BiFunction<WYBScreen<?>, IRewritable, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component);
 
 }

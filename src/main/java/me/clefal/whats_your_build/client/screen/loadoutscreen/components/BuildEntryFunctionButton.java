@@ -2,20 +2,27 @@ package me.clefal.whats_your_build.client.screen.loadoutscreen.components;
 
 import me.clefal.whats_your_build.client.components.WYBImageButton;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutSelectionList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class BuildEntryFunctionButton extends WYBImageButton {
-    protected LoadoutSelectionList.BuildEntry entry;
-
-    public BuildEntryFunctionButton(ResourceLocation allInOne, LoadoutSelectionList.BuildEntry entry) {
-        super(0, 0, 8, 8, button -> {}, allInOne);
+public class BuildEntryFunctionButton extends WYBImageButton {
+    public LoadoutSelectionList.BuildEntry entry;
+    private EntryAction action;
+    public BuildEntryFunctionButton(String allInOneName, LoadoutSelectionList.BuildEntry entry, EntryAction action, Component message) {
+        super(0, 0, 8, 8, button -> {}, allInOneName);
         this.entry = entry;
+        this.action = action;
+        this.setMessage(message);
     }
-
-    public abstract void execute();
 
     @Override
     public void onPress() {
-        execute();
+        action.action(this);
     }
+
+    @FunctionalInterface
+    public interface EntryAction{
+        void action(BuildEntryFunctionButton button);
+    }
+
 }

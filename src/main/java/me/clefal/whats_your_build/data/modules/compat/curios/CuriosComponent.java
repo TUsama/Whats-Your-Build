@@ -68,6 +68,18 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
         return new SimpleContainer(this.curios.toJavaArray(ItemStack[]::new));
     }
 
+    @Override
+    public CuriosComponent getFromContainer(Container container) {
+        return new CuriosComponent(Util.make(() -> {
+            List<ItemStack> objects = List.empty();
+            for (int i = 0; i < this.curios.size(); i++) {
+                objects = objects.prepend(container.getItem(i));
+            }
+            return objects;
+
+        }));
+    }
+
 
 }
 //?}

@@ -13,6 +13,7 @@ import me.clefal.whats_your_build.data.IPersistedObject;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.network.INetworkObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
 
 import java.util.Comparator;
 
@@ -29,7 +30,7 @@ public class Build implements INetworkObject, IPersistedObject<Build> {
     public final static Build EMPTY = new Build(List.empty(), "empty");
 
     private Map<Byte, IBuildComponent<?>> components;
-    public final String name;
+    public String name;
 
     public Build(List<IBuildComponent<?>> components, String name) {
         this.components = components.toSortedMap(Comparator.naturalOrder(), x -> Tuple.of(x.getHandlerIndex(), x));
@@ -60,6 +61,15 @@ public class Build implements INetworkObject, IPersistedObject<Build> {
 
     public Build cleanCopy(){
         return new Build(List.narrow(components.mapValues(x -> ((IBuildComponent<?>) x.makeCleanCopy())).values().toList()), name);
+    }
+
+    public Build createNewBuildFromContainer(String updateTarget, Container container){
+        Map<String, ? extends IBuildComponent<?>> map = components.map((b, c) -> Tuple.of(c.getIdentifier(), c));
+        IBuildComponent<?> fromContainer = map.get(updateTarget)
+                .getOrElseThrow(() -> new RuntimeException("can't find the component with this identifier: " + updateTarget))
+                .getFromContainer(container);
+
+        return new Build(Map.<String, IBuildComponent<?>>narrow(map.remove(updateTarget)).put(updateTarget, fromContainer).values().toList(), this.name);
     }
 
     @Override

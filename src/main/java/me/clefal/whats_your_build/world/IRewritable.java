@@ -1,7 +1,7 @@
 package me.clefal.whats_your_build.world;
 
 
-public interface IRewritableMenu {
+public interface IRewritable {
 
     void rewriteSlots(String identifier);
 }

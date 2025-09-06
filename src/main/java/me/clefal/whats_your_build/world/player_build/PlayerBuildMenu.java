@@ -7,6 +7,7 @@ import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import me.clefal.whats_your_build.world.BuildMenu;
+import me.clefal.whats_your_build.world.IRewritable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -14,10 +15,12 @@ import net.minecraft.world.inventory.NonInteractiveResultSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class PlayerBuildMenu extends BuildMenu {
+import java.util.HashMap;
+
+public class PlayerBuildMenu extends BuildMenu implements IRewritable {
 
     public final Build targetBuild;
-
+    protected java.util.Map<String, SlotPlacer> placePlan = new HashMap<>();
 
     public PlayerBuildMenu(@Nullable MenuType<?> menuType, int containerId, FriendlyByteBuf buf) {
         this(menuType, containerId, buf.readJsonWithCodec(Build.CODEC));
@@ -26,7 +29,26 @@ public class PlayerBuildMenu extends BuildMenu {
     public PlayerBuildMenu(@Nullable MenuType<?> menuType, int containerId, Build build) {
         super(menuType, containerId);
         this.targetBuild = build;
+        handleBuild(build);
+    }
 
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return ItemStack.EMPTY;
+    }
+
+    public void rewriteSlots(String id) {
+        this.slots.clear();
+        placePlan.get(id).place();
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return true;
+    }
+
+    @Override
+    public void handleBuild(Build build) {
         Map<String, ? extends IBuildComponent<?>> map = build.getComponents()
                 .map((aByte, iBuildComponent) -> Tuple.of(iBuildComponent.getIdentifier(), iBuildComponent));
 
@@ -64,15 +86,5 @@ public class PlayerBuildMenu extends BuildMenu {
                                 k++;
                             }
                         }));
-    }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return true;
     }
 }

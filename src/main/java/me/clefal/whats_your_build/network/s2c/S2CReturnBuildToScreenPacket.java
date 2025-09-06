@@ -19,9 +19,7 @@ public class S2CReturnBuildToScreenPacket implements S2CModPacket<S2CReturnBuild
 
     @Override
     public void handleClient() {
-        if (Minecraft.getInstance().screen instanceof LoadoutScreen screen){
-            screen.initTemplate(build);
-        }
+
     }
 
     @Override

@@ -3,13 +3,13 @@ package me.clefal.whats_your_build.client.screen.buildscreen.vanilla;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
-import me.clefal.whats_your_build.world.IRewritableMenu;
+import me.clefal.whats_your_build.world.IRewritable;
 import net.minecraft.network.chat.Component;
 
 public class VanillaArmorMenuTab extends BuildMenuTab<VanillaArmorComponent> {
 
 
-    public VanillaArmorMenuTab(VanillaArmorComponent component, WYBScreen<?> holder, IRewritableMenu menu) {
+    public VanillaArmorMenuTab(VanillaArmorComponent component, WYBScreen<?> holder, IRewritable menu) {
         super(Component.translatable("wyb.screen.tab.armor"), component, holder, menu);
     }
 

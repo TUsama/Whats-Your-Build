@@ -5,17 +5,15 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Iterator;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Seq;
 import com.clefal.nirvana_lib.utils.SideUtils;
-import me.clefal.whats_your_build.client.screen.IBuildMenuContainerHolder;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.modules.ModulesManager;
-import me.clefal.whats_your_build.world.IRewritableMenu;
+import me.clefal.whats_your_build.world.IRewritable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class HandlerManager {
@@ -50,14 +48,14 @@ public class HandlerManager {
     }
 
 
-    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<WYBScreen<?>, IRewritableMenu, BuildMenuTab<?>>> getImmutableBuildMenuTabFunction(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<WYBScreen<?>, IRewritable, BuildMenuTab<?>>> getImmutableBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return this.getClientHandlers(build)
                 .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()).get())).toList();
 
     }
 
-    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<WYBScreen<?>, IRewritableMenu, BuildMenuTab<?>>> getWritableBuildMenuTabFunction(Build build){
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<BiFunction<WYBScreen<?>, IRewritable, BuildMenuTab<?>>> getWritableBuildMenuTabFunction(Build build){
         Map<Byte, ? extends IBuildComponent<?>> components = build.getComponents();
         return this.getClientHandlers(build)
                 .map(x -> x.getBuildMenuTabFunction(components.get(x.getIndex()).get())).toList();

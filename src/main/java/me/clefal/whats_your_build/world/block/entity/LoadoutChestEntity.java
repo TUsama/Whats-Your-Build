@@ -57,13 +57,10 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
-        if (inventory.player instanceof ServerPlayer player){
-            Build resultBuild = CommonClass.post(new ServerGatherBuildComponentEvent(player)).getResultBuild();
-            return new LoadoutMenu(WYBRegistrate.playerBuildMenu.get(), containerId, inventory, this, resultBuild);
-        }
         return null;
-
     }
+
+
 
     @Override
     public int getContainerSize() {

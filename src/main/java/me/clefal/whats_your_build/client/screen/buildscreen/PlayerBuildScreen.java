@@ -11,7 +11,6 @@ import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.utils.IBufferSourceProvider;
-import me.clefal.whats_your_build.world.IRewritableMenu;
 import me.clefal.whats_your_build.world.player_build.PlayerBuildMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -20,8 +19,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-
-import java.util.function.BiFunction;
 
 public class PlayerBuildScreen extends WYBScreen<PlayerBuildMenu> {
 

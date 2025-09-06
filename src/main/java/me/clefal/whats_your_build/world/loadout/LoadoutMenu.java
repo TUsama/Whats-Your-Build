@@ -3,6 +3,7 @@ package me.clefal.whats_your_build.world.loadout;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
+import lombok.Getter;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
@@ -27,6 +28,11 @@ public class LoadoutMenu extends BuildMenu
     private final Container armory;
     public int startX;
     public int startY;
+
+    public Build getSelfBuild() {
+        return selfBuild.copy();
+    }
+
     private Build selfBuild;
 
     public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
@@ -41,7 +47,6 @@ public class LoadoutMenu extends BuildMenu
         int armoryStartY = 12;
         startX = armoryStartX;
         startY = armoryStartY;
-
 
         for (int row = 0; row < armoryRows; row++) {
             for (int col = 0; col < armoryColumns; col++) {
@@ -66,62 +71,7 @@ public class LoadoutMenu extends BuildMenu
 
     }
 
-    public void deployNewBuild(Build build){
-        placePlan.clear();
-        Map<String, ? extends IBuildComponent<?>> map = build.getComponents()
-                .map((aByte, iBuildComponent) -> Tuple.of(iBuildComponent.getIdentifier(), iBuildComponent));
 
-        map
-                .get(VanillaArmorComponent.ID)
-                .forEach(iBuildComponent -> placePlan.put(VanillaArmorComponent.ID,
-                        () -> {
-                            var simpleContainer = iBuildComponent.asContainer();
-                            int k = 0;
-                            int j = 0;
-                            for (int i = 0; i < simpleContainer.getContainerSize(); i++) {
-                                if (k >= 4) {
-                                    j++;
-                                    k = 0;
-                                }
-                                addSlot(new Slot(simpleContainer, i, j * 18 + 24, k * 18 + 52){
-                                    @Override
-                                    public boolean mayPickup(Player player) {
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public ItemStack safeInsert(ItemStack takingStack, int increment) {
-                                        this.setByPlayer(takingStack);
-                                        return takingStack;
-                                    }
-
-                                    @Override
-                                    public boolean isFake() {
-                                        return true;
-                                    }
-                                });
-                                k++;
-                            }
-                        }));
-
-        map
-                .get(CuriosComponent.ID)
-                .forEach(iBuildComponent -> placePlan.put(CuriosComponent.ID,
-                        () -> {
-                            var simpleContainer = iBuildComponent.asContainer();
-
-                            int k = 0;
-                            int j = 0;
-                            for (int i = 0; i < simpleContainer.getContainerSize(); i++) {
-                                if (k >= 4) {
-                                    j++;
-                                    k = 0;
-                                }
-                                addSlot(new Slot(simpleContainer, i, j * 18 + 24, k * 18 + 52));
-                                k++;
-                            }
-                        }));
-    }
 
     @Override
     public ItemStack quickMoveStack(Player player, int i) {
@@ -151,6 +101,11 @@ public class LoadoutMenu extends BuildMenu
     @Override
     public boolean stillValid(Player player) {
         return this.armory.stillValid(player);
+    }
+
+    @Override
+    public void handleBuild(Build build) {
+
     }
 }
 //?}
