@@ -24,7 +24,8 @@ public class RightClickMenu extends AbstractContainerWidget {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
-        //pose.translate(getX(), getY(), 0);
+        //400.0F from renderTooltips() in GuiGraphics
+        pose.translate(0, 0, 400.0F);
         for (int i = 0; i < buttons.size(); i++) {
             WYBImageButton wybImageButton = buttons.get(i);
             wybImageButton.setPosition(getX(), getY() + i * wybImageButton.getHeight());

@@ -2,12 +2,15 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
+import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
 import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
+import lombok.Setter;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.components.RightClickMenu;
@@ -27,6 +30,7 @@ import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -38,6 +42,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,7 +50,7 @@ import java.util.LinkedHashMap;
 public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandler, IRewritable {
     public static final ResourceLocation INVENTORY_LOCATION = CommonClass.id("textures/gui/container/background.png");
     public static final ResourceLocation ARMORY = CommonClass.id("textures/gui/container/armory.png");
-    public final LoadoutSelectionList buildList;
+    public LoadoutSelectionList buildList;
     public VertexContainer vertexContainer = new VertexContainer();
     protected LinkedHashMap<String, BuildMenu.SlotPlacer> placePlan = new LinkedHashMap<>();
     //a list only exists on the client!
@@ -55,31 +60,48 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     private WYBImageButton addNewEntry;
     private RightClickMenu rightClickMenu;
 
+    @Nullable
+    @Setter
+    private LoadoutSelectionList.BuildEntry currentEditingEntry;
+
     public LoadoutScreen(LoadoutMenu menu, Inventory playerInventory) {
         super(menu, playerInventory, Component.literal(""));
-        this.buildList = new LoadoutSelectionList(80, 60, 20, 100, this);
-        this.tabs = HandlerManager.getInstance().getImmutableBuildMenuTabFunction(menu.getSelfBuild()).map(x -> x.apply(this, this));
-        this.addNewEntry = new WYBImageButton(0, 0, 8, 8, button -> {
-            buildList.addSelfBuildEntry(menu.getSelfBuild().copy());
-            }, "add_new_entry");
-        this.addNewEntry.setTooltip(Tooltip.create(Component.translatable("wyb.screen.loadout.tab.new")));
-        this.rightClickMenu = new RightClickMenu(0, 0, 0, 0, Component.literal(""));
     }
 
 
     @Override
     protected void init() {
         super.init();
+        this.buildList = new LoadoutSelectionList(80, 60, 20, 100, this);
         try {
             buildList.addBuildsOnInit(LoadoutsClientHandler.readAllFromLocal(minecraft.player.getUUID()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Constants.LOG.error("Failed to load builds from local when initialize LoadoutScreen: {}", String.valueOf(e));
         }
+
+        this.tabs = HandlerManager.getInstance().getImmutableBuildMenuTabFunction(menu.getSelfBuild()).map(x -> x.apply(this, this));
+        this.addNewEntry = new WYBImageButton(0, 0, 8, 8, button -> {
+            buildList.addSelfBuildEntry(menu.getSelfBuild().copy());
+        }, new WidgetSprites(CommonClass.gui("sprites/loadout/add_new_entry"), CommonClass.gui("sprites/loadout/add_new_entry")), vertexContainer){
+            @Override
+            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                PoseStack pose = guiGraphics.pose();
+                pose.pushPose();
+                ResourceLocation resourcelocation = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
+                this.container.putBliz(resourcelocation, TextureBufferInfo.of(getX(), getY(), getWidth(), getHeight(), 0, 0,32, 32, 32, 32, guiGraphics.pose().last().pose()));
+                pose.popPose();
+            }
+        };
+        this.addNewEntry.setTooltip(Tooltip.create(Component.translatable("wyb.screen.loadout.tab.new")));
+        addNewEntry.setPosition(leftPos, topPos - 12);
+
+        this.rightClickMenu = new RightClickMenu(0, 0, 0, 0, Component.literal(""));
+
         buildList.setX(leftPos);
         buildList.setY(topPos);
         addRenderableWidget(buildList);
 
-        addNewEntry.setPosition(leftPos + buildList.getWidth() - 8, topPos - 8);
+
         addRenderableWidget(addNewEntry);
 
         tabs.forEachWithIndex((buildMenuTab, value) -> {
@@ -93,10 +115,16 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (buildList.noBuild()) {
-            this.tabs.forEach(x -> x.active = false);
+            this.tabs.forEach(x -> {
+                x.active = false;
+                x.visible = false;
+            });
             vertexContainer.putString(DrawStringBufferInfo.of(Component.translatable("wyb.screen.loadout.no_loadout").getString(), leftPos + 100, topPos + buildList.getHeight() / 2, ChatFormatting.GRAY.getColor(), guiGraphics.pose().last().pose()));
         } else {
-            this.tabs.forEach(x -> x.active = true);
+            this.tabs.forEach(x -> {
+                x.active = true;
+                x.visible = true;
+            });
             NonNullList<Slot> slots1 = safeGetCurrentSlots();
             for (int k = 0; k < slots1.size(); k++) {
                 Slot slot = slots1.get(k);
@@ -148,8 +176,8 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     }
 
     private void tryRemoveCurrentMenu(){
-        if (getFocused() != null && getFocused().equals(rightClickMenu)) {
-            setFocused(null);
+        if (this.children().contains(rightClickMenu)) {
+            //setFocused(null);
             removeWidget(rightClickMenu);
             removeAllButtonsInMenu();
         }
@@ -178,7 +206,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         //always handle the right click menu first.
         if (rightClickMenu.isMouseOver(mouseX, mouseY) && rightClickMenu.mouseClicked(mouseX, mouseY, button)){
-            System.out.println("trigger early!");
+            tryRemoveCurrentMenu();
             return true;
         }
         boolean b = super.mouseClicked(mouseX, mouseY, button);
@@ -188,10 +216,17 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
             tryAddMenu(mouseX, mouseY);
         }
         //handle slot
+        boolean flag = false;
         for (Slot slot : safeGetCurrentSlots()) {
             if (isHovering1(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
                 ItemStack carried = menu.getCarried();
                 slot.set(carried.copy());
+                if (!carried.isEmpty()) flag = true;
+            }
+        }
+        if (flag){
+            if (currentEditingEntry != null && currentEditingEntry.currentState instanceof BuildEntryState.Editing editing){
+                editing.isEdited = true;
             }
         }
 
@@ -284,8 +319,11 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         Logger log = Constants.LOG;
         if (currentAt.isEmpty()){
             if (slots.isEmpty()){
-                rewriteSlots();
-                log.debug("both empty!");
+                if (placePlan.isEmpty()){
+                    return NonNullList.create();
+                } else {
+                    rewriteSlots();
+                }
             }
             return slots.firstEntry().getValue();
         } else {

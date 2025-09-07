@@ -1,13 +1,17 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.components.WYBImageButton;
 import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 
@@ -45,7 +49,7 @@ public abstract class BuildEntryState {
 
     public static class Editing extends BuildEntryState{
         public Build baseBuild;
-        public Build editingBuild;
+        public boolean isEdited = false;
 
         protected Editing(LoadoutSelectionList.BuildEntry buildEntry) {
             super(buildEntry);
@@ -72,9 +76,9 @@ public abstract class BuildEntryState {
             try {
                 LoadoutsClientHandler.writeToLocal(this.baseBuild);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Constants.LOG.error("Failed to save build: {}", this.baseBuild.name, e);
             }
-
+            this.isEdited = false;
         }
 
         @Override
@@ -99,10 +103,19 @@ public abstract class BuildEntryState {
 
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, VertexContainer vertexContainer) {
+            Font font = Minecraft.getInstance().font;
             if (isMouseOver || buildEntry.isFocused()){
-                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left + 1, top - 1, ChatFormatting.WHITE.getColor());
+                guiGraphics.drawString(font, presentBuild().name, left + 1, top - 1, ChatFormatting.WHITE.getColor());
             } else {
-                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left, top, ChatFormatting.WHITE.getColor());
+                guiGraphics.drawString(font, presentBuild().name, left, top, ChatFormatting.WHITE.getColor());
+            }
+
+            if (isEdited){
+                PoseStack pose = guiGraphics.pose();
+                pose.pushPose();
+                pose.translate(font.width(presentBuild().name) + 5, 0, 0);
+                guiGraphics.drawString(font, Component.literal("!"), left, top, ChatFormatting.YELLOW.getColor());
+                pose.popPose();
             }
         }
     }

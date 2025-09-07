@@ -106,7 +106,7 @@ public class VanillaArmorComponent implements IBuildComponent<VanillaArmorCompon
     @Override
     public VanillaArmorComponent getFromContainer(Container container) {
         ArrayList<ItemStack> itemStacks = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             itemStacks.add(container.getItem(i));
         }
 

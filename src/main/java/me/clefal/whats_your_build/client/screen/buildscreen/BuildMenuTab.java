@@ -28,7 +28,7 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>> extends ImageBu
         //? 1.20.1
         /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, component.getRenderIcon(), 32, 64, button -> {}, message);*/
         //? >1.20.1
-        super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/non-highlight.png"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/highlight.png"), CommonClass.id("textures/gui/sprite/" + component.getIdentifier() + "/highlight.png")), button -> {}, message);
+        super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprites/" + component.getIdentifier() + "/non-highlight.png"), CommonClass.id("textures/gui/sprites/" + component.getIdentifier() + "/highlight.png"), CommonClass.id("textures/gui/sprites/" + component.getIdentifier() + "/highlight.png")), button -> {}, message);
         this.component = component;
         this.setTooltip(Tooltip.create(message));
         this.rewritable = rewritable;

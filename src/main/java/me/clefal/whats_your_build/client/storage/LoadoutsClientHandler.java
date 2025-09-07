@@ -26,19 +26,15 @@ public class LoadoutsClientHandler {
 
     public static void writeToLocal(Build build) throws IOException {
         LocalPlayer player = Minecraft.getInstance().player;
-        System.out.println("1");
         if (player != null) {
             UUID uuid = player.getUUID();
 
-            // 创建以玩家 UUID 命名的文件夹路径
             Path playerFolder = buildsLocation.resolve(uuid.toString());
             Files.createDirectories(playerFolder); // 确保文件夹存在
 
-            // 创建构筑文件的路径（你可以根据 build 中的某个字段命名）
             String buildFileName = build.name + ".json";
             Path buildFile = playerFolder.resolve(buildFileName);
 
-            // 将 build 编码为 JSON
             JsonElement json = Build.CODEC.encodeStart(JsonOps.INSTANCE, build)
                     //? if 1.20.1 {
                     /*.getOrThrow(false, Constants.LOG::error);
@@ -47,12 +43,31 @@ public class LoadoutsClientHandler {
                     //?}
 
 
-            // 写入文件
             try (BufferedWriter writer = Files.newBufferedWriter(buildFile)) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                System.out.println("write!");
                 gson.toJson(json, writer);
 
+            }
+        }
+    }
+
+    public static void deleteFromLocal(String buildFileName) throws IOException {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null) {
+            UUID uuid = player.getUUID();
+
+            Path playerFolder = buildsLocation.resolve(uuid.toString());
+
+            if (!buildFileName.endsWith(".json")) {
+                buildFileName += ".json";
+            }
+            Path buildFile = playerFolder.resolve(buildFileName);
+
+            if (Files.exists(buildFile)) {
+                Files.delete(buildFile);
+                Constants.LOG.info("Deleted build file: {}", buildFile);
+            } else {
+                Constants.LOG.warn("Build file not found: {}", buildFile);
             }
         }
     }
@@ -76,7 +91,7 @@ public class LoadoutsClientHandler {
                             .map(Pair::getFirst)
                             .ifPresent(builds::add);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    Constants.LOG.error("Failed to load build file: {}", file, e);
                 }
             }
         }

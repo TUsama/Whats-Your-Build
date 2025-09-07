@@ -1,10 +1,13 @@
 //? neoforge {
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
+import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.components.WYBImageButton;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.components.BuildEntryFunctionButton;
+import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -19,11 +22,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.Nullable;
-import java.util.ArrayDeque;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Queue;
+import java.io.IOException;
+import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelectionList.BuildEntry> {
 
@@ -70,7 +72,19 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     }
 
     protected void addSelfBuildEntry(Build build){
-        build.name = Component.translatable("wyb.screen.loadout.initial_build_name", this.children().size()).getString();
+        List<Build> builds;
+        try {
+            builds = LoadoutsClientHandler.readAllFromLocal(Minecraft.getInstance().player.getUUID());
+        } catch (IOException e) {
+            builds = List.of();
+            Constants.LOG.error("Failed to load builds from local when add new entry: {}", String.valueOf(e));
+        }
+        Set<String> collect = builds.stream().map(Build::getName).collect(Collectors.toSet());
+        String name = Component.translatable("wyb.screen.loadout.initial_build_name", this.children().size()).getString();
+        while (collect.contains(name)){
+            name += "(1)";
+        }
+        build.name = name;
         addEntry(new BuildEntry(build));
     }
 
@@ -113,7 +127,6 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         }
         super.setFocused(focused);
         if (focused instanceof BuildEntry buildEntry){
-            System.out.println("set focus!");
             buildEntry.changeState(new BuildEntryState.Editing(buildEntry));
         }
     }
@@ -121,18 +134,22 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     public class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
 
         BuildEntryState currentState;
-        private List<WYBImageButton> buttons;
-        private static final ResourceLocation BACKGROUND = CommonClass.gui("menu_button_background");
+        private static final ResourceLocation BACKGROUND = CommonClass.gui("sprites/loadout/menu_button_background");
         private BiFunction<String, BuildEntryFunctionButton.EntryAction, BuildEntryFunctionButton> getButton = (string, action) -> Util.make(() -> {
-            BuildEntryFunctionButton buildEntryFunctionButton = new BuildEntryFunctionButton(string, this, action, Component.translatable("wyb.screen.loadout.right_click_menu." + string)) {
+            BuildEntryFunctionButton buildEntryFunctionButton = new BuildEntryFunctionButton(string, this, action, Component.translatable("wyb.screen.loadout.right_click_menu." + string), screen.vertexContainer) {
                 @Override
                 public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                     PoseStack pose = guiGraphics.pose();
                     pose.pushPose();
+
                     guiGraphics.blit(BACKGROUND, getX(), getY(), getWidth(), getHeight(), 0, 0, 34, 10, 34, 10);
                     pose.translate(4, 4, 0);
+                    /*
                     ResourceLocation resourcelocation = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
-                    guiGraphics.blitSprite(resourcelocation, this.getX(), this.getY(), 8, 8);
+
+                    screen.getVertexContainer().putBliz(resourcelocation, TextureBufferInfo.of(this.getX(), this.getY(), 16, 16, 0, 0, 32, 32, 32, 32, pose.last().pose()));
+*/
+                    //guiGraphics.blit(resourcelocation, this.getX(), this.getY(), 0, 0, 8, 8);
                     pose.translate(1 + 8 + 1.5f, 0, 0);
                     guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage().getString(), getX(), getY(), ChatFormatting.WHITE.getColor());
                     pose.popPose();
@@ -150,6 +167,12 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         public final BuildEntryFunctionButton delete = getButton.apply("delete", button -> {
             LoadoutSelectionList list1 = (LoadoutSelectionList) button.entry.list;
             list1.removeEntry(button.entry);
+            try {
+                LoadoutsClientHandler.deleteFromLocal(button.entry.currentState.presentBuild().name);
+            } catch (IOException e) {
+                Constants.LOG.error("Failed to load builds from local when delete entry: {}", button.entry.currentState.presentBuild().name, e);
+            }
+
         });
 
 
@@ -167,6 +190,11 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             this.currentState = state;
             screen.handleBuild(this.currentState.presentBuild());
             screen.rewriteSlots();
+            if (state instanceof BuildEntryState.Editing){
+                screen.setCurrentEditingEntry(this);
+            } else {
+                screen.setCurrentEditingEntry(null);
+            }
         }
 
         private void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots){
@@ -185,7 +213,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         private void clear(){
             currentState.clear();
             screen.handleBuild(currentState.presentBuild());
-            screen.rewriteSlots(screen.currentAt);
+            screen.rewriteSlots();
         }
 
         @Override
