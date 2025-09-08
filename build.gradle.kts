@@ -124,7 +124,7 @@ modstitch {
         // This block configures the `neoforge` extension that MDG exposes by default,
         // you can configure MDG like normal from here
         configureNeoforge {
-            //setAccessTransformers("../../src/main/resources/META-INF/accesstransformer.cfg")
+            setAccessTransformers("../../src/main/templates/META-INF/accesstransformer.cfg")
             validateAccessTransformers = false
 
             runs.all {

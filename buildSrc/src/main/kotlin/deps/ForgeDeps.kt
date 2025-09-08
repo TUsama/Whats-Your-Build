@@ -15,7 +15,8 @@ object ForgeDeps {
             modstitchModRuntimeOnly ("curse.maven:cloth-config-348521:5729105")
             modstitchModRuntimeOnly ("curse.maven:crafttweaker-239197:5880672")
 
-            modstitchImplementation ("com.tterrag.registrate:Registrate:MC1.20-1.3.11")
+            modstitchModImplementation ("com.tterrag.registrate:Registrate:MC1.20-1.3.11")
+
 /*
             modstitchModRuntimeOnly ("curse.maven:architectury-api-419699:5137938")
 

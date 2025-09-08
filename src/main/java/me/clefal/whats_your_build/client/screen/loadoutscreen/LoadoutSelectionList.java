@@ -1,14 +1,14 @@
-//? neoforge {
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
-import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.experimental.ExtensionMethod;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.Constants;
-import me.clefal.whats_your_build.client.components.WYBImageButton;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.components.BuildEntryFunctionButton;
 import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
+import me.clefal.whats_your_build.utils.WidgetHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -16,9 +16,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.Nullable;
@@ -26,7 +28,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
+@ExtensionMethod(WidgetHelper.class)
 public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelectionList.BuildEntry> {
 
     static final int WIDTH = 244;
@@ -51,15 +53,17 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         /*this.setRenderBackground(false);
         this.setRenderTopAndBottom(false);
         this.setRenderSelection(false);
+
         *///?}
         this.screen = screen;
         this.deletedEntry = new ArrayDeque<>();
     }
-
+    //? >1.20.1 {
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 
     }
+    //?}
     public void addBuildsOnInit(List<Build> builds){
         for (Build build : builds) {
             addEntry(new BuildEntry(build));
@@ -95,8 +99,24 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             removeEntry(buildEntry);
         }
         deletedEntry.clear();
+/*
+        int i = this.getRowWidth() / 2;
+        int j = this.x0 + this.width / 2;
+        int k = j - i;
+        int l = j + i;
+        int i1 = Mth.floor(mouseY - (double)this.y0) - this.headerHeight + (int)this.getScrollAmount() - 4;
+        int j1 = i1 / this.itemHeight;
+        System.out.println("scroll? " + (mouseX < (double)this.getScrollbarPosition()));
+        System.out.println("scroll bar at: " + this.getScrollbarPosition());
+        System.out.println("left? " + (mouseX >= (double)k));
+        System.out.println("right? " + (mouseX <= (double)l));
+        System.out.println();
+        System.out.println();
+        /*(mouseX < (double)this.getScrollbarPosition() && mouseX >= (double)k && mouseX <= (double)l && j1 >= 0 && i1 >= 0 && j1 < this.getItemCount() ? this.children().get(j1) : null);*/
         return b;
     }
+
+
 
     public boolean noBuild(){
         return getCurrentBuild() == Build.EMPTY;
@@ -114,22 +134,56 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         return width;
     }
 
+
+
+    //? >1.20.1 {
     @Override
     protected boolean scrollbarVisible() {
         return false;
     }
 
+    //?} else {
+    /*@Override
+    protected int getScrollbarPosition() {
+        return x0 + this.width;
+    }
+    *///?}
+
+/*
+    @Override
+    protected void renderBackground(GuiGraphics guiGraphics) {
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        //pose.translate(0, 0, -0.5f);
+        RenderSystem.enableBlend();
+        guiGraphics.fill(0, 0, 100, 100, ChatFormatting.YELLOW.getColor());
+        pose.popPose();
+    }
+*/
+
     @Override
     public void setFocused(@org.jetbrains.annotations.Nullable GuiEventListener focused) {
         //release old entry state
+        //? >1.20.1 {
         if (getFocused() instanceof BuildEntry buildEntry){
             buildEntry.changeState(new BuildEntryState.Waiting(buildEntry));
         }
+        //?} else {
+        /*if (getFocused() != null){
+            getFocused().changeState(new BuildEntryState.Waiting(getFocused()));
+        }
+        *///?}
         super.setFocused(focused);
         if (focused instanceof BuildEntry buildEntry){
             buildEntry.changeState(new BuildEntryState.Editing(buildEntry));
         }
     }
+    //? 1.20.1 {
+    /*@Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+
+    }
+    *///?}
 
     public class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
 
@@ -156,11 +210,12 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
 
                 }
             };
+
             buildEntryFunctionButton.setSize(51, 15);
             return buildEntryFunctionButton;
         });
 
-        public final BuildEntryFunctionButton save = getButton.apply("save", button -> button.entry.save(screen.getSlots()));
+        public final BuildEntryFunctionButton save = getButton.apply("save", button -> button.entry.save(screen.getSlotMap()));
         public final BuildEntryFunctionButton reset = getButton.apply("reset", button -> button.entry.abortChanges());
 
         public final BuildEntryFunctionButton clear = getButton.apply("clear", button -> button.entry.clear());
@@ -236,4 +291,3 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         }
     }
 }
-//?}

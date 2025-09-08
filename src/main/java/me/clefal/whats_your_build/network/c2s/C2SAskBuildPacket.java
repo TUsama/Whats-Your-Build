@@ -59,14 +59,14 @@ public class C2SAskBuildPacket implements C2SModPacket<C2SAskBuildPacket> {
 
             if (allow) {
                 ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(targetPlayer));
-                serverPlayer.openMenu(new PlayerBuildMenuProvider(post.getResultBuild()), buf -> buf.writeJsonWithCodec(Build.CODEC, post.getResultBuild()));
+                WYBRegistrate.playerBuildMenu.open(serverPlayer, Component.literal(""), new PlayerBuildMenuProvider(post.getResultBuild()), buf -> buf.writeJsonWithCodec(Build.CODEC, post.getResultBuild()));
             } else {
                 serverPlayer.sendSystemMessage(Component.translatable("wyb.ask.reject"));
             }
         } else {
             DevUtils.runWhenOnDev(() -> {
                 ServerGatherBuildComponentEvent post = CommonClass.post(new ServerGatherBuildComponentEvent(serverPlayer));
-                serverPlayer.openMenu(new PlayerBuildMenuProvider(post.getResultBuild()), buf -> buf.writeJsonWithCodec(Build.CODEC, post.getResultBuild()));
+                WYBRegistrate.playerBuildMenu.open(serverPlayer, Component.literal(""), new PlayerBuildMenuProvider(post.getResultBuild()), buf -> buf.writeJsonWithCodec(Build.CODEC, post.getResultBuild()));
             });
         }
     }

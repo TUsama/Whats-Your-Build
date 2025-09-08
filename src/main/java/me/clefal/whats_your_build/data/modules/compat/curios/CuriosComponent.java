@@ -27,18 +27,11 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
     }
 
 
-    //? 1.20.1 {
-    /*@Override
-    public ResourceLocation getRenderIcon() {
-        return CommonClass.id("textures/gui/ring.png");
-    }
-    *///?} else {
-
     @Override
     public String getIdentifier() {
         return ID;
     }
-    //?}
+
 
     @Override
     public MapCodec<CuriosComponent> getCodec() {

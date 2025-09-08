@@ -32,12 +32,7 @@ public class NeoforgeEntrypoint {
             if (x.getEntity() instanceof ServerPlayer serverPlayer)
                 NetworkUtils.sendToClient(new S2CAskConfigPacket(), serverPlayer);
         });
-        NeoforgeDataAttachmentRegister.register(modBus);
-        modBus.<RegisterCapabilitiesEvent>addListener(x -> x.registerEntity(
-                Capabilities.ItemHandler.ENTITY,
-                EntityType.PLAYER,
-                (player, context) -> player.getData(NeoforgeDataAttachmentRegister.HANDLER.get())
-        ));
+
         WYBRegistrate.register();
     }
 }

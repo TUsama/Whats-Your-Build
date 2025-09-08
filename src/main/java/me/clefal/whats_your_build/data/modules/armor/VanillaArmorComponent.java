@@ -21,7 +21,7 @@ public class VanillaArmorComponent implements IBuildComponent<VanillaArmorCompon
     public static final String ID = "armor";
     public static final MapCodec<VanillaArmorComponent> CODEC = RecordCodecBuilder.mapCodec(i ->
             i.group(
-                    Codec.unboundedMap(EquipmentSlot.CODEC, ItemStack.CODEC).fieldOf("armors").forGetter(x -> {
+                    Codec.unboundedMap(Codec.STRING.xmap(EquipmentSlot::byName, EquipmentSlot::getName), ItemStack.CODEC).fieldOf("armors").forGetter(x -> {
                         HashMap<EquipmentSlot, ItemStack> equipmentSlotItemStackHashMap = new HashMap<>(x.armors);
                         x.armors.entrySet().stream().filter(entry -> entry.getValue().isEmpty()).map(Map.Entry::getKey).forEach(equipmentSlotItemStackHashMap::remove);
                         return equipmentSlotItemStackHashMap;
@@ -53,19 +53,12 @@ public class VanillaArmorComponent implements IBuildComponent<VanillaArmorCompon
         return ComponentType.VANILLA_ARMOR;
     }
 
-    //? 1.20.1 {
-    /*@Override
-    public ResourceLocation getRenderIcon() {
-        return CommonClass.id("textures/gui/armor-icon.png");
-    }
-    *///?} else {
 
     @Override
     public String getIdentifier() {
         return ID;
     }
 
-    //?}
 
 
     @Override

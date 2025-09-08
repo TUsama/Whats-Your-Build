@@ -28,6 +28,8 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
             ServerPlayer player = handler.player;
             NetworkUtils.sendToClient(new S2CAskConfigPacket(), player);
         });
+
+        WYBRegistrate.register();
     }
 
     @Override
@@ -39,6 +41,7 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
             }
         });
         ClientTickEvents.END_CLIENT_TICK.register(client -> WYBKeys.consumerKeys());
+
 
     }
 }

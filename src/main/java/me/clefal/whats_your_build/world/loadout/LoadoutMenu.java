@@ -1,38 +1,23 @@
-//? neoforge {
 package me.clefal.whats_your_build.world.loadout;
 
-import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
-import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
-import lombok.Getter;
 import me.clefal.whats_your_build.data.buildobject.Build;
-import me.clefal.whats_your_build.data.handler.IBuildComponent;
-import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
-import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import me.clefal.whats_your_build.world.BuildMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.NonInteractiveResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class LoadoutMenu extends BuildMenu
-{
+public class LoadoutMenu extends BuildMenu {
     public static final int armoryRows = 9;
     public static final int armoryColumns = 3;
     public static final int size = armoryRows * armoryColumns;
     private final Container armory;
     public int startX;
     public int startY;
-
-    public Build getSelfBuild() {
-        return selfBuild.copy();
-    }
-
     private Build selfBuild;
 
     public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
@@ -59,19 +44,21 @@ public class LoadoutMenu extends BuildMenu
 
         int i1;
         int j1;
-        for(i1 = 0; i1 < 3; ++i1) {
-            for(j1 = 0; j1 < 9; ++j1) {
+        for (i1 = 0; i1 < 3; ++i1) {
+            for (j1 = 0; j1 < 9; ++j1) {
                 this.addSlot(new Slot(playerInventory, j1 + (i1 + 1) * 9, 8 + j1 * 18, 84 + i1 * 18));
             }
         }
 
-        for(i1 = 0; i1 < 9; ++i1) {
+        for (i1 = 0; i1 < 9; ++i1) {
             this.addSlot(new Slot(playerInventory, i1, 8 + i1 * 18, 142));
         }
 
     }
 
-
+    public Build getSelfBuild() {
+        return selfBuild.copy();
+    }
 
     @Override
     public ItemStack quickMoveStack(Player player, int i) {
@@ -108,4 +95,3 @@ public class LoadoutMenu extends BuildMenu
 
     }
 }
-//?}

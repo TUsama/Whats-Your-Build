@@ -71,7 +71,7 @@ public abstract class BuildEntryState {
         @Override
         public void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots) {
             currentSlots.forEach((string, slots) -> {
-                this.baseBuild = this.baseBuild.createNewBuildFromContainer(string, slots.isEmpty() ? new SimpleContainer() : slots.getFirst().container);
+                this.baseBuild = this.baseBuild.createNewBuildFromContainer(string, slots.isEmpty() ? new SimpleContainer() : slots.get(0).container);
             });
             try {
                 LoadoutsClientHandler.writeToLocal(this.baseBuild);

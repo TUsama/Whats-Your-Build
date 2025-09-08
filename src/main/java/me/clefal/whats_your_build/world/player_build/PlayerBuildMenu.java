@@ -8,10 +8,10 @@ import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IRewritable;
+import me.clefal.whats_your_build.world.NonInteractiveResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.NonInteractiveResultSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

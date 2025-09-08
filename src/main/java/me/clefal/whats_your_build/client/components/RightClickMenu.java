@@ -2,16 +2,23 @@ package me.clefal.whats_your_build.client.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
+//? >1.20.1
 import net.minecraft.client.gui.components.AbstractContainerWidget;
+//? 1.20.1
+/*import net.minecraft.client.gui.components.AbstractWidget;*/
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class RightClickMenu extends AbstractContainerWidget {
+public class RightClickMenu extends
+        //? >1.20.1
+        AbstractContainerWidget
+        //? 1.20.1
+        /*AbstractWidget implements GuiEventListener*/
+{
     public List<WYBImageButton> buttons;
 
     public RightClickMenu(int x, int y, int width, int height, Component message, WYBImageButton... buttons) {
@@ -39,13 +46,11 @@ public class RightClickMenu extends AbstractContainerWidget {
 
     }
 
-    @Override
-    public boolean mouseClicked(double p_313764_, double p_313832_, int p_313688_) {
-        return super.mouseClicked(p_313764_, p_313832_, p_313688_);
-    }
 
+    //? >1.20.1 {
     @Override
     public List<? extends GuiEventListener> children() {
         return buttons;
     }
+    //?}
 }

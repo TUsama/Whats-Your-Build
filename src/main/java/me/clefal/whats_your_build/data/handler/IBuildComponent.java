@@ -24,9 +24,7 @@ public interface IBuildComponent<SELF extends IBuildComponent<?>> {
     );
 
     byte getHandlerIndex();
-    //? 1.20.1
-    /*ResourceLocation getRenderIcon();*/
-    //? > 1.20.1
+
     String getIdentifier();
     MapCodec<SELF> getCodec();
     SELF copy();

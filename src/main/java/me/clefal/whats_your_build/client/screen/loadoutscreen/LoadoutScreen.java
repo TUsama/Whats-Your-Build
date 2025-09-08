@@ -1,4 +1,3 @@
-//? neoforge {
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
@@ -11,6 +10,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.ExtensionMethod;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.components.RightClickMenu;
@@ -23,6 +23,7 @@ import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
+import me.clefal.whats_your_build.utils.WidgetHelper;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IBuildHandler;
 import me.clefal.whats_your_build.world.IRewritable;
@@ -30,8 +31,8 @@ import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+//? >1.20.1
 import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -44,9 +45,9 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+@ExtensionMethod(WidgetHelper.class)
 public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandler, IRewritable {
     public static final ResourceLocation INVENTORY_LOCATION = CommonClass.id("textures/gui/container/background.png");
     public static final ResourceLocation ARMORY = CommonClass.id("textures/gui/container/armory.png");
@@ -55,7 +56,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     protected LinkedHashMap<String, BuildMenu.SlotPlacer> placePlan = new LinkedHashMap<>();
     //a list only exists on the client!
     @Getter
-    private LinkedHashMap<String, NonNullList<Slot>> slots = new LinkedHashMap<>();
+    private LinkedHashMap<String, NonNullList<Slot>> slotMap = new LinkedHashMap<>();
     private List<BuildMenuTab<?>> tabs;
     private WYBImageButton addNewEntry;
     private RightClickMenu rightClickMenu;
@@ -72,7 +73,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     @Override
     protected void init() {
         super.init();
-        this.buildList = new LoadoutSelectionList(80, 60, 20, 100, this);
+        this.buildList = new LoadoutSelectionList(80, 60, topPos, topPos + 80, this);
         try {
             buildList.addBuildsOnInit(LoadoutsClientHandler.readAllFromLocal(minecraft.player.getUUID()));
         } catch (IOException e) {
@@ -82,12 +83,17 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         this.tabs = HandlerManager.getInstance().getImmutableBuildMenuTabFunction(menu.getSelfBuild()).map(x -> x.apply(this, this));
         this.addNewEntry = new WYBImageButton(0, 0, 8, 8, button -> {
             buildList.addSelfBuildEntry(menu.getSelfBuild().copy());
-        }, new WidgetSprites(CommonClass.gui("sprites/loadout/add_new_entry"), CommonClass.gui("sprites/loadout/add_new_entry")), vertexContainer){
+        },
+                //? >1.20.1
+                new WidgetSprites(CommonClass.gui("sprites/loadout/add_new_entry"), CommonClass.gui("sprites/loadout/add_new_entry")),
+                //? 1.20.1
+                /*"sprites/loadout/add_new_entry",*/
+                vertexContainer){
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 PoseStack pose = guiGraphics.pose();
                 pose.pushPose();
-                ResourceLocation resourcelocation = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
+                ResourceLocation resourcelocation = getRenderResourceLocation();
                 this.container.putBliz(resourcelocation, TextureBufferInfo.of(getX(), getY(), getWidth(), getHeight(), 0, 0,32, 32, 32, 32, guiGraphics.pose().last().pose()));
                 pose.popPose();
             }
@@ -97,8 +103,12 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
 
         this.rightClickMenu = new RightClickMenu(0, 0, 0, 0, Component.literal(""));
 
+        //? >1.20.1 {
         buildList.setX(leftPos);
         buildList.setY(topPos);
+        //?} else {
+        /*buildList.setLeftPos(leftPos);
+        *///?}
         addRenderableWidget(buildList);
 
 
@@ -134,7 +144,10 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 boolean hovering = this.isHovering1(slot.x, slot.y, 16, 16, mouseX, mouseY);
                 if (hovering) {
                     this.hoveredSlot = slot;
+                    //? >1.20.1
                     this.renderSlotHighlight(guiGraphics, slot, mouseX, mouseY, partialTick);
+                    //? 1.20.1
+                    /*renderSlotHighlight(guiGraphics, slot.x, slot.y, 0);*/
                 }
             }
             renderTooltip(guiGraphics, mouseX, mouseY);
@@ -240,7 +253,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     }
 
     private void addSlot(String id, Container container, int index, int x, int y) {
-        NonNullList<Slot> slots1 = this.slots.get(id);
+        NonNullList<Slot> slots1 = this.slotMap.get(id);
         Slot slot = new Slot(container, index, x, y) {
             @Override
             public boolean mayPickup(Player player) {
@@ -253,10 +266,6 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 return stack;
             }
 
-            @Override
-            public boolean isFake() {
-                return true;
-            }
 
             @Override
             public ItemStack safeTake(int count, int decrement, Player player) {
@@ -267,7 +276,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         if (slots1 == null){
             NonNullList<Slot> objects = NonNullList.create();
             objects.add(slot);
-            this.slots.put(id, objects);
+            this.slotMap.put(id, objects);
         } else {
             slots1.add(slot);
         }
@@ -316,32 +325,35 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     protected String currentAt = "";
 
     public NonNullList<Slot> safeGetCurrentSlots(){
-        Logger log = Constants.LOG;
         if (currentAt.isEmpty()){
-            if (slots.isEmpty()){
+            if (slotMap.isEmpty()){
                 if (placePlan.isEmpty()){
                     return NonNullList.create();
                 } else {
                     rewriteSlots();
                 }
             }
-            return slots.firstEntry().getValue();
+            return takeFirst(slotMap).getValue();
         } else {
-            return slots.get(currentAt);
+            return slotMap.get(currentAt);
         }
     }
     @Override
     public void rewriteSlots(String identifier) {
-        this.slots.clear();
+        this.slotMap.clear();
         placePlan.get(identifier).place();
         currentAt = identifier;
     }
 
     public void rewriteSlots() {
-        this.slots.clear();
-        java.util.Map.Entry<String, BuildMenu.SlotPlacer> stringSlotPlacerEntry = placePlan.firstEntry();
+        this.slotMap.clear();
+        java.util.Map.Entry<String, BuildMenu.SlotPlacer> stringSlotPlacerEntry = takeFirst(placePlan);
         stringSlotPlacerEntry.getValue().place();
         currentAt = stringSlotPlacerEntry.getKey();
     }
+
+    private <T, R> java.util.Map.Entry<T, R> takeFirst(java.util.Map<T, R> map){
+        var it = map.entrySet().iterator();
+        return it.hasNext() ? it.next() : null;
+    }
 }
-//?}
