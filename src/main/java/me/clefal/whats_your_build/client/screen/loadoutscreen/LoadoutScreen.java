@@ -124,7 +124,8 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (buildList.noBuild()) {
+        boolean b = buildList.noBuild();
+        if (b) {
             this.tabs.forEach(x -> {
                 x.active = false;
                 x.visible = false;
@@ -135,29 +136,41 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 x.active = true;
                 x.visible = true;
             });
-            NonNullList<Slot> slots1 = safeGetCurrentSlots();
-            for (int k = 0; k < slots1.size(); k++) {
-                Slot slot = slots1.get(k);
-                if (slot.isActive()) {
-                    this.renderSlot(guiGraphics, slot);
-                }
-                boolean hovering = this.isHovering1(slot.x, slot.y, 16, 16, mouseX, mouseY);
-                if (hovering) {
-                    this.hoveredSlot = slot;
-                    //? >1.20.1
-                    this.renderSlotHighlight(guiGraphics, slot, mouseX, mouseY, partialTick);
-                    //? 1.20.1
-                    /*renderSlotHighlight(guiGraphics, slot.x, slot.y, 0);*/
-                }
-            }
-            renderTooltip(guiGraphics, mouseX, mouseY);
         }
+
+
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
+        //this is ugly but in 1.20.1 this method has to be placed behind the super.render();
+        //otherwise the words on tooltips will be covered
+        //weird depth issue i guess
+        if (!b) tryRenderClientSlot(guiGraphics, mouseX, mouseY);
+        renderTooltip(guiGraphics, mouseX, mouseY);
         vertexContainer.draw(guiGraphics.bufferSource(), RenderTypeCreator.guiBlend);
     }
 
+    private void tryRenderClientSlot(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        NonNullList<Slot> slots1 = safeGetCurrentSlots();
+
+        for (int k = 0; k < slots1.size(); k++) {
+            Slot slot = slots1.get(k);
+            if (slot.isActive()) {
+                this.renderSlot(guiGraphics, slot);
+            }
+            boolean hovering = this.isHovering1(slot.x, slot.y, 16, 16, mouseX, mouseY);
+
+            if (hovering) {
+                this.hoveredSlot = slot;
+                //? >1.20.1
+                this.renderSlotHighlight(guiGraphics, slot, mouseX, mouseY, partialTick);
+                //? 1.20.1
+                /*renderSlotHighlight(guiGraphics, slot.x, slot.y, 0);*/
+            }
+        }
+    }
+
     protected boolean isHovering1(int x, int y, int width, int height, double mouseX, double mouseY) {
+
         return mouseX >= (double)(x - 1)
                 && mouseX < (double)(x + width + 1)
                 && mouseY >= (double)(y - 1)
@@ -218,7 +231,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         //always handle the right click menu first.
-        if (rightClickMenu.isMouseOver(mouseX, mouseY) && rightClickMenu.mouseClicked(mouseX, mouseY, button)){
+        if (this.children().contains(rightClickMenu) && rightClickMenu.isMouseOver(mouseX, mouseY) && rightClickMenu.mouseClicked(mouseX, mouseY, button)){
             tryRemoveCurrentMenu();
             return true;
         }

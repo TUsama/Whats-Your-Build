@@ -10,26 +10,15 @@ import me.clefal.whats_your_build.world.block.LoadoutChest;
 import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import me.clefal.whats_your_build.world.player_build.PlayerBuildMenu;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.block.Blocks;
 
 public class WYBRegistrate {
 
 
     public static final BlockEntry<LoadoutChest> loadoutChest = Constants.REGISTRATE
-            .object("loadout_chest")
-            .block(LoadoutChest::new)
-            .properties(x -> BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.WOOD)
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2.5F)
-                    .sound(SoundType.WOOD))
-            .blockstate((blockLoadoutChestDataGenContext, registrateBlockstateProvider) -> {
-            })
-            .item()
-            .build()
+            .block("loadout_chest", LoadoutChest::new)
+            .initialProperties(() -> Blocks.CHEST)
+            .simpleItem()
             .lang("Loadout Chest")
             .register();
 

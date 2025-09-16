@@ -144,7 +144,7 @@ public abstract class BuildEntryState {
 
         @Override
         public void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots) {
-
+            System.out.println("save in waiting!");
         }
 
         @Override

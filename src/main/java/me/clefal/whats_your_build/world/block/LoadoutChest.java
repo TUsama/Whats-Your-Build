@@ -9,7 +9,7 @@ import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.loaders.WYBRegistrate;
 import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenuProvider;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,6 +28,10 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,10 +39,21 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> implements SimpleWaterloggedBlock {
+
+    private static final VoxelShape OUTER_SHAPE = Shapes.block();
+    private static final VoxelShape[] SHAPES = Util.make(new VoxelShape[9], (p_51967_) -> {
+        for(int i = 0; i < 8; ++i) {
+            p_51967_[i] = Shapes.join(OUTER_SHAPE, Block.box(2.0D, (double)Math.max(2, 1 + i * 2), 2.0D, 14.0D, 16.0D, 14.0D), BooleanOp.ONLY_FIRST);
+        }
+
+        p_51967_[8] = p_51967_[7];
+    });
+
     public LoadoutChest(Properties properties) {
         super(properties, WYBRegistrate.loadoutEntity::get);
 
     }
+
 
     @Override
     public DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override) {
@@ -61,12 +77,15 @@ public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> impleme
         }
     }
 
+
+
     //? >1.20.1 {
 
 
+    
     @Override
     protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     public static final Supplier<MapCodec<LoadoutChest>> CODEC = () -> simpleCodec(LoadoutChest::new);
@@ -83,6 +102,11 @@ public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> impleme
     //?} else {
 
     /*@Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         return whenUse(player.level(), pos, player);
     }
@@ -91,5 +115,15 @@ public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> impleme
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new LoadoutChestEntity(WYBRegistrate.loadoutEntity.get(), pos, state);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPES[0];
+    }
+
+    @Override
+    public VoxelShape getInteractionShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return OUTER_SHAPE;
     }
 }

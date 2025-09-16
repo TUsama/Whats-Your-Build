@@ -2,10 +2,7 @@ package me.clefal.whats_your_build.client.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
-//? >1.20.1
-import net.minecraft.client.gui.components.AbstractContainerWidget;
-//? 1.20.1
-/*import net.minecraft.client.gui.components.AbstractWidget;*/
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -17,8 +14,7 @@ public class RightClickMenu extends
         //? >1.20.1
         AbstractContainerWidget
         //? 1.20.1
-        /*AbstractWidget implements GuiEventListener*/
-{
+        /*AbstractWidget implements GuiEventListener {*/
     public List<WYBImageButton> buttons;
 
     public RightClickMenu(int x, int y, int width, int height, Component message, WYBImageButton... buttons) {
@@ -52,5 +48,14 @@ public class RightClickMenu extends
     public List<? extends GuiEventListener> children() {
         return buttons;
     }
-    //?}
+    //?} else {
+    /*@Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean flag = false;
+        for (WYBImageButton wybImageButton : this.buttons) {
+            flag = flag || wybImageButton.mouseClicked(mouseX, mouseY, button);
+        }
+        return flag;
+    }
+    *///?}
 }

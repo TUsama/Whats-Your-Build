@@ -33,10 +33,6 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
 
     static final int WIDTH = 244;
     static final int HEIGHT = 12;
-    private int rowWidth = 200;
-    public static final int buttonXInterval = 24;
-    public static final int buttonYInterval = 8;
-    private static final ResourceLocation TEXTURE = CommonClass.id("textures/gui/screen_background.png");
     protected final LoadoutScreen screen;
     private Queue<LoadoutSelectionList.BuildEntry> deletedEntry;
 
@@ -99,20 +95,6 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             removeEntry(buildEntry);
         }
         deletedEntry.clear();
-/*
-        int i = this.getRowWidth() / 2;
-        int j = this.x0 + this.width / 2;
-        int k = j - i;
-        int l = j + i;
-        int i1 = Mth.floor(mouseY - (double)this.y0) - this.headerHeight + (int)this.getScrollAmount() - 4;
-        int j1 = i1 / this.itemHeight;
-        System.out.println("scroll? " + (mouseX < (double)this.getScrollbarPosition()));
-        System.out.println("scroll bar at: " + this.getScrollbarPosition());
-        System.out.println("left? " + (mouseX >= (double)k));
-        System.out.println("right? " + (mouseX <= (double)l));
-        System.out.println();
-        System.out.println();
-        /*(mouseX < (double)this.getScrollbarPosition() && mouseX >= (double)k && mouseX <= (double)l && j1 >= 0 && i1 >= 0 && j1 < this.getItemCount() ? this.children().get(j1) : null);*/
         return b;
     }
 
@@ -145,7 +127,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     //?} else {
     /*@Override
     protected int getScrollbarPosition() {
-        return x0 + this.width;
+        return x0 + this.width + 999;
     }
     *///?}
 
@@ -170,9 +152,11 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         }
         //?} else {
         /*if (getFocused() != null){
+            if (getFocused().equals(focused)) return;
             getFocused().changeState(new BuildEntryState.Waiting(getFocused()));
         }
         *///?}
+
         super.setFocused(focused);
         if (focused instanceof BuildEntry buildEntry){
             buildEntry.changeState(new BuildEntryState.Editing(buildEntry));
@@ -227,7 +211,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             } catch (IOException e) {
                 Constants.LOG.error("Failed to load builds from local when delete entry: {}", button.entry.currentState.presentBuild().name, e);
             }
-
+            list1.setFocused(null);
         });
 
 

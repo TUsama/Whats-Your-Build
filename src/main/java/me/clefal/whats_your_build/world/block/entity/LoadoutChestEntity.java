@@ -83,6 +83,13 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
     public int getContainerSize() {
         return LoadoutMenu.size;
     }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+
+    }
+
     //? 1.20.1 {
 
     /*@Override
