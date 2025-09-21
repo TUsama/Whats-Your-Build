@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 
 public class WYBClientConfig extends Config {
     public static WYBClientConfig config = ConfigApiJava.registerAndLoadConfig(WYBClientConfig::new, RegisterType.CLIENT);
-    public float globalScale = 1.3f;
     public ValidatedChoiceList<String> showYourBuildFor = make(() -> {
         ClientAddConfigChoiceEvent clientAddConfigChoiceEvent = CommonClass.post(new ClientAddConfigChoiceEvent());
         String[] alls = ArrayUtils.addFirst(clientAddConfigChoiceEvent.configs.toArray(String[]::new), "all");

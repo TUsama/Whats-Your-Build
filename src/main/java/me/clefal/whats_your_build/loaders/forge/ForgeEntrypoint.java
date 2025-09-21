@@ -11,6 +11,7 @@ import me.clefal.whats_your_build.loaders.WhatsYourBuildModulesRegister;
 import me.clefal.whats_your_build.network.s2c.S2CAskConfigPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;

@@ -7,6 +7,7 @@ import me.clefal.whats_your_build.network.c2s.C2SSendGlobalBuildPacket;
 import me.clefal.whats_your_build.network.s2c.S2CAskConfigPacket;
 import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
 import me.clefal.whats_your_build.network.s2c.S2CReturnBuildToScreenPacket;
+import me.clefal.whats_your_build.network.s2c.S2CUpdateLoadoutChestPacket;
 
 
 public class Packets {
@@ -15,6 +16,7 @@ public class Packets {
         NetworkUtils.registerPacket(S2CReturnBuildPacket::new);
         NetworkUtils.registerPacket(S2CAskConfigPacket::new);
         NetworkUtils.registerPacket(S2CReturnBuildToScreenPacket::new);
+        NetworkUtils.registerPacket(S2CUpdateLoadoutChestPacket::new);
     }
 
     public static void registerAllC2SPackets() {

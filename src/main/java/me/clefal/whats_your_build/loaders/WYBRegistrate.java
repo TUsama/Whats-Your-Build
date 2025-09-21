@@ -4,6 +4,7 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.MenuEntry;
 import me.clefal.whats_your_build.Constants;
+import me.clefal.whats_your_build.client.renderer.LoadoutChestRenderer;
 import me.clefal.whats_your_build.client.screen.buildscreen.PlayerBuildScreen;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutScreen;
 import me.clefal.whats_your_build.world.block.LoadoutChest;
@@ -22,8 +23,10 @@ public class WYBRegistrate {
             .lang("Loadout Chest")
             .register();
 
+
     public static final BlockEntityEntry<LoadoutChestEntity> loadoutEntity = Constants.REGISTRATE.object("loadout_chest_entity")
             .blockEntity(LoadoutChestEntity::new)
+            .renderer(() -> LoadoutChestRenderer::new)
             .validBlock(loadoutChest::get)
             .register();
 
