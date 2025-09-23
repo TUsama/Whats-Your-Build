@@ -1,3 +1,11 @@
+### 0.4.0
+Introducing Loadout system
+you can save your loadout as Json for sharing!
+craft a Loadout Barrel in game for more detail
+
+If you find any bugs, please report them to GitHub
+future plan: add a change loadout feature
+
 ### 0.3.1
 fix a bug that crashes the game when clicking on random place due to NPE
 
