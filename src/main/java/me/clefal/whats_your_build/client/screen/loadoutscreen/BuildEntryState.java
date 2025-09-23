@@ -27,7 +27,6 @@ public abstract class BuildEntryState {
         this.buildEntry = buildEntry;
     }
 
-    public abstract List<WYBImageButton> provideButtons();
     public abstract void onChangeState(BuildEntryState next);
     public abstract void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots);
     public abstract void abortChanges();
@@ -55,10 +54,7 @@ public abstract class BuildEntryState {
             super(buildEntry);
         }
 
-        @Override
-        public List<WYBImageButton> provideButtons() {
-            return List.of(super.buildEntry.save, super.buildEntry.reset, super.buildEntry.delete, super.buildEntry.clear);
-        }
+
 
 
         @Override
@@ -128,11 +124,6 @@ public abstract class BuildEntryState {
         }
 
 
-        @Override
-        public List<WYBImageButton> provideButtons() {
-            return List.of(super.buildEntry.delete, super.buildEntry.clear);
-        }
-
 
         @Override
         public void onChangeState(BuildEntryState next) {
@@ -144,7 +135,6 @@ public abstract class BuildEntryState {
 
         @Override
         public void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots) {
-            System.out.println("save in waiting!");
         }
 
         @Override
@@ -164,7 +154,6 @@ public abstract class BuildEntryState {
 
         @Override
         public void mouseClick(double mouseX, double mouseY, int button) {
-            System.out.println(storageBuild.getName());
         }
 
         @Override

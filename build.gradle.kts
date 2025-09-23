@@ -104,7 +104,7 @@ modstitch {
                 all {
                     ideConfigGenerated(true)
                 }
-                //accessWidenerPath.set(file("../../src/main/resources/${mid}.accesswidener"))
+                accessWidenerPath.set(file("../../src/main/templates/${mid}.accesswidener"))
             }
         }
     }

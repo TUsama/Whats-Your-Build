@@ -1,6 +1,5 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.experimental.ExtensionMethod;
 import me.clefal.whats_your_build.CommonClass;
@@ -16,11 +15,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.Nullable;
@@ -34,7 +31,16 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     static final int WIDTH = 244;
     static final int HEIGHT = 12;
     protected final LoadoutScreen screen;
-    private Queue<LoadoutSelectionList.BuildEntry> deletedEntry;
+    private Queue<BuildEntry> deletedEntry;
+
+    private static final ResourceLocation BACKGROUND = CommonClass.gui("sprites/loadout/menu_button_background");
+    private final BiFunction<String, BuildEntryFunctionButton.EntryAction, BuildEntryFunctionButton> getButton;
+
+    public final BuildEntryFunctionButton save;
+    public final BuildEntryFunctionButton reset;
+
+    public final BuildEntryFunctionButton clear;
+    public final BuildEntryFunctionButton delete;
 
     public LoadoutSelectionList(int width, int height, int y0, int y1, LoadoutScreen screen) {
         //? 1.20.1
@@ -53,6 +59,49 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         *///?}
         this.screen = screen;
         this.deletedEntry = new ArrayDeque<>();
+        this.getButton = (string, action) -> Util.make(() -> {
+            BuildEntryFunctionButton buildEntryFunctionButton = new BuildEntryFunctionButton(string, this, action, Component.translatable("wyb.screen.loadout.right_click_menu." + string), screen.vertexContainer) {
+                @Override
+                public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                    PoseStack pose = guiGraphics.pose();
+                    pose.pushPose();
+
+                    guiGraphics.blit(BACKGROUND, getX(), getY(), getWidth(), getHeight(), 0, 0, 34, 10, 34, 10);
+                    pose.translate(4, 4, 0);
+                    /*
+                    ResourceLocation resourcelocation = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
+
+                    screen.getVertexContainer().putBliz(resourcelocation, TextureBufferInfo.of(this.getX(), this.getY(), 16, 16, 0, 0, 32, 32, 32, 32, pose.last().pose()));
+*/
+                    //guiGraphics.blit(resourcelocation, this.getX(), this.getY(), 0, 0, 8, 8);
+                    pose.translate(1 + 8 + 1.5f, 0, 0);
+                    guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage().getString(), getX(), getY(), ChatFormatting.WHITE.getColor());
+                    pose.popPose();
+
+                }
+            };
+
+            buildEntryFunctionButton.setSize(51, 15);
+            return buildEntryFunctionButton;
+        });
+
+        this.save = getButton.apply("save", button -> button.entry.save(screen.getSlotMap()));
+
+        this.reset = getButton.apply("reset", button -> button.entry.abortChanges());
+
+        this.clear = getButton.apply("clear", button -> button.entry.clear());
+
+        this.delete = getButton.apply("delete", button -> {
+            LoadoutSelectionList list1 = button.list;
+            list1.removeEntry(button.entry);
+            try {
+                LoadoutsClientHandler.deleteFromLocal(button.entry.currentState.presentBuild().name);
+            } catch (IOException e) {
+                Constants.LOG.error("Failed to load builds from local when delete entry: {}", button.entry.currentState.presentBuild().name, e);
+            }
+            list1.setFocused(null);
+        });
+
     }
     //? >1.20.1 {
     @Override
@@ -88,6 +137,13 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         addEntry(new BuildEntry(build));
     }
 
+    public void renderHoveredTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY){
+        if (getHovered()!= null && getHovered().currentState instanceof BuildEntryState.Editing editing && editing.isEdited){
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("wyb.screen.loadout.save_tip"), mouseX, mouseY);
+        }
+
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean b = super.mouseClicked(mouseX, mouseY, button);
@@ -97,7 +153,6 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         deletedEntry.clear();
         return b;
     }
-
 
 
     public boolean noBuild(){
@@ -117,6 +172,11 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     }
 
 
+    //? fabric {
+    /*public int getHeight(){
+        return height;
+    }
+    *///?}
 
     //? >1.20.1 {
     @Override
@@ -131,17 +191,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     }
     *///?}
 
-/*
-    @Override
-    protected void renderBackground(GuiGraphics guiGraphics) {
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        //pose.translate(0, 0, -0.5f);
-        RenderSystem.enableBlend();
-        guiGraphics.fill(0, 0, 100, 100, ChatFormatting.YELLOW.getColor());
-        pose.popPose();
-    }
-*/
+
 
     @Override
     public void setFocused(@org.jetbrains.annotations.Nullable GuiEventListener focused) {
@@ -169,52 +219,9 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     }
     *///?}
 
-    public class BuildEntry extends AbstractSelectionList.Entry<BuildEntry>{
+    public class BuildEntry extends Entry<BuildEntry>{
 
         BuildEntryState currentState;
-        private static final ResourceLocation BACKGROUND = CommonClass.gui("sprites/loadout/menu_button_background");
-        private BiFunction<String, BuildEntryFunctionButton.EntryAction, BuildEntryFunctionButton> getButton = (string, action) -> Util.make(() -> {
-            BuildEntryFunctionButton buildEntryFunctionButton = new BuildEntryFunctionButton(string, this, action, Component.translatable("wyb.screen.loadout.right_click_menu." + string), screen.vertexContainer) {
-                @Override
-                public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                    PoseStack pose = guiGraphics.pose();
-                    pose.pushPose();
-
-                    guiGraphics.blit(BACKGROUND, getX(), getY(), getWidth(), getHeight(), 0, 0, 34, 10, 34, 10);
-                    pose.translate(4, 4, 0);
-                    /*
-                    ResourceLocation resourcelocation = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
-
-                    screen.getVertexContainer().putBliz(resourcelocation, TextureBufferInfo.of(this.getX(), this.getY(), 16, 16, 0, 0, 32, 32, 32, 32, pose.last().pose()));
-*/
-                    //guiGraphics.blit(resourcelocation, this.getX(), this.getY(), 0, 0, 8, 8);
-                    pose.translate(1 + 8 + 1.5f, 0, 0);
-                    guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage().getString(), getX(), getY(), ChatFormatting.WHITE.getColor());
-                    pose.popPose();
-
-                }
-            };
-
-            buildEntryFunctionButton.setSize(51, 15);
-            return buildEntryFunctionButton;
-        });
-
-        public final BuildEntryFunctionButton save = getButton.apply("save", button -> button.entry.save(screen.getSlotMap()));
-        public final BuildEntryFunctionButton reset = getButton.apply("reset", button -> button.entry.abortChanges());
-
-        public final BuildEntryFunctionButton clear = getButton.apply("clear", button -> button.entry.clear());
-        public final BuildEntryFunctionButton delete = getButton.apply("delete", button -> {
-            LoadoutSelectionList list1 = (LoadoutSelectionList) button.entry.list;
-            list1.removeEntry(button.entry);
-            try {
-                LoadoutsClientHandler.deleteFromLocal(button.entry.currentState.presentBuild().name);
-            } catch (IOException e) {
-                Constants.LOG.error("Failed to load builds from local when delete entry: {}", button.entry.currentState.presentBuild().name, e);
-            }
-            list1.setFocused(null);
-        });
-
-
 
         public BuildEntry(@Nullable Build storageBuild) {
             BuildEntryState.Waiting waiting = new BuildEntryState.Waiting(this);
@@ -222,13 +229,16 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             changeState(waiting);
         }
 
+
+
+
         protected void changeState(BuildEntryState state){
             if (this.currentState != null) {
                 this.currentState.onChangeState(state);
             }
             this.currentState = state;
             screen.handleBuild(this.currentState.presentBuild());
-            screen.rewriteSlots();
+            screen.rewriteSlotsToFirst();
             if (state instanceof BuildEntryState.Editing){
                 screen.setCurrentEditingEntry(this);
             } else {
@@ -252,7 +262,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
         private void clear(){
             currentState.clear();
             screen.handleBuild(currentState.presentBuild());
-            screen.rewriteSlots();
+            screen.rewriteSlotsToFirst();
         }
 
         @Override

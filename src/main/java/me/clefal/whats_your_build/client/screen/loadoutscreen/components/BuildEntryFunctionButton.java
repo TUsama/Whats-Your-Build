@@ -8,10 +8,14 @@ import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutSelectionLi
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 
+import javax.annotation.Nullable;
+
 public class BuildEntryFunctionButton extends WYBImageButton {
+    @Nullable
     public LoadoutSelectionList.BuildEntry entry;
+    public final LoadoutSelectionList list;
     private EntryAction action;
-    public BuildEntryFunctionButton(String allInOneName, LoadoutSelectionList.BuildEntry entry, EntryAction action, Component message, VertexContainer container) {
+    public BuildEntryFunctionButton(String allInOneName, LoadoutSelectionList list, EntryAction action, Component message, VertexContainer container) {
         super(0, 0, 8, 8, button -> {},
                 //? >1.20.1 {
                 new WidgetSprites(CommonClass.id("textures/gui/loadout/button/" + allInOneName + "-enabled.png"), CommonClass.id("textures/gui/loadout/button/" + allInOneName + "-disabled.png"), CommonClass.id("textures/gui/loadout/button/" + allInOneName + "-enabled-focused.png")),
@@ -19,7 +23,8 @@ public class BuildEntryFunctionButton extends WYBImageButton {
                 /*"loadout/button/" + allInOneName,
                 *///?}
                 container);
-        this.entry = entry;
+        this.entry = null;
+        this.list = list;
         this.action = action;
         this.setMessage(message);
     }

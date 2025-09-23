@@ -21,5 +21,8 @@
   "wyb.screen.loadout.right_click_menu.save": "Save",
   "wyb.screen.loadout.right_click_menu.reset": "Reset",
   "wyb.screen.loadout.right_click_menu.clear": "Clear",
-  "wyb.screen.loadout.right_click_menu.delete": "Delete"
+  "wyb.screen.loadout.right_click_menu.delete": "Delete",
+  "wyb.screen.loadout.save_tip": "Right Click To Save",
+
+  "block.whats_your_build.loadout_chest": "Loadout Barrel"
 }

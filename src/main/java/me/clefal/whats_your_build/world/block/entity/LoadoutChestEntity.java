@@ -8,6 +8,7 @@ import lombok.Setter;
 import me.clefal.whats_your_build.network.s2c.S2CUpdateLoadoutChestPacket;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -58,9 +59,16 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+    protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
+        return null;
     }
+
+
+    @Override
+    public int getContainerSize() {
+        return LoadoutMenu.size;
+    }
+
 
 //? >1.20.1 {
     @Override
@@ -68,6 +76,7 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
         super.loadAdditional(tag, registries);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, this.items, registries);
+        loadAllItems(tag, this.lastItems, "last", registries);
 
     }
 
@@ -75,7 +84,9 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         ContainerHelper.saveAllItems(tag, this.items, registries);
+        saveAllItems(tag, lastItems, "last", registries);
     }
+
 
     @Override
     protected NonNullList<ItemStack> getItems() {
@@ -86,9 +97,58 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
     protected void setItems(NonNullList<ItemStack> items) {
         this.items = items;
     }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
+    }
+
+    public static CompoundTag saveAllItems(CompoundTag tag, NonNullList<ItemStack> list, String name, HolderLookup.Provider registries) {
+        ListTag listtag = new ListTag();
+
+        for(int i = 0; i < list.size(); ++i) {
+            ItemStack itemstack = (ItemStack)list.get(i);
+            if (!itemstack.isEmpty()) {
+                CompoundTag compoundtag = new CompoundTag();
+                compoundtag.putByte("Slot", (byte)i);
+                itemstack.save(registries, compoundtag);
+                listtag.add(compoundtag);
+            }
+        }
+
+        if (!listtag.isEmpty()) {
+            tag.put(name, listtag);
+        }
+
+        return tag;
+    }
+
+    public static void loadAllItems(CompoundTag tag, NonNullList<ItemStack> list, String name, HolderLookup.Provider registries) {
+        ListTag listtag = tag.getList(name, 10);
+
+        for(int i = 0; i < listtag.size(); ++i) {
+            CompoundTag compoundtag = listtag.getCompound(i);
+            int j = compoundtag.getByte("Slot") & 255;
+            if (j >= 0 && j < list.size()) {
+                ItemStack stack = ItemStack.parse(registries, compoundtag).orElseThrow(() -> new RuntimeException("Fail at parse item"));
+                list.set(j, stack);
+            }
+        }
+
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        super.setItem(slot, stack);
+        Level level = this.level;
+        if (level!= null && !level.isClientSide){
+            updateOnChanged();
+
+            Dispatcher.sendToAllClients(new S2CUpdateLoadoutChestPacket(List.ofAll(this.lastItems), this.getBlockPos(), this.filledPercent), level.getServer());
+        }
+    }
+
     //?} else {
-
-
 
 
     /*@Override
@@ -107,27 +167,14 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
         loadAllItems(tag, this.lastItems, "last");
     }
 
-
-    *///?}
-    @Override
-    protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
-        return null;
+        @Override
+    public CompoundTag getUpdateTag() {
+        return this.saveWithoutMetadata();
     }
 
-
     @Override
-    public int getContainerSize() {
-        return LoadoutMenu.size;
-    }
-
-
-
-    //? 1.20.1 {
-
-    /*@Override
     public boolean isEmpty() {
         Iterator<ItemStack> var1 = this.items.iterator();
-        System.out.println(this.items.isEmpty());
         ItemStack itemstack;
         do {
             if (!var1.hasNext()) {
@@ -193,17 +240,7 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
         this.setChanged();
     }
 
-    *///?}
-
-    private void updateOnChanged(){
-        if (this.items.isEmpty()) return;
-        List<ItemStack> reject = List.ofAll(this.items).reject(ItemStack::isEmpty);
-        this.lastItems = NonNullList.of(ItemStack.EMPTY, reject.takeRight(5).toJavaArray(ItemStack[]::new));
-        this.filledPercent = reject.size() * 1.0f / this.getContainerSize();
-        System.out.println(filledPercent);
-    }
-
-    public static CompoundTag saveAllItems(CompoundTag tag, NonNullList<ItemStack> list, String name) {
+        public static CompoundTag saveAllItems(CompoundTag tag, NonNullList<ItemStack> list, String name) {
         ListTag listtag = new ListTag();
 
         for(int i = 0; i < list.size(); ++i) {
@@ -211,6 +248,9 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
             if (!itemstack.isEmpty()) {
                 CompoundTag compoundtag = new CompoundTag();
                 compoundtag.putByte("Slot", (byte)i);
+                //? 1.20.1
+                /^itemstack.save(compoundtag);^/
+                //? >1.20.1
                 itemstack.save(compoundtag);
                 listtag.add(compoundtag);
             }
@@ -235,4 +275,25 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
         }
 
     }
+
+
+    *///?}
+
+
+
+
+    //? 1.20.1 {
+
+    
+
+    //?}
+
+    private void updateOnChanged(){
+        if (this.items.isEmpty()) return;
+        List<ItemStack> reject = List.ofAll(this.items).reject(ItemStack::isEmpty);
+        this.lastItems = NonNullList.of(ItemStack.EMPTY, reject.takeRight(5).toJavaArray(ItemStack[]::new));
+        this.filledPercent = reject.size() * 1.0f / this.getContainerSize();
+    }
+
+
 }

@@ -5,6 +5,7 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
+//? !fabric
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IRewritable;
@@ -68,6 +69,7 @@ public class PlayerBuildMenu extends BuildMenu implements IRewritable {
                                 k++;
                             }
                         }));
+        //? !fabric {
 
         map
                 .get(CuriosComponent.ID)
@@ -86,5 +88,6 @@ public class PlayerBuildMenu extends BuildMenu implements IRewritable {
                                 k++;
                             }
                         }));
+        //?}
     }
 }

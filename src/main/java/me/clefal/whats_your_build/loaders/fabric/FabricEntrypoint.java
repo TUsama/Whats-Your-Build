@@ -4,7 +4,9 @@
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.logging.LogUtils;
 import me.clefal.whats_your_build.CommonClass;
+import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.keybind.WYBKeys;
+import me.clefal.whats_your_build.loaders.WYBRegistrate;
 import me.clefal.whats_your_build.loaders.WhatsYourBuildModulesRegister;
 import me.clefal.whats_your_build.network.s2c.S2CAskConfigPacket;
 import net.fabricmc.api.ClientModInitializer;
@@ -30,6 +32,7 @@ public class FabricEntrypoint implements ModInitializer, ClientModInitializer {
         });
 
         WYBRegistrate.register();
+        Constants.REGISTRATE.register();
     }
 
     @Override

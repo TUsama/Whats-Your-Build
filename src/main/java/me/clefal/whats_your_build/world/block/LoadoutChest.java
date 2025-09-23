@@ -15,9 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -59,9 +57,29 @@ public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> impleme
     public DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override) {
         return DoubleBlockCombiner.Combiner::acceptNone;
     }
+    //? >1.20.1 {
 
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        Containers.dropContentsOnDestroy(state, newState, level, pos);
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
 
+    //?} else {
+    /*@Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof Container) {
+                Containers.dropContents(level, pos, (Container)blockEntity);
+                level.updateNeighbourForOutputSignal(pos, this);
+            }
 
+            super.onRemove(state, level, pos, newState, isMoving);
+        }
+    }
+
+    *///?}
     @NotNull
     private static InteractionResult whenUse(Level level, BlockPos pos, Player player) {
         if (!(player instanceof ServerPlayer)) {

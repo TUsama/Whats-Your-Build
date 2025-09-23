@@ -2,6 +2,8 @@ package me.clefal.whats_your_build.client.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
+//? > 1.20.1
+import net.minecraft.client.gui.components.AbstractContainerWidget;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -14,7 +16,8 @@ public class RightClickMenu extends
         //? >1.20.1
         AbstractContainerWidget
         //? 1.20.1
-        /*AbstractWidget implements GuiEventListener {*/
+        /*AbstractWidget implements GuiEventListener*/ 
+{
     public List<WYBImageButton> buttons;
 
     public RightClickMenu(int x, int y, int width, int height, Component message, WYBImageButton... buttons) {

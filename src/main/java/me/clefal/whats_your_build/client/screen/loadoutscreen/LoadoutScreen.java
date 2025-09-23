@@ -17,11 +17,13 @@ import me.clefal.whats_your_build.client.components.RightClickMenu;
 import me.clefal.whats_your_build.client.components.WYBImageButton;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
+import me.clefal.whats_your_build.client.screen.loadoutscreen.components.BuildEntryFunctionButton;
 import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
+//? !fabric
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import me.clefal.whats_your_build.utils.WidgetHelper;
 import me.clefal.whats_your_build.world.BuildMenu;
@@ -41,7 +43,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     private List<BuildMenuTab<?>> tabs;
     private WYBImageButton addNewEntry;
     private RightClickMenu rightClickMenu;
+    private final static NonNullList<Slot> EMPTY = NonNullList.create();
 
     @Nullable
     @Setter
@@ -144,12 +146,14 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         //this is ugly but in 1.20.1 this method has to be placed behind the super.render();
         //otherwise the words on tooltips will be covered
         //weird depth issue i guess
-        if (!b) tryRenderClientSlot(guiGraphics, mouseX, mouseY);
+        //also happen on 1.20.1
+        if (!b) tryRenderClientSlot(guiGraphics, mouseX, mouseY, partialTick);
         renderTooltip(guiGraphics, mouseX, mouseY);
+        buildList.renderHoveredTooltips(guiGraphics, mouseX, mouseY);
         vertexContainer.draw(guiGraphics.bufferSource(), RenderTypeCreator.guiBlend);
     }
 
-    private void tryRenderClientSlot(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void tryRenderClientSlot(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         NonNullList<Slot> slots1 = safeGetCurrentSlots();
 
         for (int k = 0; k < slots1.size(); k++) {
@@ -193,8 +197,11 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         return vertexContainer;
     }
 
-    public void addButtonForMenu(WYBImageButton button){
-        this.rightClickMenu.buttons.add(button);
+    public void addButtonForMenu(WYBImageButton button, double mouseX, double mouseY, LoadoutSelectionList.BuildEntry entry){
+        if (button instanceof BuildEntryFunctionButton buildEntryFunctionButton && entry != null){
+            buildEntryFunctionButton.entry = entry;
+            this.rightClickMenu.buttons.add(buildEntryFunctionButton);
+        }
     }
 
     public void removeAllButtonsInMenu(){
@@ -215,10 +222,16 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
             tryRemoveCurrentMenu();
             int width = 0;
             int height = 0;
-            for (WYBImageButton wybImageButton : currentEntry.currentState.provideButtons()) {
-                addButtonForMenu(wybImageButton);
-                width = wybImageButton.getWidth();
-                height += wybImageButton.getHeight();
+            List<WYBImageButton> buttons = List.empty();
+            if (currentEntry.currentState instanceof BuildEntryState.Editing) {
+                buttons = List.of(buildList.save, buildList.reset, buildList.clear, buildList.delete);
+            } else if (currentEntry.currentState instanceof BuildEntryState.Waiting){
+                buttons = List.of(buildList.clear, buildList.delete);
+            }
+            for (WYBImageButton wybImageButton : buttons){
+                    addButtonForMenu(wybImageButton, mouseX, mouseY, currentEntry);
+                    width = wybImageButton.getWidth();
+                    height += wybImageButton.getHeight();
             }
             rightClickMenu.setPosition(((int) mouseX), ((int) mouseY));
             rightClickMenu.setSize(width, height);
@@ -227,6 +240,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
             setFocused(rightClickMenu);
         }
     }
+
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -246,8 +260,9 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         for (Slot slot : safeGetCurrentSlots()) {
             if (isHovering1(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
                 ItemStack carried = menu.getCarried();
+                boolean noItemInSlot = !slot.hasItem();
                 slot.set(carried.copy());
-                if (!carried.isEmpty()) flag = true;
+                if (!(carried.isEmpty() && noItemInSlot)) flag = true;
             }
         }
         if (flag){
@@ -316,7 +331,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                                 k++;
                             }
                         }));
-
+        //? !fabric {
         map
                 .get(CuriosComponent.ID)
                 .forEach(iBuildComponent -> placePlan.put(CuriosComponent.ID,
@@ -330,10 +345,13 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                                     j++;
                                     k = 0;
                                 }
-                                addSlot(CuriosComponent.ID, simpleContainer, i, j * 18 + 24, k * 18 + 52);
+                                addSlot(CuriosComponent.ID, simpleContainer, i, leftPos + j * 18 + 90, topPos + k * 18);
                                 k++;
                             }
                         }));
+        //?}
+
+
     }
     protected String currentAt = "";
 
@@ -341,24 +359,34 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         if (currentAt.isEmpty()){
             if (slotMap.isEmpty()){
                 if (placePlan.isEmpty()){
-                    return NonNullList.create();
+                    return EMPTY;
                 } else {
-                    rewriteSlots();
+                    rewriteSlotsToFirst();
                 }
             }
-            return takeFirst(slotMap).getValue();
+            var stringNonNullListEntry = takeFirst(slotMap);
+            if (stringNonNullListEntry != null){
+                return stringNonNullListEntry.getValue();
+            } else {
+                return EMPTY;
+            }
         } else {
             return slotMap.get(currentAt);
         }
     }
     @Override
     public void rewriteSlots(String identifier) {
-        this.slotMap.clear();
-        placePlan.get(identifier).place();
-        currentAt = identifier;
+        BuildMenu.SlotPlacer slotPlacer = placePlan.get(identifier);
+        if (slotPlacer == null){
+            Constants.LOG.info("No {} component in this loadout!", identifier);
+        } else {
+            this.slotMap.clear();
+            placePlan.get(identifier).place();
+            currentAt = identifier;
+        }
     }
 
-    public void rewriteSlots() {
+    public void rewriteSlotsToFirst() {
         this.slotMap.clear();
         java.util.Map.Entry<String, BuildMenu.SlotPlacer> stringSlotPlacerEntry = takeFirst(placePlan);
         stringSlotPlacerEntry.getValue().place();

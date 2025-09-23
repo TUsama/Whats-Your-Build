@@ -30,9 +30,6 @@ public class LoadoutChestRenderer implements BlockEntityRenderer<LoadoutChestEnt
         NonNullList<ItemStack> target = loadoutChestEntity.getLastItems();
         BlockPos blockPos = loadoutChestEntity.getBlockPos();
         Vec3 center = blockPos.getCenter();
-
-        //System.out.println(center.y - blockPos.getY() - 0.3f + loadoutChestEntity.getFilledPercent() * 1);
-
         poseStack.translate(center.x - blockPos.getX(), center.y - blockPos.getY() - 0.3f + loadoutChestEntity.getFilledPercent() * 0.5, center.z - blockPos.getZ());
         poseStack.scale(0.7f, 0.7f, 0.7f);
         poseStack.mulPose(Axis.XP.rotationDegrees(90));

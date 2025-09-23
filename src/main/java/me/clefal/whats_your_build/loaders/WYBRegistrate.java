@@ -11,7 +11,14 @@ import me.clefal.whats_your_build.world.block.LoadoutChest;
 import me.clefal.whats_your_build.world.block.entity.LoadoutChestEntity;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
 import me.clefal.whats_your_build.world.player_build.PlayerBuildMenu;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+//? neoforge
+import net.neoforged.neoforge.common.Tags;
 
 public class WYBRegistrate {
 
@@ -20,7 +27,21 @@ public class WYBRegistrate {
             .block("loadout_chest", LoadoutChest::new)
             .initialProperties(() -> Blocks.CHEST)
             .simpleItem()
-            .lang("Loadout Chest")
+            .lang("Loadout Barrel")
+            .recipe((blockLoadoutChestDataGenContext, registrateRecipeProvider) -> {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, blockLoadoutChestDataGenContext.get())
+                        .pattern("PCP")
+                        .pattern("PLP")
+                        .pattern("PBP")
+                        .define('P', ItemTags.PLANKS)
+                        .define('C', Items.IRON_CHESTPLATE)
+                        .define('L', Items.IRON_LEGGINGS)
+                        .save(registrateRecipeProvider);
+            })
+            .tag(BlockTags.MINEABLE_WITH_AXE
+                    //? neoforge
+                    ,Tags.Blocks.STORAGE_BLOCKS
+            )
             .register();
 
 
@@ -48,5 +69,6 @@ public class WYBRegistrate {
 
 
     public static void register() {
+        Constants.LOG.info("starting WYB registration!");
     }
 }
