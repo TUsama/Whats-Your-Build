@@ -281,7 +281,7 @@ msPublishing {
                     line
                 }
             }
-        type = STABLE
+        type = BETA
         //I think this is provided by modstich or stonecutter. So we can't add this otherwise the upload will fail.
         val finalFile = finalFileTree.filter { it.name.contains(minecraft) && it.name.contains(loader) }.firstOrNull()
         file.set(finalFile)
