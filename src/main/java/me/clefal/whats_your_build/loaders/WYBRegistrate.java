@@ -15,6 +15,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 //? neoforge
@@ -24,6 +25,7 @@ public class WYBRegistrate {
 
 
     public static final BlockEntry<LoadoutChest> loadoutChest = Constants.REGISTRATE
+            .defaultCreativeTab(CreativeModeTabs.FUNCTIONAL_BLOCKS)
             .block("loadout_chest", LoadoutChest::new)
             .initialProperties(() -> Blocks.CHEST)
             .simpleItem()

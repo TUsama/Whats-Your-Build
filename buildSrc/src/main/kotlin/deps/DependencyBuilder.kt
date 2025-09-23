@@ -1,5 +1,6 @@
 package deps
 
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ExternalModuleDependency
 
 class DependencyBuilder {
@@ -29,6 +30,10 @@ class DependencyBuilder {
 
     fun modstitchModRuntimeOnly(notation: String, options: ExternalModuleDependency.() -> Unit = {}) {
         dependencies += VersionedDependency("modstitchModRuntimeOnly", notation, options)
+    }
+
+    fun modstitchJiJ(notation: String, options: ExternalModuleDependency.() -> Unit = {}) {
+        dependencies += VersionedDependency("modstitchJiJ", notation, options)
     }
 
 }

@@ -16,6 +16,7 @@ object ForgeDeps {
             modstitchModRuntimeOnly ("curse.maven:crafttweaker-239197:5880672")
 
             modstitchModImplementation ("com.tterrag.registrate:Registrate:MC1.20-1.3.11")
+            modstitchJiJ ("com.tterrag.registrate:Registrate:MC1.20-1.3.11")
 
             modstitchModImplementation("curse.maven:mine-and-slash-reloaded-306575:6814712")
             modstitchModImplementation("curse.maven:dungeon-realm-1200770:6814707")
