@@ -165,10 +165,11 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
 
             if (hovering) {
                 this.hoveredSlot = slot;
-                //? >1.20.1
+                //? neoforge {
                 this.renderSlotHighlight(guiGraphics, slot, mouseX, mouseY, partialTick);
-                //? 1.20.1
+                //?} else {
                 /*renderSlotHighlight(guiGraphics, slot.x, slot.y, 0);*/
+                //?}
             }
         }
     }

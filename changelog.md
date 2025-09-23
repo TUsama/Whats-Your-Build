@@ -1,4 +1,4 @@
-### 0.4.0
+### 0.4.0 (only for 1.20.1 and 1.21.1 neoforge)
 Introducing Loadout system
 you can save your loadout as Json for sharing!
 craft a Loadout Barrel in game for more detail
