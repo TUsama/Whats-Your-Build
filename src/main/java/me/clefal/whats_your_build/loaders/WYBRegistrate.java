@@ -25,10 +25,11 @@ public class WYBRegistrate {
 
 
     public static final BlockEntry<LoadoutChest> loadoutChest = Constants.REGISTRATE
-            .defaultCreativeTab(CreativeModeTabs.FUNCTIONAL_BLOCKS)
             .block("loadout_chest", LoadoutChest::new)
             .initialProperties(() -> Blocks.CHEST)
-            .simpleItem()
+            .item()
+            .tab(CreativeModeTabs.FUNCTIONAL_BLOCKS)
+            .build()
             .lang("Loadout Barrel")
             .recipe((blockLoadoutChestDataGenContext, registrateRecipeProvider) -> {
                 ShapedRecipeBuilder.shaped(RecipeCategory.MISC, blockLoadoutChestDataGenContext.get())

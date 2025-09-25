@@ -1,7 +1,9 @@
 package me.clefal.whats_your_build.world.loadout;
 
+import lombok.Getter;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.world.BuildMenu;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -19,15 +21,18 @@ public class LoadoutMenu extends BuildMenu {
     public int startX;
     public int startY;
     private Build selfBuild;
+    @Getter
+    private BlockPos pos;
 
     public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, FriendlyByteBuf buf) {
-        this(menuType, containerId, playerInventory, new SimpleContainer(size), buf.readJsonWithCodec(Build.CODEC));
+        this(menuType, containerId, playerInventory, new SimpleContainer(size), buf.readJsonWithCodec(Build.CODEC), buf.readBlockPos());
     }
 
-    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, Container armory, Build selfBuild) {
+    public LoadoutMenu(MenuType<?> menuType, int containerId, Inventory playerInventory, Container armory, Build selfBuild, BlockPos pos) {
         super(menuType, containerId);
         this.armory = armory;
         this.selfBuild = selfBuild;
+        this.pos = pos;
         int armoryStartX = 8 + 9 * 18 + 14;
         int armoryStartY = 12;
         startX = armoryStartX;

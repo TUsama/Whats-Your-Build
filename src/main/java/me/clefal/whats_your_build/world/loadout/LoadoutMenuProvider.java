@@ -16,10 +16,12 @@ import org.jetbrains.annotations.Nullable;
 public class LoadoutMenuProvider implements MenuProvider {
     private Build targetBuild;
     private Container armory;
+    private BlockPos pos;
 
     public LoadoutMenuProvider(Build targetBuild, LoadoutChestEntity entity) {
         this.targetBuild = targetBuild;
         this.armory = entity;
+        this.pos = entity.getBlockPos();
     }
 
     @Override
@@ -29,6 +31,6 @@ public class LoadoutMenuProvider implements MenuProvider {
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new LoadoutMenu(WYBRegistrate.loadoutMenu.get(), containerId, playerInventory, armory, targetBuild);
+        return new LoadoutMenu(WYBRegistrate.loadoutMenu.get(), containerId, playerInventory, armory, targetBuild, pos);
     }
 }

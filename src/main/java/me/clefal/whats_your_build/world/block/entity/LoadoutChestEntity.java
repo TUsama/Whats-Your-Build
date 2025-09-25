@@ -32,7 +32,6 @@ import java.util.Iterator;
 
 
 public class LoadoutChestEntity extends BaseContainerBlockEntity {
-
     private NonNullList<ItemStack> items = NonNullList.withSize(LoadoutMenu.size, ItemStack.EMPTY);
     @Getter
     private final int limitation = 5;
@@ -91,6 +90,10 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
     @Override
     protected NonNullList<ItemStack> getItems() {
         return this.items;
+    }
+
+    public List<ItemStack> getItemList(){
+        return List.ofAll(this.items);
     }
 
     @Override

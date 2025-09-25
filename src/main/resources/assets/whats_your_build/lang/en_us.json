@@ -23,6 +23,7 @@
   "wyb.screen.loadout.right_click_menu.clear": "Clear",
   "wyb.screen.loadout.right_click_menu.delete": "Delete",
   "wyb.screen.loadout.save_tip": "Right Click To Save",
+  "wyb.screen.loadout.button.wear": "Wear",
 
   "block.whats_your_build.loadout_chest": "Loadout Barrel"
 }

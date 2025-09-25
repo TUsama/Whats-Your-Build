@@ -89,7 +89,10 @@ public class LoadoutChest extends AbstractChestBlock<LoadoutChestEntity> impleme
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof LoadoutChestEntity loadoutChestEntity) {
                 Build resultBuild = CommonClass.post(new ServerGatherBuildComponentEvent(player1)).getResultBuild();
-                WYBRegistrate.loadoutMenu.open(player1, Component.literal(""), new LoadoutMenuProvider(resultBuild, loadoutChestEntity), buf -> buf.writeJsonWithCodec(Build.CODEC, resultBuild));
+                WYBRegistrate.loadoutMenu.open(player1, Component.literal(""), new LoadoutMenuProvider(resultBuild, loadoutChestEntity), buf -> {
+                    buf.writeJsonWithCodec(Build.CODEC, resultBuild);
+                    buf.writeBlockPos(loadoutChestEntity.getBlockPos());
+                });
             }
             return InteractionResult.CONSUME;
         }

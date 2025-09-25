@@ -3,6 +3,7 @@ package me.clefal.whats_your_build.network;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
 import me.clefal.whats_your_build.network.c2s.C2SAskTemplateBuildPacket;
+import me.clefal.whats_your_build.network.c2s.C2SLoadLoadoutPacket;
 import me.clefal.whats_your_build.network.c2s.C2SSendGlobalBuildPacket;
 import me.clefal.whats_your_build.network.s2c.S2CAskConfigPacket;
 import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
@@ -23,5 +24,6 @@ public class Packets {
         NetworkUtils.registerPacket(C2SAskBuildPacket::new);
         NetworkUtils.registerPacket(C2SSendGlobalBuildPacket::new);
         NetworkUtils.registerPacket(C2SAskTemplateBuildPacket::new);
+        NetworkUtils.registerPacket(C2SLoadLoadoutPacket::new);
     }
 }

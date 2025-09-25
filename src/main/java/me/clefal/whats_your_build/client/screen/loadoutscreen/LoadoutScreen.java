@@ -7,6 +7,7 @@ import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
 import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import me.clefal.whats_your_build.client.components.WYBImageButton;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
 import me.clefal.whats_your_build.client.screen.buildscreen.BuildMenuTab;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.components.BuildEntryFunctionButton;
+import me.clefal.whats_your_build.client.screen.loadoutscreen.components.WearButton;
 import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
@@ -25,13 +27,17 @@ import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 //? !fabric
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
+import me.clefal.whats_your_build.network.c2s.C2SLoadLoadoutPacket;
 import me.clefal.whats_your_build.utils.WidgetHelper;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IBuildHandler;
 import me.clefal.whats_your_build.world.IRewritable;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
+import me.clefal.whats_your_build.world.loadout.load.VanillaItemLoadDescriber;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.components.Tooltip;
 //? >1.20.1
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -55,13 +61,14 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     public LoadoutSelectionList buildList;
     public VertexContainer vertexContainer = new VertexContainer();
     protected LinkedHashMap<String, BuildMenu.SlotPlacer> placePlan = new LinkedHashMap<>();
-    //a list only exists on the client!
+    //only exists on the client!
     @Getter
     private LinkedHashMap<String, NonNullList<Slot>> slotMap = new LinkedHashMap<>();
     private List<BuildMenuTab<?>> tabs;
     private WYBImageButton addNewEntry;
     private RightClickMenu rightClickMenu;
     private final static NonNullList<Slot> EMPTY = NonNullList.create();
+    private WearButton wear;
 
     @Nullable
     @Setter
@@ -121,6 +128,10 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
             this.addRenderableWidget(buildMenuTab);
         });
 
+        this.wear = new WearButton(menu.getPos(), this);
+        this.wear.setPosition(leftPos + 150, topPos + 60);
+        addRenderableWidget(this.wear);
+
     }
 
 
@@ -132,12 +143,16 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 x.active = false;
                 x.visible = false;
             });
+            this.wear.active = false;
+            this.wear.visible = false;
             vertexContainer.putString(DrawStringBufferInfo.of(Component.translatable("wyb.screen.loadout.no_loadout").getString(), leftPos + 100, topPos + buildList.getHeight() / 2, ChatFormatting.GRAY.getColor(), guiGraphics.pose().last().pose()));
         } else {
             this.tabs.forEach(x -> {
                 x.active = true;
                 x.visible = true;
             });
+            this.wear.active = true;
+            this.wear.visible = true;
         }
 
 
@@ -388,10 +403,13 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     }
 
     public void rewriteSlotsToFirst() {
-        this.slotMap.clear();
         java.util.Map.Entry<String, BuildMenu.SlotPlacer> stringSlotPlacerEntry = takeFirst(placePlan);
-        stringSlotPlacerEntry.getValue().place();
-        currentAt = stringSlotPlacerEntry.getKey();
+        if (stringSlotPlacerEntry == null){
+            Constants.LOG.info("fail to rewrite the slots to first!");
+        } else {
+            rewriteSlots(stringSlotPlacerEntry.getKey());
+        }
+
     }
 
     private <T, R> java.util.Map.Entry<T, R> takeFirst(java.util.Map<T, R> map){
