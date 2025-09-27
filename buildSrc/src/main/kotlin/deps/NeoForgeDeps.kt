@@ -12,6 +12,7 @@ object NeoForgeDeps {
                     modstitchJiJ ("com.tterrag.registrate:Registrate:MC1.21-1.3.0+67")
 
                     modstitchModImplementation ("curse.maven:curios-309927:6529130")
+                    modstitchModImplementation ("curse.maven:charm-of-undying-316873:5846603")
                 }
 
                 "1.21.4" -> {

@@ -12,7 +12,7 @@ import net.minecraft.world.Container;
 public interface IBuildComponent<SELF extends IBuildComponent<?>> {
     Map<Byte, MapCodec<? extends IBuildComponent<?>>> COMPONENT_CODECS = LinkedHashMap.of(
             ComponentType.VANILLA_ARMOR, VanillaArmorComponent.CODEC
-            //? forge || neoforge
+            //? curios
             ,ComponentType.CURIOS, CuriosComponent.CODEC
     );
 

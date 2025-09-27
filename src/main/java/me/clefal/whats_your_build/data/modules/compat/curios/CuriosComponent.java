@@ -1,25 +1,45 @@
 //? curios {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
-import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
+public class CuriosComponent implements IBuildComponent<CuriosComponent> {
 
-public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent<CuriosComponent> {
+    public Integer max;
+    public Map<Integer, ItemStack> curios;
+    public static final String ID = "curios";
+    public static final MapCodec<CuriosComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            Codec.INT.fieldOf("max").forGetter(x -> x.max),
+            Codec.unboundedMap(Codec.STRING.xmap(Integer::valueOf, String::valueOf), ItemStack.CODEC).xmap(x -> (Map<Integer, ItemStack>) TreeMap.ofAll(x), x -> x.reject(tuple2 -> tuple2._2.isEmpty()).toJavaMap()).fieldOf("map").forGetter(x -> x.curios)
+            ).apply(i, CuriosComponent::new));
 
-    public static final String ID = "ring";
-    public static final MapCodec<CuriosComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(ItemStack.CODEC.listOf().fieldOf("curios").forGetter(x -> x.curios().asJava())).apply(i, x -> new CuriosComponent(List.ofAll(x))));
+    private CuriosComponent(Integer max, Map<Integer, ItemStack> curios) {
+        this.max = max;
+        for (int i = 0; i < max; i++) {
+            if (curios.containsKey(i)) continue;
+            curios = curios.put(i, ItemStack.EMPTY);
+        }
+        if (curios.isOrdered()){
+            this.curios = curios;
+        } else {
+            this.curios = TreeMap.ofEntries(curios);
+        }
+
+    }
+
+    public CuriosComponent(ItemStack... stacks) {
+        this(stacks.length, TreeMap.ofEntries(Stream.of(stacks).zipWithIndex((itemStack, integer) -> Tuple.of(integer, itemStack))));
+    }
 
     @Override
     public byte getHandlerIndex() {
@@ -41,36 +61,26 @@ public record CuriosComponent(List<ItemStack> curios) implements IBuildComponent
     @Override
     public CuriosComponent copy() {
 
-        return new CuriosComponent(curios.map(ItemStack::copy));
+        return new CuriosComponent(max, curios.mapValues(ItemStack::copy));
     }
 
     @Override
     public CuriosComponent makeCleanCopy() {
-        return new CuriosComponent(Util.make(() -> {
-            List<ItemStack> objects = List.empty();
-            for (int i = 0; i < this.curios.size(); i++) {
-                objects = objects.prepend(ItemStack.EMPTY);
-            }
-            return objects;
-
-        }));
+        return new CuriosComponent(max, curios.mapValues(x -> ItemStack.EMPTY));
     }
 
     @Override
     public Container asContainer() {
-        return new SimpleContainer(this.curios.toJavaArray(ItemStack[]::new));
+        return new SimpleContainer(this.curios.values().toJavaArray(ItemStack[]::new));
     }
 
     @Override
     public CuriosComponent getFromContainer(Container container) {
-        return new CuriosComponent(Util.make(() -> {
-            List<ItemStack> objects = List.empty();
-            for (int i = 0; i < this.curios.size(); i++) {
-                objects = objects.prepend(container.getItem(i));
-            }
-            return objects;
-
-        }));
+        List<ItemStack> objects = List.empty();
+        for (int i = 0; i < this.curios.size(); i++) {
+            objects = objects.prepend(container.getItem(i));
+        }
+        return new CuriosComponent(objects.toJavaArray(ItemStack[]::new));
     }
 
 

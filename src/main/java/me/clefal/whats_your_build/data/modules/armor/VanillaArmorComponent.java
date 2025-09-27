@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class VanillaArmorComponent implements IBuildComponent<VanillaArmorComponent> {
 
-    public static final String ID = "armor";
+    public static final String ID = "vanilla_armor";
     public static final MapCodec<VanillaArmorComponent> CODEC = RecordCodecBuilder.mapCodec(i ->
             i.group(
                     Codec.unboundedMap(Codec.STRING.xmap(EquipmentSlot::byName, EquipmentSlot::getName), ItemStack.CODEC).fieldOf("armors").forGetter(x -> {
