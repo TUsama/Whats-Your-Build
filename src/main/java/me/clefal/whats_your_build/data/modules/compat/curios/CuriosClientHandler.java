@@ -1,4 +1,4 @@
-//? if neoforge || forge {
+//? curios {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
 import me.clefal.whats_your_build.client.screen.WYBScreen;

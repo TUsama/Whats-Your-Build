@@ -4,10 +4,10 @@ import com.clefal.nirvana_lib.client.render.batch.DrawStringBufferInfo;
 import com.clefal.nirvana_lib.client.render.batch.TextureBufferInfo;
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
+import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
-import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,19 +25,20 @@ import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
-//? !fabric
+//? curios {
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
-import me.clefal.whats_your_build.network.c2s.C2SLoadLoadoutPacket;
+import me.clefal.whats_your_build.data.modules.compat.curios.loadout.CuriosLoadDescriber;
+//?}
 import me.clefal.whats_your_build.utils.WidgetHelper;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IBuildHandler;
 import me.clefal.whats_your_build.world.IRewritable;
 import me.clefal.whats_your_build.world.loadout.LoadoutMenu;
+import me.clefal.whats_your_build.world.loadout.load.LoadDescriber;
 import me.clefal.whats_your_build.world.loadout.load.VanillaItemLoadDescriber;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.components.Tooltip;
 //? >1.20.1
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -68,7 +69,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     private WYBImageButton addNewEntry;
     private RightClickMenu rightClickMenu;
     private final static NonNullList<Slot> EMPTY = NonNullList.create();
-    private WearButton wear;
+    private Map<String, WearButton> wears;
 
     @Nullable
     @Setter
@@ -128,9 +129,31 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
             this.addRenderableWidget(buildMenuTab);
         });
 
-        this.wear = new WearButton(menu.getPos(), this);
-        this.wear.setPosition(leftPos + 150, topPos + 60);
-        addRenderableWidget(this.wear);
+        this.wears = API.Map(VanillaArmorComponent.ID, Util.make(() -> {
+                    var button = new WearButton(menu.getPos(), this) {
+                        @Override
+                        public LoadDescriber<?> getDescriber() {
+                            return new VanillaItemLoadDescriber(this.getScreen().safeGetCurrentSlots().stream().filter(Slot::hasItem).map(x -> x.getItem().copy()).toList());
+                        }
+                    };
+                    button.setPosition(leftPos + 150, topPos + 60);
+                    return button;
+
+        })
+                //? curios {
+                , CuriosComponent.ID, Util.make(() -> {
+                    var button = new WearButton(menu.getPos(), this) {
+                        @Override
+                        public LoadDescriber<?> getDescriber() {
+                            return new CuriosLoadDescriber(this.getScreen().safeGetCurrentSlots().stream().filter(Slot::hasItem).map(x -> x.getItem().copy()).toList());
+                        }
+                    };
+                    button.setPosition(leftPos + 150, topPos + 60);
+                    return button;
+                })
+                //?}
+        );
+        this.wears.values().forEach(this::addRenderableWidget);
 
     }
 
@@ -143,16 +166,27 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 x.active = false;
                 x.visible = false;
             });
-            this.wear.active = false;
-            this.wear.visible = false;
+            this.wears.forEach((string, wearButton) -> {
+                wearButton.active = false;
+                wearButton.visible = false;
+            });
             vertexContainer.putString(DrawStringBufferInfo.of(Component.translatable("wyb.screen.loadout.no_loadout").getString(), leftPos + 100, topPos + buildList.getHeight() / 2, ChatFormatting.GRAY.getColor(), guiGraphics.pose().last().pose()));
         } else {
             this.tabs.forEach(x -> {
                 x.active = true;
                 x.visible = true;
             });
-            this.wear.active = true;
-            this.wear.visible = true;
+            if (currentAt.isEmpty()){
+                this.wears.forEach((string, wearButton) -> {
+                    wearButton.active = false;
+                    wearButton.visible = false;
+                });
+            } else {
+                this.wears.get(currentAt).forEach(wearButton -> {
+                    wearButton.active = false;
+                    wearButton.visible = false;
+                });
+            }
         }
 
 
@@ -183,8 +217,8 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 //? neoforge {
                 this.renderSlotHighlight(guiGraphics, slot, mouseX, mouseY, partialTick);
                 //?} else {
-                /*renderSlotHighlight(guiGraphics, slot.x, slot.y, 0);*/
-                //?}
+                /*renderSlotHighlight(guiGraphics, slot.x, slot.y, 0);
+                *///?}
             }
         }
     }
@@ -347,7 +381,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                                 k++;
                             }
                         }));
-        //? !fabric {
+        //? curios {
         map
                 .get(CuriosComponent.ID)
                 .forEach(iBuildComponent -> placePlan.put(CuriosComponent.ID,

@@ -1,4 +1,4 @@
-//? if neoforge || forge {
+//? curios {
 package me.clefal.whats_your_build.data.modules.compat.curios;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;

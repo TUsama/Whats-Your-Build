@@ -1,6 +1,5 @@
 package me.clefal.whats_your_build.world.loadout.load;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,23 +30,20 @@ public class VanillaItemLoadDescriber extends ItemLoadDescriber {
 
     @Override
     public void tryWear(ServerPlayer player, Container armory) {
-        System.out.println("try!");
-        List<ItemStack> itemStacks = new ArrayList<>();
-        Map<ItemStack, Integer> map = new IdentityHashMap<>();
-        for (int i = 0; i < armory.getContainerSize(); i++) {
-            ItemStack item = armory.getItem(i);
-            itemStacks.add(item);
-            map.put(item, i);
-        }
+        List<ItemStack> itemStacks = getArmory(armory);
         for (ItemStack buildStack : target) {
             itemStacks.stream()
-                    .filter(x -> ItemStack.isSameItemSameComponents(x, buildStack))
+                    .filter(x -> ItemStack.matches(x, buildStack))
                     .findFirst()
                     .ifPresent(sameItem -> {
                         EquipmentSlot equipmentslot = player.getEquipmentSlotForItem(buildStack);
                         InventoryMenu inventoryMenu = player.inventoryMenu;
 
-                        if (equipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                        if (//? >1.20.1
+                                equipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR
+                            //? 1.20.1
+                        /*equipmentslot.getType() == EquipmentSlot.Type.ARMOR*/
+                        ) {
                             int targetPosition = 8 - equipmentslot.getIndex();
                             equipAndConsumeSource(player, inventoryMenu, targetPosition, equipmentslot, buildStack, sameItem);
 
@@ -62,13 +58,15 @@ public class VanillaItemLoadDescriber extends ItemLoadDescriber {
         }
     }
 
+
+
     /**
      * 尝试在指定槽位装备新物品，并处理旧物品的取出与放回。
      */
     private boolean equipOrSwap(Player player, InventoryMenu inventoryMenu, int slotIndex, EquipmentSlot equipmentslot, ItemStack newItem) {
         if (inventoryMenu.slots.get(slotIndex).hasItem()) {
             ItemStack oldEquipment = inventoryMenu.slots.get(slotIndex).getItem();
-            if (ItemStack.isSameItemSameComponents(oldEquipment, newItem)) return false;
+            if (ItemStack.matches(oldEquipment, newItem)) return false;
             if (!player.addItem(oldEquipment)) {
                 player.spawnAtLocation(oldEquipment, 1F);
             }

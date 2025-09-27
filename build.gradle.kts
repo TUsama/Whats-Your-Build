@@ -181,6 +181,7 @@ stonecutter {
         "fabric" to constraint.equals("fabric"),
         "neoforge" to constraint.equals("neoforge"),
         "forge" to constraint.equals("forge"),
+        "curios" to (constraint.equals("forge") || constraint.equals("neoforge")),
         "vanilla" to constraint.equals("vanilla")
     )
 }

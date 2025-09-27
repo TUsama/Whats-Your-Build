@@ -1,8 +1,10 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen.components;
 
 import com.clefal.nirvana_lib.utils.NetworkUtils;
+import lombok.Getter;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutScreen;
 import me.clefal.whats_your_build.network.c2s.C2SLoadLoadoutPacket;
+import me.clefal.whats_your_build.world.loadout.load.LoadDescriber;
 import me.clefal.whats_your_build.world.loadout.load.VanillaItemLoadDescriber;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlainTextButton;
@@ -12,8 +14,9 @@ import net.minecraft.world.inventory.Slot;
 
 import java.util.List;
 
-public class WearButton extends PlainTextButton {
+public abstract class WearButton extends PlainTextButton {
     private BlockPos blockPos;
+    @Getter
     private LoadoutScreen screen;
 
     public WearButton(BlockPos blockPos, LoadoutScreen screen) {
@@ -25,6 +28,8 @@ public class WearButton extends PlainTextButton {
 
     @Override
     public void onPress() {
-        NetworkUtils.sendToServer(new C2SLoadLoadoutPacket(blockPos, new VanillaItemLoadDescriber(screen.safeGetCurrentSlots().stream().filter(Slot::hasItem).map(x -> x.getItem().copy()).toList())));
+        NetworkUtils.sendToServer(new C2SLoadLoadoutPacket(blockPos, getDescriber()));
     }
+
+    public abstract LoadDescriber<?> getDescriber();
 }
