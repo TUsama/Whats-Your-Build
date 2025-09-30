@@ -87,7 +87,7 @@ public class LoadoutsClientHandler {
             for (Path file : stream) {
                 try (BufferedReader reader = Files.newBufferedReader(file)) {
                     Build.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(reader))
-                            .resultOrPartial(string -> Constants.LOG.error("Invalid element: {}", string))
+                            .resultOrPartial(string -> Constants.LOG.error("Invalid element while loading build file {}: {}", file, string))
                             .map(Pair::getFirst)
                             .ifPresent(builds::add);
                 } catch (Exception e) {

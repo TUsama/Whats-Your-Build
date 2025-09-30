@@ -10,6 +10,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
@@ -43,8 +44,11 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
                     .stream()
                     .filter(x -> ItemStack.matches(x, stack))
                     .findFirst()
-                    .ifPresent(x -> CuriosApi.getCurio(stack).ifPresent((curio) ->
+                    .ifPresent(x ->
+                    {
+                        CuriosApi.getCurio(x).ifPresent((curio) -> {
                             CuriosApi.getCuriosInventory(player).ifPresent((handler) -> {
+
                                 Map<String, ICurioStacksHandler> curios = handler.getCurios();
                                 Tuple<IDynamicStackHandler, SlotContext> firstSlot = null;
                                 Iterator<Map.Entry<String, ICurioStacksHandler>> var7 = curios.entrySet().iterator();
@@ -60,27 +64,27 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
                                         boolean active = activeStates.size() > i && activeStates.get(i);
                                         if (active) {
                                             //?}
-                                            String id = entry.getKey();
-                                            NonNullList<Boolean> renderStates = entry.getValue().getRenders();
-                                            SlotContext slotContext = new SlotContext(id, player, i, false, renderStates.size() > i && renderStates.get(i));
-                                            if (stackHandlerx.isItemValid(i, stack) && curio.canEquipFromUse(slotContext)) {
-                                                ItemStack present = stackHandlerx.getStackInSlot(i);
-                                                if (present.isEmpty()) {
-                                                    stackHandlerx.setStackInSlot(i, stack.copy());
-                                                    curio.onEquipFromUse(slotContext);
-                                                    if (!player.isCreative()) {
-                                                        int count = stack.getCount();
-                                                        stack.shrink(count);
-                                                    }
-
-                                                    return;
+                                        String id = entry.getKey();
+                                        NonNullList<Boolean> renderStates = entry.getValue().getRenders();
+                                        SlotContext slotContext = new SlotContext(id, player, i, false, renderStates.size() > i && renderStates.get(i));
+                                        if (stackHandlerx.isItemValid(i, stack) && curio.canEquipFromUse(slotContext)) {
+                                            ItemStack present = stackHandlerx.getStackInSlot(i);
+                                            if (present.isEmpty()) {
+                                                stackHandlerx.setStackInSlot(i, stack.copy());
+                                                curio.onEquipFromUse(slotContext);
+                                                if (!player.isCreative()) {
+                                                    int count = stack.getCount();
+                                                    stack.shrink(count);
                                                 }
 
-                                                if (firstSlot == null && stackHandlerx.extractItem(i, stack.getMaxStackSize(), true).getCount() == stack.getCount()) {
-                                                    firstSlot = new Tuple<>(stackHandlerx, slotContext);
-                                                }
+                                                return;
                                             }
-                                            //? > 1.20.1
+
+                                            if (firstSlot == null && stackHandlerx.extractItem(i, stack.getMaxStackSize(), true).getCount() == stack.getCount()) {
+                                                firstSlot = new Tuple<>(stackHandlerx, slotContext);
+                                            }
+                                        }
+                                        //? > 1.20.1
                                         }
                                     }
                                 }
@@ -98,7 +102,9 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
                                     }
                                 }
 
-                            })));
+                            });
+                        });
+                    });
 
         }
     }

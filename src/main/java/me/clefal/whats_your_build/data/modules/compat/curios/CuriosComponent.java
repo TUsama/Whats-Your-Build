@@ -20,7 +20,7 @@ public class CuriosComponent implements IBuildComponent<CuriosComponent> {
     public static final String ID = "curios";
     public static final MapCodec<CuriosComponent> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.fieldOf("max").forGetter(x -> x.max),
-            Codec.unboundedMap(Codec.STRING.xmap(Integer::valueOf, String::valueOf), ItemStack.CODEC).xmap(x -> (Map<Integer, ItemStack>) TreeMap.ofAll(x), x -> x.reject(tuple2 -> tuple2._2.isEmpty()).toJavaMap()).fieldOf("map").forGetter(x -> x.curios)
+            Codec.unboundedMap(Codec.STRING.xmap(Integer::valueOf, String::valueOf), ItemStack.CODEC).xmap(x -> (Map<Integer, ItemStack>) TreeMap.ofAll(x), x -> x.reject(tuple2 -> tuple2._2.isEmpty()).toJavaMap()).fieldOf("map").forGetter(x -> x.curios.reject(tuple2 -> tuple2._2.isEmpty()))
             ).apply(i, CuriosComponent::new));
 
     private CuriosComponent(Integer max, Map<Integer, ItemStack> curios) {

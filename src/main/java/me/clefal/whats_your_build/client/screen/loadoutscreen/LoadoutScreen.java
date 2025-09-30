@@ -183,8 +183,8 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 });
             } else {
                 this.wears.get(currentAt).forEach(wearButton -> {
-                    wearButton.active = false;
-                    wearButton.visible = false;
+                    wearButton.active = true;
+                    wearButton.visible = true;
                 });
             }
         }
@@ -364,7 +364,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     public void handleBuild(Build build) {
         Map<String, ? extends IBuildComponent<?>> map = build.getComponents()
                 .map((aByte, iBuildComponent) -> Tuple.of(iBuildComponent.getIdentifier(), iBuildComponent));
-
+        placePlan.clear();
         map
                 .get(VanillaArmorComponent.ID)
                 .forEach(iBuildComponent -> placePlan.put(VanillaArmorComponent.ID,
