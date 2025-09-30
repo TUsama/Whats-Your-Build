@@ -1,3 +1,7 @@
+### 0.4.1
+add curios compat
+known issue: can't wear the curios from MAS
+
 ### 0.4.0 (only for 1.20.1 and 1.21.1 neoforge)
 Introducing Loadout system
 you can save your loadout as Json for sharing!
