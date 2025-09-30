@@ -125,7 +125,8 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         addRenderableWidget(addNewEntry);
 
         tabs.forEachWithIndex((buildMenuTab, value) -> {
-            buildMenuTab.setPosition(leftPos + 80 + 8 * value, topPos - 8);
+            buildMenuTab.setSize(12, buildMenuTab.getHeight());
+            buildMenuTab.setPosition(leftPos + 80 + buildMenuTab.getWidth() * value, topPos - 8);
             this.addRenderableWidget(buildMenuTab);
         });
 
