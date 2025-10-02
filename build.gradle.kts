@@ -153,12 +153,10 @@ modstitch {
         // true, it will automatically be generated.
         addMixinsToModManifest = true
         configs.register(mid)
-        /*
+
         when {
-            isModDevGradleLegacy -> configs.register("${mid}-1.20.1")
-            minecraft == "1.21.1" -> configs.register("${mid}-1.21")
-            else -> configs.register("${mid}-1.21.4")
-        }*/
+            isModDevGradleLegacy -> configs.register("${mid}-mas")
+        }
 
 
         // Most of the time you wont ever need loader specific mixins.
@@ -182,6 +180,7 @@ stonecutter {
         "neoforge" to constraint.equals("neoforge"),
         "forge" to constraint.equals("forge"),
         "curios" to (constraint.equals("forge") || constraint.equals("neoforge")),
+        "mas" to constraint.equals("forge"),
         "vanilla" to constraint.equals("vanilla")
     )
 }

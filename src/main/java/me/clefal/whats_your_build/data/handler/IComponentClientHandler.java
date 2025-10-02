@@ -8,10 +8,6 @@ import java.util.function.BiFunction;
 
 public interface IComponentClientHandler {
 
-    public enum Type{
-        IMMUTABLE,
-        WRITABLE
-    }
 
     byte getIndex();
 

@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.clefal.whats_your_build.mixin",
+  "refmap": "whats_your_build.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "TalentsDataMixin",
+    "SchoolDataMixin"
+  ],
+  "client": [
+
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+

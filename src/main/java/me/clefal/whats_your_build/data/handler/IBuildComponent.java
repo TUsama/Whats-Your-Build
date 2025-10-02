@@ -7,13 +7,15 @@ import com.mojang.serialization.MapCodec;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 //? forge || neoforge
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
-import net.minecraft.world.Container;
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASTalentComponent;
 
 public interface IBuildComponent<SELF extends IBuildComponent<?>> {
     Map<Byte, MapCodec<? extends IBuildComponent<?>>> COMPONENT_CODECS = LinkedHashMap.of(
             ComponentType.VANILLA_ARMOR, VanillaArmorComponent.CODEC
             //? curios
             ,ComponentType.CURIOS, CuriosComponent.CODEC
+            //? mas
+            /*,ComponentType.MAS_TALENT, MASTalentComponent.CODEC*/
     );
 
     Codec<IBuildComponent<?>> COMPONENT_CODEC = Codec.BYTE.dispatch(
@@ -27,9 +29,5 @@ public interface IBuildComponent<SELF extends IBuildComponent<?>> {
 
     String getIdentifier();
     MapCodec<SELF> getCodec();
-    SELF copy();
-    SELF makeCleanCopy();
 
-    Container asContainer();
-    SELF getFromContainer(Container container);
 }

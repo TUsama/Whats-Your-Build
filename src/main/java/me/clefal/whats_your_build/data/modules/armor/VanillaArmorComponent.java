@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.data.handler.ComponentType;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.IItemBuildComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -16,7 +17,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
-public class VanillaArmorComponent implements IBuildComponent<VanillaArmorComponent> {
+public class VanillaArmorComponent implements IItemBuildComponent<VanillaArmorComponent> {
 
     public static final String ID = "vanilla_armor";
     public static final MapCodec<VanillaArmorComponent> CODEC = RecordCodecBuilder.mapCodec(i ->

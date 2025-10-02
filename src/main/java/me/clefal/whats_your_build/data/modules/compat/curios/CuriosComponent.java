@@ -7,13 +7,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.clefal.whats_your_build.data.handler.ComponentType;
-import me.clefal.whats_your_build.data.handler.IBuildComponent;
 
+import me.clefal.whats_your_build.data.handler.IItemBuildComponent;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 
-public class CuriosComponent implements IBuildComponent<CuriosComponent> {
+public class CuriosComponent implements IItemBuildComponent<CuriosComponent> {
 
     public Integer max;
     public Map<Integer, ItemStack> curios;
