@@ -5,9 +5,10 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
-//? forge || neoforge
+//? curios
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
-import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
+//? mas
+/*import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;*/
 
 public interface IBuildComponent<SELF extends IBuildComponent<?>> {
     Map<Byte, MapCodec<? extends IBuildComponent<?>>> COMPONENT_CODECS = LinkedHashMap.of(

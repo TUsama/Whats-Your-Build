@@ -1,7 +1,6 @@
 package me.clefal.whats_your_build.world.player_build;
 
 import me.clefal.whats_your_build.data.buildobject.Build;
-//? !fabric
 import me.clefal.whats_your_build.world.BuildMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;

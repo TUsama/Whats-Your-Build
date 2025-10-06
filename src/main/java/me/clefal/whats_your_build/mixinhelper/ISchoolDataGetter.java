@@ -1,4 +1,5 @@
-package me.clefal.whats_your_build.mixinhelper;
+//? mas {
+/*package me.clefal.whats_your_build.mixinhelper;
 
 import com.robertx22.mine_and_slash.saveclasses.PointData;
 
@@ -10,3 +11,4 @@ public interface ISchoolDataGetter {
 
     Set<PointData> getPoints();
 }
+*///?}

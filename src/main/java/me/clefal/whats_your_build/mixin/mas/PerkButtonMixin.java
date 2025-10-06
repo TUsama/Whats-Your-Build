@@ -1,4 +1,5 @@
-package me.clefal.whats_your_build.mixin.mas;
+//? mas {
+/*package me.clefal.whats_your_build.mixin.mas;
 
 import com.robertx22.mine_and_slash.capability.player.PlayerData;
 import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
@@ -70,3 +71,4 @@ public abstract class PerkButtonMixin extends AbstractWidget{
 
     }
 }
+*///?}

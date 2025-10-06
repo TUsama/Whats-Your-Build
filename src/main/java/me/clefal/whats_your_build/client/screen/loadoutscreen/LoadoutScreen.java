@@ -29,9 +29,11 @@ import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import me.clefal.whats_your_build.data.modules.compat.curios.loadout.CuriosLoadDescriber;
 //?}
-import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
+//? mas {
+/*import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
 import me.clefal.whats_your_build.data.modules.compat.mas.talent.client.MASSkillViewButton;
 import me.clefal.whats_your_build.mixinhelper.ITalentDataGetter;
+*///?}
 import me.clefal.whats_your_build.utils.WidgetHelper;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IBuildHandler;

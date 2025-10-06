@@ -1,4 +1,5 @@
-package me.clefal.whats_your_build.mixin.mas;
+//? mas {
+/*package me.clefal.whats_your_build.mixin.mas;
 
 import com.robertx22.mine_and_slash.capability.player.PlayerData;
 import com.robertx22.mine_and_slash.gui.screens.skill_tree.SkillTreeScreen;
@@ -45,3 +46,4 @@ public abstract class SkillScreenMixin implements ISkillScreenHelper {
         if (Minecraft.getInstance().screen instanceof MASNestedSkillScreen) ci.cancel();
     }
 }
+*///?}

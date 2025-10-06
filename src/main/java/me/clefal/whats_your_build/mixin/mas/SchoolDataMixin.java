@@ -1,4 +1,5 @@
-package me.clefal.whats_your_build.mixin.mas;
+//? mas {
+/*package me.clefal.whats_your_build.mixin.mas;
 
 import com.robertx22.mine_and_slash.saveclasses.PointData;
 import com.robertx22.mine_and_slash.saveclasses.perks.SchoolData;
@@ -17,3 +18,4 @@ public abstract class SchoolDataMixin implements ISchoolDataGetter {
         return list;
     }
 }
+*///?}

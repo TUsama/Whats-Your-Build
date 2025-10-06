@@ -9,7 +9,11 @@ import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
+//? mas {
+/*import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.client.MASSkillViewButton;
+*///?}
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.screen.WYBScreen;
@@ -17,9 +21,9 @@ import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.data.handler.HandlerManager;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
+//? curios
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
-import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
-import me.clefal.whats_your_build.data.modules.compat.mas.talent.client.MASSkillViewButton;
+
 import me.clefal.whats_your_build.utils.IBufferSourceProvider;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IBuildHandler;
