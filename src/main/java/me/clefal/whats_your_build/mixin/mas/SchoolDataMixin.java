@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.mixin;
+package me.clefal.whats_your_build.mixin.mas;
 
 import com.robertx22.mine_and_slash.saveclasses.PointData;
 import com.robertx22.mine_and_slash.saveclasses.perks.SchoolData;
@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Set;
 
-@Mixin(value = SchoolData.class)
+@Mixin(value = SchoolData.class, remap = false)
 public abstract class SchoolDataMixin implements ISchoolDataGetter {
     @Shadow private Set<PointData> list;
 

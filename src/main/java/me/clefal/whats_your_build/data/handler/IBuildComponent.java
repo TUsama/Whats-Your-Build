@@ -7,7 +7,7 @@ import com.mojang.serialization.MapCodec;
 import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 //? forge || neoforge
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
-import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASTalentComponent;
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
 
 public interface IBuildComponent<SELF extends IBuildComponent<?>> {
     Map<Byte, MapCodec<? extends IBuildComponent<?>>> COMPONENT_CODECS = LinkedHashMap.of(
@@ -15,7 +15,7 @@ public interface IBuildComponent<SELF extends IBuildComponent<?>> {
             //? curios
             ,ComponentType.CURIOS, CuriosComponent.CODEC
             //? mas
-            /*,ComponentType.MAS_TALENT, MASTalentComponent.CODEC*/
+            /*,ComponentType.MAS_TALENT, MASSkillComponent.CODEC*/
     );
 
     Codec<IBuildComponent<?>> COMPONENT_CODEC = Codec.BYTE.dispatch(

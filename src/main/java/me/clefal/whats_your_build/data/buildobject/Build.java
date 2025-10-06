@@ -1,16 +1,16 @@
 package me.clefal.whats_your_build.data.buildobject;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
-import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashMap;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.google.common.base.Objects;
-import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import me.clefal.whats_your_build.data.IPersistedObject;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.IItemBuildComponent;
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
 import me.clefal.whats_your_build.network.INetworkObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -28,7 +28,7 @@ public class Build implements INetworkObject, IPersistedObject<Build> {
     );
 
     public final static Build EMPTY = new Build(List.empty(), "empty");
-
+    @Getter
     private Map<Byte, IBuildComponent<?>> components;
     public String name;
 
@@ -60,18 +60,35 @@ public class Build implements INetworkObject, IPersistedObject<Build> {
     }
 
     public Build cleanCopy(){
-        return new Build(List.narrow(components.mapValues(x -> ((IBuildComponent<?>) x.makeCleanCopy())).values().toList()), name);
+        return new Build(List.narrow(components.mapValues(x -> {
+            if (x instanceof IItemBuildComponent<?> itemBuildComponent){
+                return itemBuildComponent.makeCleanCopy();
+            }
+            return x;
+        }).values().toList()), name);
     }
-
-    public Build createNewBuildFromContainer(String updateTarget, Container container){
+/*
+    public Build createNewBuild(String updateTarget, Container container){
         Map<String, ? extends IBuildComponent<?>> map = components.map((b, c) -> Tuple.of(c.getIdentifier(), c));
-        IBuildComponent<?> fromContainer = map.get(updateTarget)
-                .getOrElseThrow(() -> new RuntimeException("can't find the component with this identifier: " + updateTarget))
-                .getFromContainer(container);
+        var current = map.get(updateTarget)
+                .getOrElseThrow(() -> new RuntimeException("can't find the component with this identifier: " + updateTarget));
 
-        return new Build(Map.<String, IBuildComponent<?>>narrow(map.remove(updateTarget)).put(updateTarget, fromContainer).values().toList(), this.name);
+        if (current instanceof IItemBuildComponent<?> itemBuildComponent){
+            IBuildComponent<?> fromContainer = itemBuildComponent.getFromContainer(container);
+            return new Build(Map.<String, IBuildComponent<?>>narrow(map.remove(updateTarget)).put(updateTarget, fromContainer).values().toList(), this.name);
+        }
+        //? mas {
+        else if (current instanceof MASSkillComponent skillComponent) {
+
+        }
+        //? }
+        /*else {
+            throw new RuntimeException("try to update a non-IItemBuildComponent component: " + updateTarget);
+        }
+        return this;
+
     }
-
+*/
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

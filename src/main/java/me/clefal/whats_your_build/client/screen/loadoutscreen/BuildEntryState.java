@@ -1,23 +1,31 @@
 package me.clefal.whats_your_build.client.screen.loadoutscreen;
 
 import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
+import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.Constants;
-import me.clefal.whats_your_build.client.components.WYBImageButton;
 import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
+import me.clefal.whats_your_build.data.handler.IBuildComponent;
+import me.clefal.whats_your_build.data.handler.IItemBuildComponent;
+//? mas {
+/*import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.client.MASSkillViewButton;
+import me.clefal.whats_your_build.mixinhelper.ITalentDataGetter;
+*///?}
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public abstract class BuildEntryState {
 
@@ -28,7 +36,7 @@ public abstract class BuildEntryState {
     }
 
     public abstract void onChangeState(BuildEntryState next);
-    public abstract void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots);
+    public abstract void save(LoadoutScreen screen);
     public abstract void abortChanges();
     public abstract void clear();
     public abstract Build presentBuild();
@@ -65,10 +73,35 @@ public abstract class BuildEntryState {
         }
 
         @Override
-        public void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots) {
-            currentSlots.forEach((string, slots) -> {
-                this.baseBuild = this.baseBuild.createNewBuildFromContainer(string, slots.isEmpty() ? new SimpleContainer() : slots.get(0).container);
-            });
+        public void save(LoadoutScreen screen) {
+            Map<String, ? extends IBuildComponent<?>> map = baseBuild.getComponents().map((b, c) -> Tuple.of(c.getIdentifier(), c));
+            LinkedHashMap<String, NonNullList<Slot>> slotMap = screen.getSlotMap();
+            this.baseBuild = map.map((string, component) -> {
+                if (component instanceof IItemBuildComponent<?> itemBuildComponent) {
+                    NonNullList<Slot> slots = slotMap.get(string);
+                    if (slots != null) {
+                        IBuildComponent<?> fromContainer = itemBuildComponent.getFromContainer(slots.get(0).container);
+                        return Tuple.of(string, fromContainer);
+                    }
+
+                }
+                //? mas {
+                /*//if mas skill compat is enaable.
+                else if (component instanceof MASSkillComponent) {
+                    List<? extends AbstractWidget> abstractWidgets = screen.getWidgets().get(MASSkillComponent.ID);
+                    if (abstractWidgets != null) {
+                        //there is no way abstractWidgets.get(0) is null, cuz in this case, player should select the other build, and the select build is on Waiting state, the save button is hided, means this can't be invoked.
+                        ITalentDataGetter talents = (ITalentDataGetter) ((MASSkillViewButton) abstractWidgets.get(0)).data.talents;
+                        return Tuple.of(MASSkillComponent.ID, new MASSkillComponent(talents.getPerks()));
+                    }
+                }
+                *///?}
+                return Tuple.of(string, component);
+            }).transform(
+                    x -> new Build(List.ofAll(x.values()), this.baseBuild.name)
+            );
+
+
             try {
                 LoadoutsClientHandler.writeToLocal(this.baseBuild);
             } catch (IOException e) {
@@ -134,7 +167,7 @@ public abstract class BuildEntryState {
         }
 
         @Override
-        public void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots) {
+        public void save(LoadoutScreen screen) {
         }
 
         @Override

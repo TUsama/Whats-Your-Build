@@ -95,8 +95,4 @@ public class LoadoutMenu extends BuildMenu {
         return this.armory.stillValid(player);
     }
 
-    @Override
-    public void handleBuild(Build build) {
-
-    }
 }

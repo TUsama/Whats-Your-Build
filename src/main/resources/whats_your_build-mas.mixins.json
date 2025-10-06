@@ -5,8 +5,10 @@
   "refmap": "whats_your_build.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "TalentsDataMixin",
-    "SchoolDataMixin"
+    "mas.TalentsDataMixin",
+    "mas.SchoolDataMixin",
+    "mas.SkillScreenMixin",
+    "mas.PerkButtonMixin"
   ],
   "client": [
 

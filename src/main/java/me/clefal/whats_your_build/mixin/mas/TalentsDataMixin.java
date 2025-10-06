@@ -1,4 +1,4 @@
-package me.clefal.whats_your_build.mixin;
+package me.clefal.whats_your_build.mixin.mas;
 
 import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
 import com.robertx22.mine_and_slash.saveclasses.perks.SchoolData;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.HashMap;
 
-@Mixin(value = TalentsData.class)
+@Mixin(value = TalentsData.class, remap = false)
 public abstract class TalentsDataMixin implements ITalentDataGetter {
 
 

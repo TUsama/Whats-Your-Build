@@ -19,7 +19,7 @@ public class MASTalentComponentClientHandler implements IComponentClientHandler{
 
     @Override
     public BiFunction<WYBScreen<?>, IRewritable, BuildMenuTab<?>> getBuildMenuTabFunction(IBuildComponent<?> component) {
-        return (screen, iRewritable) -> new MASTalentTab(((MASTalentComponent) component), screen, iRewritable);
+        return (screen, iRewritable) -> new MASTalentTab(((MASSkillComponent) component), screen, iRewritable);
     }
 }
 *///?}

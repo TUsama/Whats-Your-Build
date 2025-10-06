@@ -85,7 +85,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             return buildEntryFunctionButton;
         });
 
-        this.save = getButton.apply("save", button -> button.entry.save(screen.getSlotMap()));
+        this.save = getButton.apply("save", button -> button.entry.save(screen));
 
         this.reset = getButton.apply("reset", button -> button.entry.abortChanges());
 
@@ -114,6 +114,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             addEntry(new BuildEntry(build));
         }
     }
+
 
     @Nullable
     public BuildEntry getCurrentEntry(double mouseX, double mouseY){
@@ -246,8 +247,8 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             }
         }
 
-        private void save(LinkedHashMap<String, NonNullList<Slot>> currentSlots){
-            currentState.save(currentSlots);
+        private void save(LoadoutScreen screen){
+            currentState.save(screen);
             screen.handleBuild(currentState.presentBuild());
             screen.rewriteSlots(screen.currentAt);
         }

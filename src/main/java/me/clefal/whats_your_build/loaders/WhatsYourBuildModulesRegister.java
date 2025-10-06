@@ -15,6 +15,6 @@ public class WhatsYourBuildModulesRegister {
         //? 1.20.1
         /*CommonClass.registerAtServer(AdvancedTeamCompatModule.getInstance());*/
         //? mas
-        /*CommonClass.registerAtServer(new MASCompatModule());*/
+        /*CommonClass.registerAtServer(MASCompatModule.getInstance());*/
     }
 }

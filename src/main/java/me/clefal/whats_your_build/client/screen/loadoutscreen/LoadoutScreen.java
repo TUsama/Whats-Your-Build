@@ -9,6 +9,8 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.robertx22.mine_and_slash.capability.player.PlayerData;
+import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
@@ -29,6 +31,9 @@ import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 import me.clefal.whats_your_build.data.modules.compat.curios.loadout.CuriosLoadDescriber;
 //?}
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
+import me.clefal.whats_your_build.data.modules.compat.mas.talent.client.MASSkillViewButton;
+import me.clefal.whats_your_build.mixinhelper.ITalentDataGetter;
 import me.clefal.whats_your_build.utils.WidgetHelper;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IBuildHandler;
@@ -38,7 +43,9 @@ import me.clefal.whats_your_build.world.loadout.load.LoadDescriber;
 import me.clefal.whats_your_build.world.loadout.load.VanillaItemLoadDescriber;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 //? >1.20.1
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -53,6 +60,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 @ExtensionMethod(WidgetHelper.class)
@@ -61,7 +69,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     public static final ResourceLocation ARMORY = CommonClass.id("textures/gui/container/armory.png");
     public LoadoutSelectionList buildList;
     public VertexContainer vertexContainer = new VertexContainer();
-    protected LinkedHashMap<String, BuildMenu.SlotPlacer> placePlan = new LinkedHashMap<>();
+    protected LinkedHashMap<String, BuildMenu.ComponentHandler> placePlan = new LinkedHashMap<>();
     //only exists on the client!
     @Getter
     private LinkedHashMap<String, NonNullList<Slot>> slotMap = new LinkedHashMap<>();
@@ -70,6 +78,8 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     private RightClickMenu rightClickMenu;
     private final static NonNullList<Slot> EMPTY = NonNullList.create();
     private Map<String, WearButton> wears;
+    @Getter
+    protected java.util.Map<String, List<? extends AbstractWidget>> widgets = new HashMap<>();
 
     @Nullable
     @Setter
@@ -77,6 +87,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
 
     public LoadoutScreen(LoadoutMenu menu, Inventory playerInventory) {
         super(menu, playerInventory, Component.literal(""));
+
     }
 
 
@@ -89,7 +100,6 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         } catch (IOException e) {
             Constants.LOG.error("Failed to load builds from local when initialize LoadoutScreen: {}", String.valueOf(e));
         }
-
         this.tabs = HandlerManager.getInstance().getImmutableBuildMenuTabFunction(menu.getSelfBuild()).map(x -> x.apply(this, this));
         this.addNewEntry = new WYBImageButton(0, 0, 8, 8, button -> {
             buildList.addSelfBuildEntry(menu.getSelfBuild().copy());
@@ -366,11 +376,13 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         Map<String, ? extends IBuildComponent<?>> map = build.getComponents()
                 .map((aByte, iBuildComponent) -> Tuple.of(iBuildComponent.getIdentifier(), iBuildComponent));
         placePlan.clear();
+        this.widgets.forEach((string, abstractWidgets) -> abstractWidgets.forEach(this::removeWidget));
+        widgets.clear();
         map
                 .get(VanillaArmorComponent.ID)
                 .forEach(iBuildComponent -> placePlan.put(VanillaArmorComponent.ID,
                         () -> {
-                            var simpleContainer = iBuildComponent.asContainer();
+                            var simpleContainer = ((VanillaArmorComponent) iBuildComponent).asContainer();
                             int k = 0;
                             int j = 0;
                             for (int i = 0; i < simpleContainer.getContainerSize(); i++) {
@@ -387,7 +399,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 .get(CuriosComponent.ID)
                 .forEach(iBuildComponent -> placePlan.put(CuriosComponent.ID,
                         () -> {
-                            var simpleContainer = iBuildComponent.asContainer();
+                            var simpleContainer = ((CuriosComponent) iBuildComponent).asContainer();
 
                             int k = 0;
                             int j = 0;
@@ -401,6 +413,20 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                             }
                         }));
         //?}
+
+        //? mas {
+
+        /*map
+                .get(MASSkillComponent.ID)
+                .forEach(iBuildComponent -> {
+                    widgets.put(MASSkillComponent.ID, Util.make(() -> MASSkillViewButton.getViewButtonInLoadoutScreen(this, ((MASSkillComponent) iBuildComponent))));
+                    placePlan.put(MASSkillComponent.ID, () -> widgets.get(MASSkillComponent.ID).forEachWithIndex((x, y) -> {
+                        x.setPosition(leftPos + buildList.getWidth(), topPos + 30 + y * (x.getHeight() + 2));
+                        addRenderableWidget(x);
+                    }));
+
+                });
+        *///?}
 
 
     }
@@ -422,23 +448,26 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 return EMPTY;
             }
         } else {
-            return slotMap.get(currentAt);
+            NonNullList<Slot> slots = slotMap.get(currentAt);
+            if (slots == null) return EMPTY;
+            return slots;
         }
     }
     @Override
     public void rewriteSlots(String identifier) {
-        BuildMenu.SlotPlacer slotPlacer = placePlan.get(identifier);
-        if (slotPlacer == null){
+        BuildMenu.ComponentHandler componentHandler = placePlan.get(identifier);
+        if (componentHandler == null){
             Constants.LOG.info("No {} component in this loadout!", identifier);
         } else {
             this.slotMap.clear();
-            placePlan.get(identifier).place();
+            this.widgets.forEach((string, abstractWidgets) -> abstractWidgets.forEach(this::removeWidget));
+            placePlan.get(identifier).handle();
             currentAt = identifier;
         }
     }
 
     public void rewriteSlotsToFirst() {
-        java.util.Map.Entry<String, BuildMenu.SlotPlacer> stringSlotPlacerEntry = takeFirst(placePlan);
+        java.util.Map.Entry<String, BuildMenu.ComponentHandler> stringSlotPlacerEntry = takeFirst(placePlan);
         if (stringSlotPlacerEntry == null){
             Constants.LOG.info("fail to rewrite the slots to first!");
         } else {
