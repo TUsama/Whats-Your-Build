@@ -9,8 +9,10 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.robertx22.mine_and_slash.capability.player.PlayerData;
+//? mas {
+/*import com.robertx22.mine_and_slash.capability.player.PlayerData;
 import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
+*///?}
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
@@ -327,9 +329,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
             }
         }
         if (flag){
-            if (currentEditingEntry != null && currentEditingEntry.currentState instanceof BuildEntryState.Editing editing){
-                editing.isEdited = true;
-            }
+            markEdited(this);
         }
 
         return b;
@@ -430,6 +430,14 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
 
 
     }
+
+    public static void markEdited(LoadoutScreen screen) {
+        if (screen.currentEditingEntry != null && screen.currentEditingEntry.currentState instanceof BuildEntryState.Editing editing){
+            System.out.println("trigger!");
+            editing.isEdited = true;
+        }
+    }
+
     protected String currentAt = "";
 
     public NonNullList<Slot> safeGetCurrentSlots(){

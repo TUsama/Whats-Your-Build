@@ -36,7 +36,7 @@ public class MASSkillComponent implements IBuildComponent<MASSkillComponent> {
     );
     public static final MapCodec<MASSkillComponent> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Codec.unboundedMap(Codec.STRING.xmap(TalentTree.SchoolType::valueOf, TalentTree.SchoolType::toString), SCHOOL_DATA_CODEC).fieldOf("map").forGetter(x -> x.perks)
+                    Codec.unboundedMap(Codec.STRING.xmap(TalentTree.SchoolType::valueOf, TalentTree.SchoolType::toString), SCHOOL_DATA_CODEC).fieldOf("skills").forGetter(x -> x.perks)
             ).apply(instance, MASSkillComponent::new)
     );
     private Map<TalentTree.SchoolType, SchoolData> perks;

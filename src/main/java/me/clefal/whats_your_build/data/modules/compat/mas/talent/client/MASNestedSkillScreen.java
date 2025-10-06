@@ -1,11 +1,11 @@
-package me.clefal.whats_your_build.data.modules.compat.mas.talent.client;
+//? mas {
+/*package me.clefal.whats_your_build.data.modules.compat.mas.talent.client;
 
 import com.robertx22.mine_and_slash.capability.player.PlayerData;
 import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
 import com.robertx22.mine_and_slash.gui.screens.skill_tree.SkillTreeScreen;
 import com.robertx22.mine_and_slash.uncommon.localization.Words;
 import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutScreen;
-import me.clefal.whats_your_build.client.screen.loadoutscreen.LoadoutSelectionList;
 import me.clefal.whats_your_build.mixinhelper.ISkillScreenHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
@@ -34,7 +34,9 @@ public class MASNestedSkillScreen extends SkillTreeScreen {
         Minecraft.getInstance().mouseHandler.releaseMouse();
         KeyMapping.releaseAll();
         Minecraft.getInstance().noRender = false;
-
+        if (nestedScreen instanceof LoadoutScreen loadoutScreen){
+            LoadoutScreen.markEdited(loadoutScreen);
+        }
     }
 
     @Override
@@ -66,3 +68,4 @@ public class MASNestedSkillScreen extends SkillTreeScreen {
         return null;
     }
 }
+*///?}
