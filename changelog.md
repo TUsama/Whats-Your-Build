@@ -1,3 +1,7 @@
+### 0.4.2
+add mas talent compat(1.20.1 forge)
+fix a dupe bug of curios loadout
+
 ### 0.4.1
 add curios compat
 known issue: can't wear the curios from MAS
