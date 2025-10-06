@@ -134,7 +134,8 @@ public abstract class BuildEntryState {
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, VertexContainer vertexContainer) {
             Font font = Minecraft.getInstance().font;
             if (isMouseOver || buildEntry.isFocused()){
-                guiGraphics.drawString(font, presentBuild().name, left + 1, top - 1, ChatFormatting.WHITE.getColor());
+                guiGraphics.drawString(font, Component.literal("➤").withStyle(ChatFormatting.WHITE), left + 1, top - 1, ChatFormatting.WHITE.getColor());
+                guiGraphics.drawString(font, presentBuild().name, left + 10, top - 1, ChatFormatting.WHITE.getColor());
             } else {
                 guiGraphics.drawString(font, presentBuild().name, left, top, ChatFormatting.WHITE.getColor());
             }

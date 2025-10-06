@@ -39,14 +39,14 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
     @Override
     public void tryWear(ServerPlayer player, Container armory) {
 
-        for (ItemStack stack : target) {
+        for (ItemStack fakeItemTarget : target) {
             getArmory(armory)
                     .stream()
-                    .filter(x -> ItemStack.matches(x, stack))
+                    .filter(x -> ItemStack.matches(x, fakeItemTarget))
                     .findFirst()
-                    .ifPresent(x ->
+                    .ifPresent(itemInArmory ->
                     {
-                        CuriosApi.getCurio(x).ifPresent((curio) -> {
+                        CuriosApi.getCurio(itemInArmory).ifPresent((curio) -> {
                             CuriosApi.getCuriosInventory(player).ifPresent((handler) -> {
 
                                 Map<String, ICurioStacksHandler> curios = handler.getCurios();
@@ -67,20 +67,21 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
                                         String id = entry.getKey();
                                         NonNullList<Boolean> renderStates = entry.getValue().getRenders();
                                         SlotContext slotContext = new SlotContext(id, player, i, false, renderStates.size() > i && renderStates.get(i));
-                                        if (stackHandlerx.isItemValid(i, stack) && curio.canEquipFromUse(slotContext)) {
+                                        if (stackHandlerx.isItemValid(i, itemInArmory) && curio.canEquipFromUse(slotContext)) {
                                             ItemStack present = stackHandlerx.getStackInSlot(i);
                                             if (present.isEmpty()) {
-                                                stackHandlerx.setStackInSlot(i, stack.copy());
+                                                stackHandlerx.setStackInSlot(i, itemInArmory.copy());
                                                 curio.onEquipFromUse(slotContext);
                                                 if (!player.isCreative()) {
-                                                    int count = stack.getCount();
-                                                    stack.shrink(count);
+                                                    int count = itemInArmory.getCount();
+                                                    System.out.println("shrink");
+                                                    itemInArmory.shrink(count);
                                                 }
 
                                                 return;
                                             }
 
-                                            if (firstSlot == null && stackHandlerx.extractItem(i, stack.getMaxStackSize(), true).getCount() == stack.getCount()) {
+                                            if (firstSlot == null && stackHandlerx.extractItem(i, itemInArmory.getMaxStackSize(), true).getCount() == itemInArmory.getCount()) {
                                                 firstSlot = new Tuple<>(stackHandlerx, slotContext);
                                             }
                                         }
@@ -90,11 +91,16 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
                                 }
 
                                 if (firstSlot != null) {
+                                    System.out.println("curios");
                                     IDynamicStackHandler stackHandler = (IDynamicStackHandler) firstSlot.getA();
                                     SlotContext slotContextx = firstSlot.getB();
                                     int ix = slotContextx.index();
                                     ItemStack presentx = stackHandler.getStackInSlot(ix);
-                                    stackHandler.setStackInSlot(ix, stack.copy());
+                                    stackHandler.setStackInSlot(ix, itemInArmory.copy());
+                                    if (!player.isCreative()) {
+                                        int count = itemInArmory.getCount();
+                                        itemInArmory.shrink(count);
+                                    }
                                     curio.onEquipFromUse(slotContextx);
                                     ItemStack copy = presentx.copy();
                                     if (!player.addItem(copy)) {

@@ -9,10 +9,6 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
 import com.mojang.blaze3d.vertex.PoseStack;
-//? mas {
-/*import com.robertx22.mine_and_slash.capability.player.PlayerData;
-import com.robertx22.mine_and_slash.database.data.talent_tree.TalentTree;
-*///?}
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
@@ -96,12 +92,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     @Override
     protected void init() {
         super.init();
-        this.buildList = new LoadoutSelectionList(80, 60, topPos, topPos + 80, this);
-        try {
-            buildList.addBuildsOnInit(LoadoutsClientHandler.readAllFromLocal(minecraft.player.getUUID()));
-        } catch (IOException e) {
-            Constants.LOG.error("Failed to load builds from local when initialize LoadoutScreen: {}", String.valueOf(e));
-        }
+
         this.tabs = HandlerManager.getInstance().getImmutableBuildMenuTabFunction(menu.getSelfBuild()).map(x -> x.apply(this, this));
         this.addNewEntry = new WYBImageButton(0, 0, 8, 8, button -> {
             buildList.addSelfBuildEntry(menu.getSelfBuild().copy());
@@ -124,14 +115,6 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         addNewEntry.setPosition(leftPos, topPos - 12);
 
         this.rightClickMenu = new RightClickMenu(0, 0, 0, 0, Component.literal(""));
-
-        //? >1.20.1 {
-        buildList.setX(leftPos);
-        buildList.setY(topPos);
-        //?} else {
-        /*buildList.setLeftPos(leftPos);
-        *///?}
-        addRenderableWidget(buildList);
 
 
         addRenderableWidget(addNewEntry);
@@ -166,8 +149,21 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 })
                 //?}
         );
-        this.wears.values().forEach(this::addRenderableWidget);
 
+        this.buildList = new LoadoutSelectionList(80, 60, topPos, topPos + 80, this);
+        try {
+            buildList.addBuildsOnInit(LoadoutsClientHandler.readAllFromLocal(minecraft.player.getUUID()));
+        } catch (IOException e) {
+            Constants.LOG.error("Failed to load builds from local when initialize LoadoutScreen: {}", String.valueOf(e));
+        }
+
+        //? >1.20.1 {
+        buildList.setX(leftPos);
+        buildList.setY(topPos);
+        //?} else {
+        /*buildList.setLeftPos(leftPos);
+        *///?}
+        addRenderableWidget(buildList);
     }
 
 
@@ -433,7 +429,6 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
 
     public static void markEdited(LoadoutScreen screen) {
         if (screen.currentEditingEntry != null && screen.currentEditingEntry.currentState instanceof BuildEntryState.Editing editing){
-            System.out.println("trigger!");
             editing.isEdited = true;
         }
     }
@@ -469,8 +464,10 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         } else {
             this.slotMap.clear();
             this.widgets.forEach((string, abstractWidgets) -> abstractWidgets.forEach(this::removeWidget));
+            wears.forEach(stringWearButtonTuple2 -> this.removeWidget(stringWearButtonTuple2._2));
             placePlan.get(identifier).handle();
             currentAt = identifier;
+            wears.get(identifier).forEach(this::addRenderableWidget);
         }
     }
 
