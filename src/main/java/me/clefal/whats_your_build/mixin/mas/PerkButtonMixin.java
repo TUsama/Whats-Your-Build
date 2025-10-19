@@ -16,16 +16,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = PerkButton.class, remap = false)
+@Mixin(value = PerkButton.class)
 public abstract class PerkButtonMixin extends AbstractWidget{
 
-    @Shadow private SkillTreeScreen screen;
+    @Shadow(remap = false) private SkillTreeScreen screen;
 
-    @Shadow public PointData point;
+    @Shadow(remap = false) public PointData point;
 
-    @Shadow public PlayerData playerData;
+    @Shadow(remap = false) public PlayerData playerData;
 
-    @Shadow public TalentTree school;
+    @Shadow(remap = false) public TalentTree school;
 
     public PerkButtonMixin(int x, int y, int width, int height, Component message) {
         super(x, y, width, height, message);
