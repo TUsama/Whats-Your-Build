@@ -1,5 +1,6 @@
 package me.clefal.whats_your_build.loaders;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.MenuEntry;
@@ -31,14 +32,16 @@ public class WYBRegistrate {
             .tab(CreativeModeTabs.FUNCTIONAL_BLOCKS)
             .build()
             .lang("Loadout Barrel")
+            .blockstate((blockLoadoutChestDataGenContext, registrateBlockstateProvider) -> {})
             .recipe((blockLoadoutChestDataGenContext, registrateRecipeProvider) -> {
                 ShapedRecipeBuilder.shaped(RecipeCategory.MISC, blockLoadoutChestDataGenContext.get())
                         .pattern("PCP")
                         .pattern("PLP")
-                        .pattern("PBP")
+                        .pattern("PPP")
                         .define('P', ItemTags.PLANKS)
                         .define('C', Items.IRON_CHESTPLATE)
                         .define('L', Items.IRON_LEGGINGS)
+                        .unlockedBy("has_iron", RegistrateRecipeProvider.has(Items.IRON_INGOT))
                         .save(registrateRecipeProvider);
             })
             .tag(BlockTags.MINEABLE_WITH_AXE

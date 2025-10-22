@@ -139,6 +139,7 @@ modstitch {
 
                 registerOrConfigure("data"){
                     data()
+                    programArguments.addAll("--mod", mid, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
                 }
             }
 
@@ -194,7 +195,6 @@ tasks.register<Copy>("buildAndCollect") {
     from(modstitch.finalJarTask.map { it.archiveFile }.get())
     into(rootProject.layout.buildDirectory.file("libs/${modv}"))
 }
-
 
 // All dependencies should be specified through modstitch's proxy configuration.
 // Wondering where the "repositories" block is? Go to "stonecutter.gradle.kts"
