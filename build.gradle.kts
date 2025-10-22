@@ -138,12 +138,31 @@ modstitch {
                 fun registerOrConfigure(name: String, action: Action<RunModel>) = action(maybeCreate(name))
 
                 registerOrConfigure("data"){
+
                     data()
                     programArguments.addAll("--mod", mid, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
+
                 }
             }
 
             runOnJBR(project)
+        }
+    }
+    val copiedTempDir = layout.buildDirectory.dir("../src/main/resources")
+
+    val copyForRunData by tasks.registering(Copy::class) {
+        from(layout.projectDirectory.dir("src/main/resources"))
+        into(copiedTempDir)
+    }
+
+    val deleteCopied by tasks.registering(Delete::class) {
+        delete(copiedTempDir)
+    }
+
+    if (isModDevGradleRegular){
+        tasks.named("runData") {
+            dependsOn(copyForRunData)
+            finalizedBy(deleteCopied)
         }
     }
 
