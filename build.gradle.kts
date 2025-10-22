@@ -151,11 +151,15 @@ modstitch {
     val copiedTempDir = layout.buildDirectory.dir("../src/main/resources")
 
     val copyForRunData by tasks.registering(Copy::class) {
-        from(layout.projectDirectory.dir("src/main/resources"))
+        group = "patch/data"
+
+        from(layout.projectDirectory.dir("../../src/main/resources"))
         into(copiedTempDir)
+        mustRunAfter(tasks.named("processResources"))
     }
 
     val deleteCopied by tasks.registering(Delete::class) {
+        group = "patch/data"
         delete(copiedTempDir)
     }
 
@@ -164,6 +168,10 @@ modstitch {
             dependsOn(copyForRunData)
             finalizedBy(deleteCopied)
         }
+    }
+    project.extensions.getByType<SourceSetContainer>()["main"].resources{
+        srcDir("src/generated/resources")
+        exclude(".cache")
     }
 
     mixin {

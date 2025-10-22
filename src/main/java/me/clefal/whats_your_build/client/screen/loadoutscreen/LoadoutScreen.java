@@ -34,6 +34,7 @@ import me.clefal.whats_your_build.data.modules.compat.curios.loadout.CuriosLoadD
 import me.clefal.whats_your_build.data.modules.compat.mas.talent.client.MASSkillViewButton;
 import me.clefal.whats_your_build.mixinhelper.ITalentDataGetter;
 *///?}
+import me.clefal.whats_your_build.loaders.WYBLang;
 import me.clefal.whats_your_build.utils.WidgetHelper;
 import me.clefal.whats_your_build.world.BuildMenu;
 import me.clefal.whats_your_build.world.IBuildHandler;
@@ -181,7 +182,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
                 wearButton.active = false;
                 wearButton.visible = false;
             });
-            vertexContainer.putString(DrawStringBufferInfo.of(Component.translatable("wyb.screen.loadout.no_loadout").getString(), leftPos + 100, topPos + buildList.getHeight() / 2, ChatFormatting.GRAY.getColor(), guiGraphics.pose().last().pose()));
+            vertexContainer.putString(DrawStringBufferInfo.of(WYBLang.loadout_no_loadout.getString(), leftPos + 100, topPos + buildList.getHeight() / 2, ChatFormatting.GRAY.getColor(), guiGraphics.pose().last().pose()));
         } else {
             this.tabs.forEach(x -> {
                 x.active = true;
