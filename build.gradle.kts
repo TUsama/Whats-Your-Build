@@ -1,5 +1,7 @@
 import deps.Loaders
 import deps.DependencyConfig
+import net.neoforged.moddevgradle.dsl.RunModel
+import org.gradle.kotlin.dsl.accessors.runtime.maybeRegister
 
 plugins {
     id("dev.isxander.modstitch.base") version "clefal-version"
@@ -128,22 +130,18 @@ modstitch {
             validateAccessTransformers = false
 
             runs.all {
-                /*val upperName = name.replaceFirstChar {
-                    it.uppercaseChar()
-                }*/
-                /*tasks.named<JavaExec>("run$upperName"){
-                    javaLauncher.set(
-                        javaToolchains.launcherFor {
-                            languageVersion = JavaLanguageVersion.of(project.modstitch.javaTarget.get())
-                            vendor = JvmVendorSpec.JETBRAINS
-                        }
-                    )
-                }*/
                 disableIdeRun()
 
-                //jvmArguments.add("-XX:+AllowEnhancedClassRedefinition")
-                //gameDirectory = file("run")
             }
+
+            runs{
+                fun registerOrConfigure(name: String, action: Action<RunModel>) = action(maybeCreate(name))
+
+                registerOrConfigure("data"){
+                    data()
+                }
+            }
+
             runOnJBR(project)
         }
     }

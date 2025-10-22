@@ -2,7 +2,6 @@ package me.clefal.whats_your_build.utils;
 
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import me.clefal.whats_your_build.Constants;
-import me.clefal.whats_your_build.chat.BuildClickEvent;
 import me.clefal.whats_your_build.network.c2s.C2SAskBuildPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;

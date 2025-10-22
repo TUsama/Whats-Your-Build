@@ -26,10 +26,11 @@ public class C2SSendGlobalBuildPacket implements C2SModPacket<C2SSendGlobalBuild
                             .applyFormat(ChatFormatting.AQUA)
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("wyb.chat.click_to_show_build")))
                             .withUnderlined(true)));
-            //? if < 1.21.4
+            //? if < 1.21.4 {
             player.sendSystemMessage(message);
-            //? if 1.21.4
+            //?} else {
             /*player.displayClientMessage(message, false);*/
+            //?}
         }
     }
 
