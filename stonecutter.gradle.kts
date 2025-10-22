@@ -15,6 +15,11 @@ stonecutter registerChiseled tasks.register("chiseledBuildAndCollect", stonecutt
     ofTask("buildAndCollect")
 }
 
+stonecutter registerChiseled tasks.register("chiseledDatagen", stonecutter.chiseled) {
+    group = "project"
+    ofTask("CRunData")
+}
+
 allprojects {
     repositories {
         mavenCentral()

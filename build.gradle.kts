@@ -163,15 +163,32 @@ modstitch {
         delete(copiedTempDir)
     }
 
-    if (isModDevGradleRegular){
+    if (isLoom){
+        tasks.named("runDatagen") {
+            dependsOn(copyForRunData)
+            finalizedBy(deleteCopied)
+        }
+    } else {
         tasks.named("runData") {
             dependsOn(copyForRunData)
             finalizedBy(deleteCopied)
         }
     }
+
+
     project.extensions.getByType<SourceSetContainer>()["main"].resources{
         srcDir("src/generated/resources")
         exclude(".cache")
+    }
+
+    tasks.register("CRunData") {
+        if (isLoom){
+            dependsOn(tasks.named("runDatagen"))
+        } else {
+            tasks.named("runData")
+        }
+
+
     }
 
     mixin {
