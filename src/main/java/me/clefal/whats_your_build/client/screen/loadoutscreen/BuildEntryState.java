@@ -74,6 +74,7 @@ public abstract class BuildEntryState {
 
         @Override
         public void save(LoadoutScreen screen) {
+            //todo it would be nice to done all the save jobs on each handler, but the permission limitation can't be ignored.
             Map<String, ? extends IBuildComponent<?>> map = baseBuild.getComponents().map((b, c) -> Tuple.of(c.getIdentifier(), c));
             LinkedHashMap<String, NonNullList<Slot>> slotMap = screen.getSlotMap();
             this.baseBuild = map.map((string, component) -> {
@@ -86,7 +87,7 @@ public abstract class BuildEntryState {
 
                 }
                 //? mas {
-                /*//if mas skill compat is enaable.
+                /*//if mas skill compat is enable.
                 else if (component instanceof MASSkillComponent) {
                     List<? extends AbstractWidget> abstractWidgets = screen.getWidgets().get(MASSkillComponent.ID);
                     if (abstractWidgets != null) {

@@ -23,7 +23,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.6+"
+    id("dev.kikugie.stonecutter") version "0.8.2"
     id("org.gradle.toolchains.foojay-resolver-convention") version("1.0.0")
 }
 
@@ -37,12 +37,12 @@ stonecutter {
          * @param loaders A list of loaders to target, supports "fabric" (1.14+), "neoforge"(1.20.6+), "vanilla"(any) or "forge"(<=1.20.1)
          */
         fun mc(mcVersion: String, name: String = mcVersion, loaders: Iterable<String>) =
-            loaders.forEach { vers("$name-$it", mcVersion) }
+            loaders.forEach { version("$name-$it", mcVersion) }
 
         // Configure your targets here!
         //mc("1.21.4", loaders = listOf("fabric", "neoforge"))
-        mc("1.21.1", loaders = listOf("neoforge"))
-        mc("1.20.1", loaders = listOf("forge", "fabric"))
+        mc("1.21.1", loaders = listOf("neoforge", "fabric"))
+        mc("1.20.1", loaders = listOf("forge"))
 
         // This is the default target.
         // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts
@@ -51,6 +51,4 @@ stonecutter {
 }
 
 rootProject.name = "Whats-Your-Build"
-includeBuild("modstitch")
-//includeBuild("NirvanaLib")
 

@@ -76,6 +76,5 @@ public class WYBRegistrate {
 
     public static void register() {
         Constants.LOG.info("starting WYB registration!");
-        WYBLang.register();
     }
 }

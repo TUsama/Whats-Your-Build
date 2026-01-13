@@ -1,11 +1,10 @@
 import deps.Loaders
 import deps.DependencyConfig
 import net.neoforged.moddevgradle.dsl.RunModel
-import org.gradle.kotlin.dsl.accessors.runtime.maybeRegister
 
 plugins {
-    id("dev.isxander.modstitch.base") version "clefal-version"
-    id("dev.isxander.modstitch.publishing") version "clefal-version"
+    id("dev.isxander.modstitch.base") version "0.8.4"
+    id("dev.isxander.modstitch.publishing") version "0.8.4"
     id ("org.jetbrains.kotlin.jvm") version "2.1.10"
     id ("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
 }
@@ -131,7 +130,6 @@ modstitch {
 
             runs.all {
                 disableIdeRun()
-
             }
 
             runs{
