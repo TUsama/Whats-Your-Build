@@ -1,3 +1,9 @@
+### 0.5.0
+change the tip when build is edited.
+add a button that allow player to open build folder.
+add Rename function, after renaming, the old build file will be backup.
+clean up code.
+
 ### 0.4.3
 fix a mixin bug(1.20.1 forge)
 

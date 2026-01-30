@@ -23,7 +23,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.8.2"
+    id("dev.kikugie.stonecutter") version "0.8.1"
     id("org.gradle.toolchains.foojay-resolver-convention") version("1.0.0")
 }
 
@@ -41,8 +41,8 @@ stonecutter {
 
         // Configure your targets here!
         //mc("1.21.4", loaders = listOf("fabric", "neoforge"))
-        mc("1.21.1", loaders = listOf("neoforge", "fabric"))
-        mc("1.20.1", loaders = listOf("forge"))
+        mc("1.21.1", loaders = listOf("neoforge", /*"fabric"*/))
+        mc("1.20.1", loaders = listOf("forge", "fabric"))
 
         // This is the default target.
         // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts

@@ -36,6 +36,16 @@ class DependencyBuilder {
         dependencies += VersionedDependency("modstitchJiJ", notation, options)
     }
 
+    fun modstitchLegacyModImplementation(
+        notation: String,
+        options: ExternalModuleDependency.() -> Unit = {}
+    ) {
+        dependencies += VersionedDependency("modImplementation", notation, options)
+    }
+
+    fun modstitchLegacyModRuntimeOnly(notation: String, options: ExternalModuleDependency.() -> Unit = {}) {
+        dependencies += VersionedDependency("modRuntimeOnly", notation, options)
+    }
 }
 
 fun buildDependencies(block: DependencyBuilder.() -> Unit): List<VersionedDependency> {

@@ -1,41 +1,35 @@
-import deps.Loaders
 import deps.DependencyConfig
-import net.neoforged.moddevgradle.dsl.RunModel
+import net.neoforged.nfrtgradle.CreateMinecraftArtifacts
 
 plugins {
     id("dev.isxander.modstitch.base") version "0.8.4"
     id("dev.isxander.modstitch.publishing") version "0.8.4"
-    id ("org.jetbrains.kotlin.jvm") version "2.1.10"
-    id ("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
 }
+val mod_version = property("mod_version") as String
+val mod_id = property("mod_id") as String
+val minecraft = property("deps.minecraft") as String
+val libVersion = property("deps.lib_version") as String
+val minecraftVersionSplit = minecraft.split('.')
 
+
+var loader: String = name.split("-")[1]
 fun prop(name: String, consumer: (prop: String) -> Unit) {
-    (findProperty(name) as? String?)?.let(consumer)
+    (findProperty(name) as? String)?.let{
+            consumer.invoke(it)
+        }
 }
-
+fun propLib(consumer: (prop: String) -> Unit){
+    prop("deps.lib_version", consumer)
+}
 
 val modv = property("mod_version") as String
 
 
-val loader = when {
-    modstitch.isLoom -> "fabric"
-    modstitch.isModDevGradleRegular -> "neoforge"
-    modstitch.isModDevGradleLegacy -> "forge"
-    else -> throw IllegalStateException("Unsupported loader")
-}
-
-val minecraft = property("deps.minecraft") as String
-
 modstitch {
     minecraftVersion = minecraft
-
-    // Alternatively use stonecutter.eval if you have a lot of versions to target.
-    // https://stonecutter.kikugie.dev/stonecutter/guide/setup#checking-versions
-    javaTarget = when (minecraft) {
+    javaVersion = when (minecraft){
         "1.20.1" -> 17
-        "1.21.1" -> 21
-        "1.21.4" -> 21
-        else -> throw IllegalArgumentException("Please store the java version for $minecraft in build.gradle.kts!")
+        else -> 21
     }
 
     // If parchment doesnt exist for a version yet you can safely
@@ -49,34 +43,40 @@ modstitch {
 
     // This metadata is used to fill out the information inside
     // the metadata files found in the templates folder.
-    val mid = "whats_your_build"
     metadata {
-        modId = mid
-        modName = "What's your build"
-        modVersion = modv
-        modGroup = "me.clefal"
-        modAuthor = "Clefal"
+        modId = mod_id
+        modName = property("mod_name") as String
+        modVersion = property("mod_version") as String
+        modGroup = property("mod_group_id") as String
+        modAuthor = property("mod_authors") as String
         modDescription =
-            "Check other players' gear. Useful when in Multiplayer mode!"
+            property("mod_description") as String
         modLicense = "MIT"
-        fun <K, V> MapProperty<K, V>.populate(block: MapProperty<K, V>.() -> Unit) {
+
+        fun <K : Any, V : Any> MapProperty<K, V>.populate(block: MapProperty<K, V>.() -> Unit) {
             block()
         }
+
         replacementProperties.populate {
-            // You can put any other replacement properties/metadata here that
-            // modstitch doesn't initially support. Some examples below.
-            put("mod_issue_tracker", "https://github.com/TUsama/Whats-Your-Build/issues")
-            put(
-                "pformat", when (property("deps.minecraft")) {
-                    "1.20.1" -> 15
-                    "1.21.1" -> 34
-                    "1.21.4" -> 46
-                    else -> throw IllegalArgumentException("Please store the resource pack version for ${property("deps.minecraft")} in build.gradle.kts! https://minecraft.wiki/w/Pack_format")
-                }.toString()
-            )
+            put("mod_issue_tracker", property("mod_issue") as String)
+            put("pack_format", when (property("deps.minecraft")) {
+                "1.20.1" -> 15
+                "1.21.1" -> 34
+                "1.21.4" -> 46
+                "1.21.8" -> 64
+                "1.21.10" -> 69
+                "1.21.11" -> 70.0
+                else -> throw IllegalArgumentException("Please store the resource pack version for ${property("deps.minecraft")} in build.gradle.kts! https://minecraft.wiki/w/Pack_format")
+            }.toString())
+
+            prop("deps.fzzy_config_version"){
+                put("fzzy_config_version", it)
+            }
+
+            put("lib_version", libVersion)
+            put("common_networking_version", property("deps.common_networking") as String)
 
             put("target_minecraft", minecraft)
-            //put("target_lib", property("deps.lib") as String)
             put(
                 "target_loader", when (loader) {
                     "neoforge" -> property("deps.neoforge") as String
@@ -86,106 +86,91 @@ modstitch {
             put("loader", loader)
             put(
                 "target_fabricloader", when (loader) {
-                    "fabric" -> property("deps.fabric_loader") as String
+                    "fabric" -> "0.16.10"
                     else -> ""
                 }
             )
-            put("fzzy_config_version", property("deps.fzzy_config_version") as String)
-            put("lib_version", property("deps.lib_version") as String)
+
+            put("target_forge", findProperty("deps.forge") as? String ?: "")
+
         }
     }
 
-    // Fabric Loom (Fabric)
     loom {
-        // It's not recommended to store the Fabric Loader version in properties.
-        // Make sure its up to date.
-        fabricLoaderVersion = "0.16.11"
+
+        fabricLoaderVersion = "0.16.10"
+
+        // Configure loom like normal in this block.
         configureLoom {
-            runs {
-                all {
-                    ideConfigGenerated(true)
-                }
-                accessWidenerPath.set(file("../../src/main/templates/${mid}.accesswidener"))
+            runConfigs.all {
+                ideConfigGenerated(false)
             }
+            accessWidenerPath.set(file("../../src/main/templates/${mod_id}.accesswidener"))
         }
     }
 
     // ModDevGradle (NeoForge, Forge, Forgelike)
     moddevgradle {
-        enable {
-            prop("deps.forge") { forgeVersion = it }
-            prop("deps.neoform") { neoFormVersion = it }
-            prop("deps.neoforge") { neoForgeVersion = it }
-            prop("deps.mcp") { mcpVersion = it }
-        }
+        prop("deps.forge") { forgeVersion = it }
+        prop("deps.neoforge") { neoForgeVersion = it }
+        prop("deps.mcp") { mcpVersion = it }
 
-        // Configures client and server runs for MDG, it is not done by default
-        defaultRuns()
+        configureNeoForge {
 
-        // This block configures the `neoforge` extension that MDG exposes by default,
-        // you can configure MDG like normal from here
-        configureNeoforge {
-            setAccessTransformers("../../src/main/templates/META-INF/accesstransformer.cfg")
-            validateAccessTransformers = false
+            runs {
+                configureEach {
+                    systemProperty("neoforge.enabledGameTestNamespaces", mod_id)
+                    disableIdeRun()
+                    jvmArguments.add("-XX:+AllowEnhancedClassRedefinition")
+                }
+                register("client") {
+                    client()
+                }
+                if(minecraftVersionSplit[2].toInt() >= 4 ){
+                    register("clientData") {
+                        clientData()
+                        programArguments.addAll("--mod", mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
+                    }
 
-            runs.all {
-                disableIdeRun()
-            }
+                    register("serverData") {
+                        serverData()
+                        programArguments.addAll("--mod", mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
+                    }
+                } else {
+                    register("data") {
+                        data()
+                        programArguments.addAll("--mod", mod_id, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
+                    }
+                }
 
-            runs{
-                fun registerOrConfigure(name: String, action: Action<RunModel>) = action(maybeCreate(name))
-
-                registerOrConfigure("data"){
-
-                    data()
-                    programArguments.addAll("--mod", mid, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
-
+                register("server") {
+                    server()
+                }
+                afterEvaluate{
+                    this@runs.names.forEach {
+                        val capitalizedName = it.replaceFirstChar(Char::uppercaseChar)
+                        project.tasks.named<JavaExec>("run$capitalizedName") {
+                            val toolchain = project.extensions.getByType<JavaToolchainService>()
+                            javaLauncher.set(
+                                toolchain.launcherFor {
+                                    languageVersion.set(JavaLanguageVersion.of(project.modstitch.javaVersion.get()))
+                                    vendor.set(JvmVendorSpec.JETBRAINS)
+                                }
+                            )
+                        }
+                    }
                 }
             }
 
-            runOnJBR(project)
+
+            mods {
+                register("main") {
+                    sourceSet(sourceSets.main.get())
+                }
+            }
+
+
         }
-    }
-    val copiedTempDir = layout.buildDirectory.dir("../src/main/resources")
-
-    val copyForRunData by tasks.registering(Copy::class) {
-        group = "patch/data"
-
-        from(layout.projectDirectory.dir("../../src/main/resources"))
-        into(copiedTempDir)
-        mustRunAfter(tasks.named("processResources"))
-    }
-
-    val deleteCopied by tasks.registering(Delete::class) {
-        group = "patch/data"
-        delete(copiedTempDir)
-    }
-
-    if (isLoom){
-        tasks.named("runDatagen") {
-            dependsOn(copyForRunData)
-            finalizedBy(deleteCopied)
-        }
-    } else {
-        tasks.named("runData") {
-            dependsOn(copyForRunData)
-            finalizedBy(deleteCopied)
-        }
-    }
-
-
-    project.extensions.getByType<SourceSetContainer>()["main"].resources{
-        srcDir("src/generated/resources")
-        exclude(".cache")
-    }
-
-    tasks.register("CRunData") {
-        if (isLoom){
-            dependsOn(tasks.named("runDatagen"))
-        } else {
-            tasks.named("runData")
-        }
-
 
     }
 
@@ -193,12 +178,8 @@ modstitch {
         // You do not need to specify mixins in any mods.json/toml file if this is set to
         // true, it will automatically be generated.
         addMixinsToModManifest = true
-        configs.register(mid)
 
-        when {
-            isModDevGradleLegacy -> configs.register("${mid}-mas")
-        }
-
+        configs.register("whats_your_build")
 
         // Most of the time you wont ever need loader specific mixins.
         // If you do, simply make the mixin file and add it like so for the respective loader:
@@ -207,109 +188,114 @@ modstitch {
         // if (isModDevGradleLegacy) configs.register("examplemod-forge")
     }
 }
+
 base {
     val meta = modstitch.metadata
     archivesName = "${meta.modName.get()}-$loader-$minecraft"
 }
 
-// Stonecutter constants for mod loaders.
-// See https://stonecutter.kikugie.dev/stonecutter/guide/comments#condition-constants
-var constraint: String = name.split("-")[1]
+afterEvaluate {
+    if (modstitch.isModDevGradle){
+        tasks.getByName<CreateMinecraftArtifacts>("createMinecraftArtifacts"){
+            dependsOn(tasks.getByName<ProcessResources>("generateModMetadata"))
+        }
+    }
+
+}
+
+
 stonecutter {
-    consts(
-        "fabric" to constraint.equals("fabric"),
-        "neoforge" to constraint.equals("neoforge"),
-        "forge" to constraint.equals("forge"),
-        "curios" to (constraint.equals("forge") || constraint.equals("neoforge")),
-        "mas" to constraint.equals("forge"),
-        "vanilla" to constraint.equals("vanilla")
-    )
-}
+    constants.putAll(mapOf<String, Boolean>(
+        "fabric" to loader.equals("fabric"),
+        "neoforge" to loader.equals("neoforge"),
+        "forge" to loader.equals("forge"),
+        "vanilla" to loader.equals("vanilla"),
+        "curios" to (loader.equals("forge") || loader.equals("neoforge")),
+        "mas" to loader.equals("forge"),
+    ))
 
-tasks.named<Copy>("processResources") {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 
-tasks.register<Copy>("buildAndCollect") {
-    dependsOn("build")
-    group = "build"
-    from(modstitch.finalJarTask.map { it.archiveFile }.get())
-    into(rootProject.layout.buildDirectory.file("libs/${modv}"))
-}
-
-// All dependencies should be specified through modstitch's proxy configuration.
-// Wondering where the "repositories" block is? Go to "stonecutter.gradle.kts"
-// If you want to create proxy configurations for more source sets, such as client source sets,
-// use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
 dependencies {
-    val loaderEnum = when {
-        modstitch.isLoom -> Loaders.LOOM
-        modstitch.isModDevGradleLegacy -> Loaders.FORGE
-        modstitch.isModDevGradleRegular -> Loaders.NEOFORGE
-        else -> throw IllegalArgumentException("unknown loader")
+    fun Dependency?.jij() = this?.also(::modstitchJiJ)
+    fun String.implementation() = if (modstitch.isModDevGradleLegacy){
+        //avoid the modstitch remap bug on 1.20.1
+        add("modImplementation", this)
+    } else {
+        modstitchModImplementation(this)
     }
-    val fzzyConfigVersion = findProperty("deps.fzzy_config_version")
-    val fzzyMinecraftVersion = when (minecraft) {
-        "1.21.1" -> "1.21"
-        "1.21.4" -> "1.21.3"
-        else -> minecraft
+    fun String.runtimeOnly() = if (modstitch.isModDevGradleLegacy) {
+        add("modRuntimeOnly", this)
+    } else {
+        modstitchModRuntimeOnly(this)
     }
-    val libVersion = property("deps.lib_version") as String
-    //fzzy
-    modstitch.loom {
-        val fabricApi = property("deps.fabric_api") as String
-        modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${fabricApi}+${minecraft}")
-        modstitchModImplementation("me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}+${fzzyMinecraftVersion}")
+    fun String.compileOnly() = if (modstitch.isModDevGradleLegacy) {
+        add("modCompileOnly", this)
+    } else {
+        modstitchModCompileOnly(this)
     }
-    modstitch.moddevgradle {
 
-        if (modstitch.isModDevGradleLegacy) {
-            modstitchModImplementation("me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}+${fzzyMinecraftVersion}+forge")
-        } else {
-            modstitchModImplementation(("me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}+${fzzyMinecraftVersion}+neoforge"))
+
+    propLib {
+        "maven.modrinth:nirvana-library:$loader-$minecraft-$it".implementation()
+    }
+    modstitchModImplementation("maven.modrinth:common-network:${property("deps.common_network")}")
+
+    prop("deps.fzzy_config_version"){
+        val fzzyConfigVersion = findProperty("deps.fzzy_config_version")
+        val fzzyMinecraftVersion = when (minecraft) {
+            "1.21.1" -> "1.21"
+            "1.21.4" -> "1.21.3"
+            "1.21.8" -> "1.21.6"
+            "1.21.10" -> "1.21.9"
+            else -> minecraft
+        }
+        var fzzyString : String = "";
+
+        modstitch.loom {
+            prop("deps.fabric_api"){
+                ("net.fabricmc.fabric-api:fabric-api:$it+${minecraft}").implementation()
+            }
+            fzzyString = "me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}+${fzzyMinecraftVersion}";
+
         }
 
+        modstitch.moddevgradle {
+            if (modstitch.isModDevGradleLegacy){
+                fzzyString = "me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}+${fzzyMinecraftVersion}+forge";
+            } else {
+                if (minecraft == "1.21.8"){
+                    fzzyString = "me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}+1.21.7+neoforge";
+                } else {
+                    fzzyString = "me.fzzyhmstrs:fzzy_config:${fzzyConfigVersion}+${fzzyMinecraftVersion}+neoforge"
+                }
+
+            }
+
+        }
+
+        modstitchModCompileOnly(fzzyString)
+        (fzzyString).runtimeOnly()
     }
-    /*val files = files("../../NirvanaLib/build/libs/$libVersion")
-    val target = files.asFileTree.files
-        .filter { it.name.contains(minecraft) && it.name.contains(loader) && it.name.contains(libVersion)}
-        .firstOrNull()
-    if (target == null) {
-        modstitchModImplementation(group = "com.clefal", name = "NirvanaLib", version = libVersion)
-    } else {
-        modstitchModImplementation(group = "blank", name = target.name.replace("-$libVersion.jar", ""), version = libVersion)
-    }*/
 
-    modstitchImplementation("com.google.code.findbugs:jsr305:3.0.2")
-    /*if(minecraft == "1.20.1" && loader == "forge") {
-        modstitchModImplementation("blank:Nirvana Lib-forge-1.20.1:2.0.13")
-    } else {*/
-        modstitchModImplementation("maven.modrinth:nirvana-library:$loader-$minecraft-$libVersion")
-    //}
 
-    modstitchModImplementation("maven.modrinth:common-network:${property("deps.common_network")}")
-    //loader-specified deps
 
-    DependencyConfig.getDependencies(loaderEnum, minecraft).forEach { dep ->
+    //lombok
+    modstitchCompileOnly("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
 
+    testCompileOnly("org.projectlombok:lombok:1.18.42")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
+
+    DependencyConfig.getDependencies(loader, minecraft).forEach { dep ->
         dependencies.add(dep.configuration, dep.notation, dep.options)
     }
 
-    //lombok
-    modstitchCompileOnly("org.projectlombok:lombok:1.18.34")
-    annotationProcessor("org.projectlombok:lombok:1.18.34")
-
-    testCompileOnly("org.projectlombok:lombok:1.18.34")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
-
-
-
-    // Anything else in the dependencies block will be used for all platforms.
+    modstitchImplementation("com.google.code.findbugs:jsr305:3.0.2")
 }
 
 msPublishing {
-    val finalFileTree = rootProject.layout.buildDirectory.files("libs/${modv}").asFileTree.files
 
     mpp {
         changelog = file("../../changelog.md")
@@ -322,10 +308,12 @@ msPublishing {
                 }
             }
         type = BETA
-        //I think this is provided by modstich or stonecutter. So we can't add this otherwise the upload will fail.
-        val finalFile = finalFileTree.filter { it.name.contains(minecraft) && it.name.contains(loader) }.firstOrNull()
-        file.set(finalFile)
-        displayName = file.map { it.asFile.name }
+        afterEvaluate {
+            val finalFile = modstitch.finalJarTask.map { it.archiveFile.get() }
+            file.set(finalFile)
+            this@mpp.displayName = file.map { it.asFile.name }
+        }
+
         //dryRun = true
         val cfOptions = curseforgeOptions {
             accessToken = file("D:\\curseforge-key.txt").readText()

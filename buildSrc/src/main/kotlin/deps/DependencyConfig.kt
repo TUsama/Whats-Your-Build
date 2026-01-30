@@ -3,11 +3,12 @@ package deps
 import org.gradle.api.artifacts.ExternalModuleDependency
 
 object DependencyConfig {
-    fun getDependencies(platform: Loaders, minecraft: String): List<VersionedDependency> {
+    fun getDependencies(platform: String, minecraft: String): List<VersionedDependency> {
         return when (platform) {
-            Loaders.LOOM -> LoomDeps.get(minecraft)
-            Loaders.FORGE -> ForgeDeps.get(minecraft)
-            Loaders.NEOFORGE -> NeoForgeDeps.get(minecraft)
+            "fabric" -> LoomDeps.get(minecraft)
+            "forge" -> ForgeDeps.get(minecraft)
+            "neoforge" -> NeoForgeDeps.get(minecraft)
+            else -> throw IllegalStateException("Unsupported loader")
         }
     }
 }
