@@ -3,29 +3,15 @@ package me.clefal.whats_your_build.network.c2s;
 
 import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import com.clefal.nirvana_lib.utils.DevUtils;
-import com.clefal.nirvana_lib.utils.NetworkUtils;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import me.clefal.whats_your_build.CommonClass;
 import me.clefal.whats_your_build.data.buildobject.Build;
 import me.clefal.whats_your_build.event.server.ServerAskBuildPermissionCheckEvent;
 import me.clefal.whats_your_build.event.server.ServerGatherBuildComponentEvent;
 import me.clefal.whats_your_build.loaders.WYBRegistrate;
-import me.clefal.whats_your_build.network.s2c.S2CReturnBuildPacket;
-import me.clefal.whats_your_build.world.player_build.PlayerBuildMenu;
 import me.clefal.whats_your_build.world.player_build.PlayerBuildMenuProvider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 

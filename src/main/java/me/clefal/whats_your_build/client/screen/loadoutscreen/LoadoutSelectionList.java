@@ -15,10 +15,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -41,10 +39,11 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
 
     public final BuildEntryFunctionButton clear;
     public final BuildEntryFunctionButton delete;
+    public final BuildEntryFunctionButton rename;
 
     public LoadoutSelectionList(int width, int height, int y0, int y1, LoadoutScreen screen) {
         //? 1.20.1
-        /*super(Minecraft.getInstance(), width, height, y0, y1, HEIGHT);*/
+        //super(Minecraft.getInstance(), width, height, y0, y1, HEIGHT);
         //? >1.20.1
         super(Minecraft.getInstance(), width, height, y1 - y0, HEIGHT);
         //setLeftPos(-10);
@@ -102,6 +101,14 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             list1.setFocused(null);
         });
 
+        this.rename = getButton.apply("rename", button -> {
+            int i = this.children().indexOf(button.entry);
+            int rowBottom = getRowBottom(i);
+            int rowTop = getRowTop(i);
+            screen.addNameInput(button.entry.currentState instanceof BuildEntryState.Editing && button.entry.isFocused() ? getRowLeft() + Minecraft.getInstance().font.width(BuildEntryState.TRIANGLE.getString()): getRowLeft(), rowTop, getRowWidth(), rowBottom - rowTop);
+            button.entry.isRenaming = true;
+        });
+
     }
     //? >1.20.1 {
     @Override
@@ -135,11 +142,13 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             name += "(1)";
         }
         build.name = name;
-        addEntry(new BuildEntry(build));
+        BuildEntry buildEntry = new BuildEntry(build);
+        buildEntry.currentState.isUnsaved = true;
+        addEntry(buildEntry);
     }
 
     public void renderHoveredTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY){
-        if (getHovered()!= null && getHovered().currentState instanceof BuildEntryState.Editing editing && editing.isEdited){
+        if (getHovered()!= null && getHovered().currentState instanceof BuildEntryState.Editing editing && editing.isUnsaved){
             guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("wyb.screen.loadout.save_tip"), mouseX, mouseY);
         }
 
@@ -165,6 +174,21 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             return getFocused().currentState.presentBuild();
         }
         return Build.EMPTY;
+    }
+
+    public void finishRename(String rename){
+        this.children().stream().filter(x -> x.isRenaming).findFirst()
+                .ifPresent(x -> {
+                    boolean flag = false;
+                    if (!rename.isBlank()){
+                        flag = x.currentState.rename(rename);
+                    }
+                    x.isRenaming = false;
+                    if (flag){
+                        x.save(screen);
+                    }
+
+                });
     }
 
     @Override
@@ -213,6 +237,12 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
             buildEntry.changeState(new BuildEntryState.Editing(buildEntry));
         }
     }
+
+    public void resetRename(){
+        for (BuildEntry child : this.children()) {
+            child.isRenaming = false;
+        }
+    }
     //? 1.20.1 {
     /*@Override
     public void updateNarration(NarrationElementOutput narrationElementOutput) {
@@ -223,6 +253,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
     public class BuildEntry extends Entry<BuildEntry>{
 
         BuildEntryState currentState;
+        boolean isRenaming;
 
         public BuildEntry(@Nullable Build storageBuild) {
             BuildEntryState.Waiting waiting = new BuildEntryState.Waiting(this);
@@ -282,6 +313,7 @@ public class LoadoutSelectionList extends AbstractSelectionList<LoadoutSelection
 
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+
             currentState.renderBack(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, screen.vertexContainer);
         }
     }

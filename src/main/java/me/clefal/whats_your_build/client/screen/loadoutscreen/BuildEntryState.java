@@ -4,7 +4,6 @@ import com.clefal.nirvana_lib.client.render.batch.VertexContainer;
 import com.clefal.nirvana_lib.relocated.io.vavr.Tuple;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.Map;
-import com.mojang.blaze3d.vertex.PoseStack;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.client.storage.LoadoutsClientHandler;
 import me.clefal.whats_your_build.data.buildobject.Build;
@@ -30,6 +29,8 @@ import java.util.LinkedHashMap;
 public abstract class BuildEntryState {
 
     protected final LoadoutSelectionList.BuildEntry buildEntry;
+    public static final Component TRIANGLE = Component.literal("➤").withStyle(ChatFormatting.WHITE);
+    public boolean isUnsaved = false;
 
     protected BuildEntryState(LoadoutSelectionList.BuildEntry buildEntry) {
         this.buildEntry = buildEntry;
@@ -40,6 +41,7 @@ public abstract class BuildEntryState {
     public abstract void abortChanges();
     public abstract void clear();
     public abstract Build presentBuild();
+    public abstract boolean rename(String name);
     public abstract void mouseClick(double mouseX, double mouseY, int button);
     public abstract void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, VertexContainer vertexContainer);
 
@@ -56,13 +58,11 @@ public abstract class BuildEntryState {
 
     public static class Editing extends BuildEntryState{
         public Build baseBuild;
-        public boolean isEdited = false;
+
 
         protected Editing(LoadoutSelectionList.BuildEntry buildEntry) {
             super(buildEntry);
         }
-
-
 
 
         @Override
@@ -108,7 +108,7 @@ public abstract class BuildEntryState {
             } catch (IOException e) {
                 Constants.LOG.error("Failed to save build: {}", this.baseBuild.name, e);
             }
-            this.isEdited = false;
+            this.isUnsaved = false;
         }
 
         @Override
@@ -127,6 +127,20 @@ public abstract class BuildEntryState {
         }
 
         @Override
+        public boolean rename(String name) {
+            boolean flag;
+            try {
+                flag = LoadoutsClientHandler.rename(presentBuild().name, name);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (flag){
+                presentBuild().name = name;
+            }
+            return flag;
+        }
+
+        @Override
         public void mouseClick(double mouseX, double mouseY, int button) {
 
         }
@@ -134,20 +148,16 @@ public abstract class BuildEntryState {
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, VertexContainer vertexContainer) {
             Font font = Minecraft.getInstance().font;
-            if (isMouseOver || buildEntry.isFocused()){
+            int color = isUnsaved ? ChatFormatting.YELLOW.getColor() : ChatFormatting.WHITE.getColor();
+            if (buildEntry.isFocused()){
                 guiGraphics.drawString(font, Component.literal("➤").withStyle(ChatFormatting.WHITE), left + 1, top - 1, ChatFormatting.WHITE.getColor());
-                guiGraphics.drawString(font, presentBuild().name, left + 10, top - 1, ChatFormatting.WHITE.getColor());
+                if (!buildEntry.isRenaming){
+                    guiGraphics.drawString(font, presentBuild().name, left + 10, top - 1, color);
+                }
             } else {
-                guiGraphics.drawString(font, presentBuild().name, left, top, ChatFormatting.WHITE.getColor());
+                guiGraphics.drawString(font, presentBuild().name, left, top, color);
             }
 
-            if (isEdited){
-                PoseStack pose = guiGraphics.pose();
-                pose.pushPose();
-                pose.translate(font.width(presentBuild().name) + 5, 0, 0);
-                guiGraphics.drawString(font, Component.literal("!"), left, top, ChatFormatting.YELLOW.getColor());
-                pose.popPose();
-            }
         }
     }
 
@@ -165,6 +175,7 @@ public abstract class BuildEntryState {
             if (next instanceof Editing editing){
                 Build copy = storageBuild.copy();
                 editing.baseBuild = copy;
+                editing.isUnsaved = isUnsaved;
             }
         }
 
@@ -188,15 +199,24 @@ public abstract class BuildEntryState {
         }
 
         @Override
+        public boolean rename(String name) {
+            presentBuild().name = name;
+            isUnsaved = true;
+            return false;
+        }
+
+        @Override
         public void mouseClick(double mouseX, double mouseY, int button) {
         }
 
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, VertexContainer vertexContainer) {
+            if (buildEntry.isRenaming) return;
+            int color = isUnsaved ? ChatFormatting.YELLOW.getColor() : ChatFormatting.WHITE.getColor();
             if (isMouseOver || buildEntry.isFocused()){
-                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left + 1, top - 1, ChatFormatting.WHITE.getColor());
+                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left + 1, top - 1, color);
             } else {
-                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left, top, ChatFormatting.WHITE.getColor());
+                guiGraphics.drawString(Minecraft.getInstance().font, presentBuild().name, left, top, color);
             }
 
         }

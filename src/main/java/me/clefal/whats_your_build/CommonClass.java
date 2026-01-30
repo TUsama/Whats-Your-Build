@@ -53,7 +53,7 @@ public class CommonClass {
 
     public static ResourceLocation id(String path) {
         //? 1.20.1
-        /*return new ResourceLocation(Constants.MOD_ID, path);*/
+        //return new ResourceLocation(Constants.MOD_ID, path);
         //? >1.20.1
         return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
     }

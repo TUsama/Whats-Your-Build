@@ -8,8 +8,10 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import me.clefal.whats_your_build.Constants;
 import me.clefal.whats_your_build.data.buildobject.Build;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,6 +19,9 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +33,6 @@ public class LoadoutsClientHandler {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
             UUID uuid = player.getUUID();
-
             Path playerFolder = buildsLocation.resolve(uuid.toString());
             Files.createDirectories(playerFolder); // 确保文件夹存在
 
@@ -37,10 +41,10 @@ public class LoadoutsClientHandler {
 
             JsonElement json = Build.CODEC.encodeStart(JsonOps.INSTANCE, build)
                     //? if 1.20.1 {
-                    /*.getOrThrow(false, Constants.LOG::error);
-                    *///?} else {
+                    /*.getOrThrow(false, x -> Constants.LOG.error(x));
+                     *///?} else {
                     .getOrThrow();
-                    //?}
+            //?}
 
 
             try (BufferedWriter writer = Files.newBufferedWriter(buildFile)) {
@@ -98,4 +102,65 @@ public class LoadoutsClientHandler {
 
         return builds;
     }
+
+
+    public static void openBuildFolder() {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null) {
+            UUID uuid = player.getUUID();
+
+            Path playerFolder = buildsLocation.resolve(uuid.toString());
+            try {
+                Files.createDirectories(playerFolder);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Util.getPlatform().openUri(playerFolder.toUri());
+        }
+
+    }
+
+    public static boolean rename(String oldName, String newName) throws IOException {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) return false;
+
+        UUID uuid = player.getUUID();
+        Path playerFolder = buildsLocation.resolve(uuid.toString());
+        Files.createDirectories(playerFolder);
+
+        Path backupFolder = playerFolder.resolve("backup");
+        Files.createDirectories(backupFolder);
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS");
+
+        Path oldPath = playerFolder.resolve(oldName + ".json");
+        Path newPath = playerFolder.resolve(newName + ".json");
+
+        if (!Files.exists(oldPath)) {
+            player.sendSystemMessage(Component.translatable("wyb.screen.loadout.rename_info.3", oldPath.toString()));
+            return false;
+        } else {
+            if (Files.exists(newPath)) {
+                player.sendSystemMessage(Component.translatable("wyb.screen.loadout.rename_info.duplicated_name", newPath.toString()));
+                return false;
+            }
+
+            Path backupPath = backupFolder.resolve(
+                    oldName + "_" + LocalDateTime.now().format(formatter) + ".json"
+            );
+
+            Files.copy(oldPath, backupPath, StandardCopyOption.REPLACE_EXISTING);
+            player.sendSystemMessage(Component.translatable("wyb.screen.loadout.rename_info.2", backupPath.toString()));
+
+
+            Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
+            player.sendSystemMessage(Component.translatable("wyb.screen.loadout.rename_info.1", oldPath.toString(), newPath.toString()));
+
+            return true;
+        }
+
+
+    }
+
 }

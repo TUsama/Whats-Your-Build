@@ -26,7 +26,7 @@ public abstract class BuildMenuTab<E extends IBuildComponent<?>> extends ImageBu
 
     public BuildMenuTab(Component message, E component, WYBScreen<?> screen, IRewritable rewritable) {
         //? 1.20.1
-        /*super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, CommonClass.gui("sprites/" + component.getIdentifier() + "/full"), 32, 64, button -> {}, message);*/
+        //super(0, 0, TAB_WIDTH, TAB_HEIGHT, 0, 0, 32, CommonClass.gui("sprites/" + component.getIdentifier() + "/full"), 32, 64, button -> {}, message);
         //? >1.20.1
         super(0, 0, TAB_WIDTH, TAB_HEIGHT, new WidgetSprites(CommonClass.id("textures/gui/sprites/" + component.getIdentifier() + "/non-highlight.png"), CommonClass.id("textures/gui/sprites/" + component.getIdentifier() + "/highlight.png"), CommonClass.id("textures/gui/sprites/" + component.getIdentifier() + "/highlight.png")), button -> {}, message);
         this.component = component;

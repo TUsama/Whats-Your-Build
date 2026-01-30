@@ -2,7 +2,7 @@ package me.clefal.whats_your_build.world.block.entity;
 
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
-import commonnetwork.api.Dispatcher;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import lombok.Getter;
 import lombok.Setter;
 import me.clefal.whats_your_build.network.s2c.S2CUpdateLoadoutChestPacket;
@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -146,8 +147,9 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
         Level level = this.level;
         if (level!= null && !level.isClientSide){
             updateOnChanged();
-
-            Dispatcher.sendToAllClients(new S2CUpdateLoadoutChestPacket(List.ofAll(this.lastItems), this.getBlockPos(), this.filledPercent), level.getServer());
+            for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+                NetworkUtils.sendToClient(new S2CUpdateLoadoutChestPacket(List.ofAll(this.lastItems), this.getBlockPos(), this.filledPercent), player);
+            }
         }
     }
 
@@ -228,9 +230,12 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
         if (level!= null && !level.isClientSide){
             updateOnChanged();
 
-            Dispatcher.sendToAllClients(new S2CUpdateLoadoutChestPacket(List.ofAll(this.lastItems), this.getBlockPos(), this.filledPercent), level.getServer());
-        }
+            for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+                NetworkUtils.sendToClient(new S2CUpdateLoadoutChestPacket(List.ofAll(this.lastItems), this.getBlockPos(), this.filledPercent), player);
+            }
+            }
     }
+
 
     @Override
     public boolean stillValid(Player player) {
@@ -252,7 +257,7 @@ public class LoadoutChestEntity extends BaseContainerBlockEntity {
                 CompoundTag compoundtag = new CompoundTag();
                 compoundtag.putByte("Slot", (byte)i);
                 //? 1.20.1
-                /^itemstack.save(compoundtag);^/
+                //itemstack.save(compoundtag);
                 //? >1.20.1
                 itemstack.save(compoundtag);
                 listtag.add(compoundtag);

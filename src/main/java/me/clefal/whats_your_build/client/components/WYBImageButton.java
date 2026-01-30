@@ -17,10 +17,10 @@ public class WYBImageButton extends ImageButton {
                           //? >1.20.1
                           WidgetSprites sprites,
                           //? 1.20.1
-                          /*String allInOne,*/
+                          //String allInOne,
                           VertexContainer container) {
         //? 1.20.1
-        /*super(x, y, width, height, 0, 0, 32, CommonClass.gui(allInOne), 32, 64, onPress);*/
+        //super(x, y, width, height, 0, 0, 32, CommonClass.gui(allInOne), 32, 64, onPress);
         //? >1.20.1
         super(x, y, width, height, sprites, onPress);
         this.container = container;
@@ -30,7 +30,7 @@ public class WYBImageButton extends ImageButton {
         //? >1.20.1
         return this.sprites.get(this.isActive(), this.isHoveredOrFocused());
         //? 1.20.1
-        /*return this.resourceLocation;*/
+        //return this.resourceLocation;
     }
 
 

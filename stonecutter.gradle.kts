@@ -1,30 +1,15 @@
-import org.gradle.internal.impldep.bsh.commands.dir
 
 plugins {
     id("dev.kikugie.stonecutter")
 }
 stonecutter active "1.21.1-neoforge"
 
-stonecutter registerChiseled tasks.register("chiseledBuild", stonecutter.chiseled) { 
-    group = "project"
-    ofTask("build")
-}
-
-stonecutter registerChiseled tasks.register("chiseledBuildAndCollect", stonecutter.chiseled) {
-    group = "project"
-    ofTask("buildAndCollect")
-}
-
-stonecutter registerChiseled tasks.register("chiseledDatagen", stonecutter.chiseled) {
-    group = "project"
-    ofTask("CRunData")
-}
 
 allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-
+        maven ("https://jm.gserv.me/repository/maven-public/")
         maven("https://maven.neoforged.net/releases")
         maven("https://maven.fabricmc.net/")
        // maven("https://repo.spongepowered.org/repository/maven-public/")

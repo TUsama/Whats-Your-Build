@@ -74,7 +74,6 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
                                                 curio.onEquipFromUse(slotContext);
                                                 if (!player.isCreative()) {
                                                     int count = itemInArmory.getCount();
-                                                    System.out.println("shrink");
                                                     itemInArmory.shrink(count);
                                                 }
 
@@ -91,7 +90,6 @@ public class CuriosLoadDescriber extends ItemLoadDescriber {
                                 }
 
                                 if (firstSlot != null) {
-                                    System.out.println("curios");
                                     IDynamicStackHandler stackHandler = (IDynamicStackHandler) firstSlot.getA();
                                     SlotContext slotContextx = firstSlot.getB();
                                     int ix = slotContextx.index();

@@ -24,8 +24,14 @@
   "wyb.screen.loadout.right_click_menu.delete": "Delete",
   "wyb.screen.loadout.right_click_menu.reset": "Reset",
   "wyb.screen.loadout.right_click_menu.save": "Save",
+  "wyb.screen.loadout.right_click_menu.rename": "Rename",
   "wyb.screen.loadout.save_tip": "Right Click To Save",
   "wyb.screen.loadout.tab.new": "New Loadout",
+  "wyb.screen.loadout.rename_info.1": "Renamed %1$s -> %2$s",
+  "wyb.screen.loadout.rename_info.duplicated_name": "Found Duplicated Build file name: %1$s, Rename fail!",
+  "wyb.screen.loadout.rename_info.2": "Backup saved to %1$s",
+  "wyb.screen.loadout.rename_info.3": "Old file does not exist: %1$s",
   "wyb.screen.player_build.player_build": "Player Build",
-  "wyb.screen.tab.armor": "Armor"
+  "wyb.screen.tab.armor": "Armor",
+  "wyb.screen.loadout.tab.open_folder": "Open Build Folder"
 }

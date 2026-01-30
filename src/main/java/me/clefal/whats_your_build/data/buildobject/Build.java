@@ -11,7 +11,7 @@ import me.clefal.whats_your_build.data.IPersistedObject;
 import me.clefal.whats_your_build.data.handler.IBuildComponent;
 import me.clefal.whats_your_build.data.handler.IItemBuildComponent;
 //? mas
-/*import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;*/
+//import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
 import me.clefal.whats_your_build.network.INetworkObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;

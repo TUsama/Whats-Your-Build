@@ -172,7 +172,6 @@ public class PlayerBuildScreen extends WYBScreen<PlayerBuildMenu> implements IRe
     public void handleBuild(Build build) {
         Map<String, ? extends IBuildComponent<?>> map = build.getComponents()
                 .map((aByte, iBuildComponent) -> Tuple.of(iBuildComponent.getIdentifier(), iBuildComponent));
-        System.out.println(map);
         map
                 .get(VanillaArmorComponent.ID)
                 .forEach(iBuildComponent -> placePlan.put(VanillaArmorComponent.ID,

@@ -42,7 +42,7 @@ public class VanillaItemLoadDescriber extends ItemLoadDescriber {
                         if (//? >1.20.1
                                 equipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR
                             //? 1.20.1
-                        /*equipmentslot.getType() == EquipmentSlot.Type.ARMOR*/
+                        //equipmentslot.getType() == EquipmentSlot.Type.ARMOR
                         ) {
                             int targetPosition = 8 - equipmentslot.getIndex();
                             equipAndConsumeSource(player, inventoryMenu, targetPosition, equipmentslot, buildStack, sameItem);

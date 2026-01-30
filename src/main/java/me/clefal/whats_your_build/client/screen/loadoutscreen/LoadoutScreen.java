@@ -43,11 +43,9 @@ import me.clefal.whats_your_build.world.loadout.load.LoadDescriber;
 import me.clefal.whats_your_build.world.loadout.load.VanillaItemLoadDescriber;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
-//? >1.20.1
-import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -74,7 +72,10 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     private LinkedHashMap<String, NonNullList<Slot>> slotMap = new LinkedHashMap<>();
     private List<BuildMenuTab<?>> tabs;
     private WYBImageButton addNewEntry;
+    private WYBImageButton openFolder;
     private RightClickMenu rightClickMenu;
+    private EditBox nameInput = null;
+
     private final static NonNullList<Slot> EMPTY = NonNullList.create();
     private Map<String, WearButton> wears;
     @Getter
@@ -97,11 +98,12 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         this.tabs = HandlerManager.getInstance().getImmutableBuildMenuTabFunction(menu.getSelfBuild()).map(x -> x.apply(this, this));
         this.addNewEntry = new WYBImageButton(0, 0, 8, 8, button -> {
             buildList.addSelfBuildEntry(menu.getSelfBuild().copy());
+            removeNameInput();
         },
                 //? >1.20.1
                 new WidgetSprites(CommonClass.gui("sprites/loadout/add_new_entry"), CommonClass.gui("sprites/loadout/add_new_entry")),
                 //? 1.20.1
-                /*"sprites/loadout/add_new_entry",*/
+                //"sprites/loadout/add_new_entry",
                 vertexContainer){
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -114,11 +116,31 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         };
         this.addNewEntry.setTooltip(Tooltip.create(Component.translatable("wyb.screen.loadout.tab.new")));
         addNewEntry.setPosition(leftPos, topPos - 12);
-
+        this.openFolder = new WYBImageButton(0, 0, 8, 8, button -> {
+            LoadoutsClientHandler.openBuildFolder();
+            removeNameInput();
+        },
+                //? >1.20.1
+                new WidgetSprites(CommonClass.gui("sprites/loadout/folder"), CommonClass.gui("sprites/loadout/folder")),
+                //? 1.20.1
+                //"sprites/loadout/folder",
+                vertexContainer){
+            @Override
+            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                PoseStack pose = guiGraphics.pose();
+                pose.pushPose();
+                ResourceLocation resourcelocation = getRenderResourceLocation();
+                this.container.putBliz(resourcelocation, TextureBufferInfo.of(getX(), getY(), getWidth(), getHeight(), 0, 0,32, 32, 32, 32, guiGraphics.pose().last().pose()));
+                pose.popPose();
+            }
+        };
+        openFolder.setPosition(leftPos + addNewEntry.getWidth() + 3, topPos - 12);
+        this.openFolder.setTooltip(Tooltip.create(Component.translatable("wyb.screen.loadout.tab.open_folder")));
         this.rightClickMenu = new RightClickMenu(0, 0, 0, 0, Component.literal(""));
 
 
         addRenderableWidget(addNewEntry);
+        addRenderableWidget(openFolder);
 
         tabs.forEachWithIndex((buildMenuTab, value) -> {
             buildMenuTab.setSize(12, buildMenuTab.getHeight());
@@ -233,6 +255,20 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         }
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == 335 || keyCode == 257){
+            if (nameInput != null){
+                this.buildList.finishRename(nameInput.getValue());
+                removeNameInput();
+            }
+        }
+        if (getFocused() instanceof EditBox editBox) {
+            return editBox.keyPressed(keyCode, scanCode, modifiers);
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     protected boolean isHovering1(int x, int y, int width, int height, double mouseX, double mouseY) {
 
         return mouseX >= (double)(x - 1)
@@ -255,6 +291,24 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
     @Override
     public VertexContainer getVertexContainer() {
         return vertexContainer;
+    }
+
+    public void addNameInput(int x, int y, int width, int height){
+        removeNameInput();
+        EditBox editBox = new EditBox(Minecraft.getInstance().font, x, y, width, height, Component.empty());
+        editBox.setBordered(false);
+        this.nameInput = editBox;
+        addRenderableWidget(nameInput);
+        this.setFocused(nameInput);
+    }
+
+    public void removeNameInput(){
+        if (this.nameInput != null){
+            this.setFocused(null);
+            this.removeWidget(nameInput);
+            this.nameInput = null;
+            buildList.resetRename();
+        }
     }
 
     public void addButtonForMenu(WYBImageButton button, double mouseX, double mouseY, LoadoutSelectionList.BuildEntry entry){
@@ -280,13 +334,14 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         LoadoutSelectionList.BuildEntry currentEntry = buildList.getCurrentEntry(mouseX, mouseY);
         if (currentEntry != null){
             tryRemoveCurrentMenu();
+            removeNameInput();
             int width = 0;
             int height = 0;
             List<WYBImageButton> buttons = List.empty();
             if (currentEntry.currentState instanceof BuildEntryState.Editing) {
-                buttons = List.of(buildList.save, buildList.reset, buildList.clear, buildList.delete);
+                buttons = List.of(buildList.save, buildList.reset, buildList.clear, buildList.rename, buildList.delete);
             } else if (currentEntry.currentState instanceof BuildEntryState.Waiting){
-                buttons = List.of(buildList.clear, buildList.delete);
+                buttons = List.of(buildList.clear, buildList.rename, buildList.delete);
             }
             for (WYBImageButton wybImageButton : buttons){
                     addButtonForMenu(wybImageButton, mouseX, mouseY, currentEntry);
@@ -308,6 +363,15 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
         if (this.children().contains(rightClickMenu) && rightClickMenu.isMouseOver(mouseX, mouseY) && rightClickMenu.mouseClicked(mouseX, mouseY, button)){
             tryRemoveCurrentMenu();
             return true;
+        }
+        //handle the nameInput
+        if (nameInput != null){
+            LoadoutSelectionList.BuildEntry currentEntry = buildList.getCurrentEntry(mouseX, mouseY);
+            if (currentEntry != null && currentEntry.isRenaming){
+                return false;
+            } else {
+                removeNameInput();
+            }
         }
         boolean b = super.mouseClicked(mouseX, mouseY, button);
         tryRemoveCurrentMenu();
@@ -430,7 +494,7 @@ public class LoadoutScreen extends WYBScreen<LoadoutMenu> implements IBuildHandl
 
     public static void markEdited(LoadoutScreen screen) {
         if (screen.currentEditingEntry != null && screen.currentEditingEntry.currentState instanceof BuildEntryState.Editing editing){
-            editing.isEdited = true;
+            editing.isUnsaved = true;
         }
     }
 

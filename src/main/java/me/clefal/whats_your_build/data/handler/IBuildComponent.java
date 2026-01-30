@@ -8,7 +8,7 @@ import me.clefal.whats_your_build.data.modules.armor.VanillaArmorComponent;
 //? curios
 import me.clefal.whats_your_build.data.modules.compat.curios.CuriosComponent;
 //? mas
-/*import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;*/
+//import me.clefal.whats_your_build.data.modules.compat.mas.talent.MASSkillComponent;
 
 public interface IBuildComponent<SELF extends IBuildComponent<?>> {
     Map<Byte, MapCodec<? extends IBuildComponent<?>>> COMPONENT_CODECS = LinkedHashMap.of(
@@ -16,14 +16,14 @@ public interface IBuildComponent<SELF extends IBuildComponent<?>> {
             //? curios
             ,ComponentType.CURIOS, CuriosComponent.CODEC
             //? mas
-            /*,ComponentType.MAS_TALENT, MASSkillComponent.CODEC*/
+            //,ComponentType.MAS_TALENT, MASSkillComponent.CODEC
     );
 
     Codec<IBuildComponent<?>> COMPONENT_CODEC = Codec.BYTE.dispatch(
             IBuildComponent::getHandlerIndex,
             index -> COMPONENT_CODECS.get(index).getOrElseThrow(() -> new IllegalArgumentException("can't find a Codec with index: " + index))
     //? 1.20.1
-                    /*.codec()*/
+                    //.codec()
     );
 
     byte getHandlerIndex();
